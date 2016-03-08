@@ -1,0 +1,345 @@
+<?xml version='1.0'?>
+<sdf version='1.5'>
+    <model name="skye">
+
+        <!-- We want Skye to be movable, set static element to false -->
+        <static>false</static>
+
+
+        <!-- WARNING: to have weight force == buoyancy force, the mass
+               of each element must be calculated as:
+               mass = fluid_density * volume_collision_element
+               where fluid_density is a parameter of the buoyancy plugin -->
+
+        <!-- WARNING: the postion of each link has been expressed using
+               the world frame of Gazebo, and NOT the NED frame in the center
+               of gravity of skye.  -->
+
+        <!-- ============================== Hull ======================= -->
+        <link name='hull'>
+
+            <!-- This is the main 3D-sphere which forms the hull of Skye -->
+
+            <must_be_base_link>true</must_be_base_link>
+
+            <inertial>
+                <mass>11.993712728</mass>
+                <inertia>
+                    <ixx>10</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>10</iyy>
+                    <iyz>0</iyz>
+                    <izz>10</izz>
+                </inertia>
+            </inertial>
+
+            <visual name='visual'>
+                <geometry>
+                    <sphere>
+                        <radius>1.42</radius>
+                    </sphere>
+                </geometry>
+            </visual>
+
+            <collision name='collision'>
+                <geometry>
+                    <sphere>
+                        <radius>1.42</radius>
+                    </sphere>
+                </geometry>
+            </collision>
+
+        </link>
+
+        <!-- ============================== AU 1 ======================= -->
+        <link name="au_1">
+
+            <pose>0.485710625036042 1.15557534754777 -0.667181238395503 0 0 0</pose>
+
+            <inertial>
+                <mass>0.00418879020478639</mass>
+            </inertial>
+
+            <visual name='visual'>
+                <geometry>
+                    <sphere>
+                        <radius>0.1</radius>
+                    </sphere>
+                </geometry>
+                <material>
+                    <lighting>1</lighting>
+                    <script>
+                        <uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Grey</name>
+                    </script>
+                    <shader type='pixel'>
+                        <normal_map>__default__</normal_map>
+                    </shader>
+                    <ambient>0 0 0 1</ambient>
+                    <diffuse>0 0 0 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+
+            <collision name='collision'>
+                <geometry>
+                    <sphere>
+                        <radius>0.1</radius>
+                    </sphere>
+                </geometry>
+            </collision>
+
+        </link>
+
+        <joint name='au1_joint' type='fixed'>
+            <parent>hull</parent>
+            <child>au_1</child>
+            <axis>
+                <xyz>0 0 1</xyz>
+            </axis>
+        </joint>
+
+        <!-- ============================== AU 2 ======================= -->
+        <link name="au_2">
+
+            <pose>0.485710625036042 -1.15557534754777 -0.667181238395503 0 0 0</pose>
+
+            <inertial>
+                <mass>0.00418879020478639</mass>
+            </inertial>
+
+            <visual name='visual'>
+                <geometry>
+                    <sphere>
+                        <radius>0.1</radius>
+                    </sphere>
+                </geometry>
+                <material>
+                    <lighting>1</lighting>
+                    <script>
+                        <uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Grey</name>
+                    </script>
+                    <shader type='pixel'>
+                        <normal_map>__default__</normal_map>
+                    </shader>
+                    <ambient>0 0 0 1</ambient>
+                    <diffuse>0 0 0 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+
+            <collision name='collision'>
+                <geometry>
+                    <sphere>
+                        <radius>0.1</radius>
+                    </sphere>
+                </geometry>
+            </collision>
+
+        </link>
+
+        <joint name='au2_joint' type='fixed'>
+            <parent>hull</parent>
+            <child>au_2</child>
+            <axis>
+                <xyz>0 0 1</xyz>
+            </axis>
+        </joint>
+
+        <!-- ============================== AU 3 ======================= -->
+        <link name="au_3">
+
+            <pose>0.4857060446766 0 1.33434989345547 0 0 0</pose>
+
+            <inertial>
+                <mass>0.00418879020478639</mass>
+            </inertial>
+
+            <visual name='visual'>
+                    <geometry>
+                        <sphere>
+                            <radius>0.1</radius>
+                        </sphere>
+                    </geometry>
+                    <material>
+                        <lighting>1</lighting>
+                        <script>
+                            <uri>file://media/materials/scripts/gazebo.material</uri>
+                            <name>Gazebo/Grey</name>
+                        </script>
+                        <shader type='pixel'>
+                            <normal_map>__default__</normal_map>
+                        </shader>
+                        <ambient>0 0 0 1</ambient>
+                        <diffuse>0 0 0 1</diffuse>
+                        <specular>0 0 0 1</specular>
+                        <emissive>0 0 0 1</emissive>
+                    </material>
+            </visual>
+
+            <collision name='collision'>
+                <geometry>
+                <sphere>
+                    <radius>0.1</radius>
+                </sphere>
+                </geometry>
+            </collision>
+
+        </link>
+
+        <joint name='au3_joint' type='fixed'>
+            <parent>hull</parent>
+            <child>au_3</child>
+            <axis>
+                <xyz>0 0 1</xyz>
+            </axis>
+        </joint>
+
+        <!-- ============================== AU 4 ======================= -->
+        <link name="au_4">
+
+            <pose>-1.42 0 0 0 0 0</pose>
+
+            <inertial>
+                <mass>0.00418879020478639</mass>
+            </inertial>
+
+            <visual name='visual'>
+                <geometry>
+                    <sphere>
+                        <radius>0.1</radius>
+                    </sphere>
+                </geometry>
+                <material>
+                    <lighting>1</lighting>
+                    <script>
+                        <uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Grey</name>
+                    </script>
+                    <shader type='pixel'>
+                        <normal_map>__default__</normal_map>
+                    </shader>
+                    <ambient>0 0 0 1</ambient>
+                    <diffuse>0 0 0 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <emissive>0 0 0 1</emissive>
+                </material>
+            </visual>
+
+            <collision name='collision'>
+                <geometry>
+                    <sphere>
+                        <radius>0.1</radius>
+                    </sphere>
+                </geometry>
+            </collision>
+
+        </link>
+
+        <joint name='au4_joint' type='fixed'>
+            <parent>hull</parent>
+            <child>au_4</child>
+            <axis>
+                <xyz>0 0 1</xyz>
+            </axis>
+        </joint>
+
+        <!-- ============================== IMU ======================= -->
+        <link name="imu">
+
+            <pose>1.445 0 0 0 0 0</pose> <!-- x = skye_ray + box_size_x/2 -->
+
+            <inertial>
+                <mass>0.0005</mass>
+                <inertia>
+                    <ixx>0.000001</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.000001</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.000001</izz>
+                </inertia>
+            </inertial>
+
+            <visual name="visual">
+                <geometry>
+                    <box>
+                        <size>0.05 0.1 0.1</size>
+                    </box>
+                </geometry>
+                <material>
+                    <lighting>1</lighting>
+                    <script>
+                        <uri>file://media/materials/scripts/gazebo.material</uri>
+                        <name>Gazebo/Grey</name>
+                    </script>
+                    <shader type='pixel'>
+                        <normal_map>__default__</normal_map>
+                    </shader>
+                    <ambient>0.55 0 0 1</ambient>
+                    <diffuse>0.55 0 0 1</diffuse>
+                    <specular>0.55 0 0 1</specular>
+                    <emissive>0.55 0 0 1</emissive>
+                </material>
+            </visual>
+
+            <collision name="collision">
+                <geometry>
+                    <box>
+                        <size>0.05 0.1 0.1</size>
+                    </box>
+                </geometry>
+            </collision>
+
+        </link>
+
+        <!-- This IMU plugin has been compiled using catkin_make from the source
+             file provided in "hector_gazebo_plugins". Once this repo has been
+             compiled, the path of the output plugin
+             "libhector_gazebo_ros_imu.so" must be added to the Gazebo environment
+             variable GAZEBO_PLUGIN_PATH.
+             The output data are expressed in local ENU frame (East North Up), which
+             is aligned to the world gazebo frame at the beginning of the simulation. -->
+
+         <plugin name="hector_imu_sim" filename="libhector_gazebo_ros_imu.so">
+            <updateRate>100.0</updateRate>
+            <bodyName>imu</bodyName>
+            <topicName>/sensor_msgs/imu_enu</topicName>
+            <!-- <frameId>imu</frameId> -->
+            <xyzOffset>0 0 0</xyzOffset>
+            <rpyOffset>0 0 0</rpyOffset>
+            <gaussianNoise>0</gaussianNoise>
+            <accelDrift>0.5 0.5 0.5</accelDrift>
+            <accelGaussianNoise>0.35 0.35 0.3</accelGaussianNoise>
+            <rateDrift>0.1 0.1 0.1</rateDrift>
+            <rateGaussianNoise>0.05 0.05 0.015</rateGaussianNoise>
+        </plugin>
+
+        <joint name="imu_joint" type="fixed">
+            <child>imu</child>
+            <parent>hull</parent>
+            <axis>
+                <xyz>0 0 1</xyz>
+                <limit>
+                    <upper>0</upper>
+                    <lower>0</lower>
+                </limit>
+            </axis>
+        </joint>
+
+        <!-- ==================== Buoyancy Plugin - available from Gazebo6 ======== -->
+        <plugin name="buoyancy" filename="libBuoyancyPlugin.so">
+            <fluid_density>1</fluid_density>
+        </plugin>
+
+    </model>
+
+     <!-- TODO: check model/enable_wind -->
+
+     <!-- TODO: is the lift and drag plugin from Gazebo necessary ? -->
+
+</sdf>
