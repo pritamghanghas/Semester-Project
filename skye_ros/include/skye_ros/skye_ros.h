@@ -12,6 +12,7 @@
 #include <Eigen/Core>
 #include <eigen_conversions/eigen_msg.h>
 #include <tf_conversions/tf_eigen.h>
+#include <cstring>
 //#include <tf_conversions/transform_datatypes.h>
 
 #include <std_msgs/Float64.h>
@@ -42,16 +43,10 @@ public:
      */
     void imuEnuCallback(    const sensor_msgs::ImuConstPtr &imu_enu_p);
 
-    /**
-     * @brief      Temporary utility function to copy Eigen::matrix to Float64[].
-     */
-    void myStdVecToMsg(     const Eigen::MatrixXd           &matrix,
-                            const int                       msg_length,
-                            double                          *array_p);
 
 
 private:
-    ros::NodeHandle nh_;                                /**< Main access point to communicate with ROS. */
+    ros::NodeHandle     nh_;                            /**< Main access point to communicate with ROS. */
     ros::Subscriber     imu_enu_subscriber_;            /**< Sub. to ENU Imu data. */
     ros::Publisher      imu_ned_publisher_;             /**< Pub. of NED Imu data. */
     Eigen::Quaterniond  q_ned_enu_;                     /**< Quaternion from ENU to NED frame. */
