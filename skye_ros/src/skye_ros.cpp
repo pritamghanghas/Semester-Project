@@ -23,94 +23,65 @@ SkyeRos::SkyeRos()
 
 }
 
-void SkyeRos::imuEnuCallback(const sensor_msgs::ImuConstPtr &imu_enu)
+void SkyeRos::imuEnuCallback(const sensor_msgs::ImuConstPtr &imu_enu_p)
 {
   /* convert imu msg from ENU to NED and publish imu_ned message. */
-  sensor_msgs::Imu            imu_ned;
-  Eigen::Quaterniond          q_orientation_ned;
-  Eigen::Matrix<std_msgs::Float64,3,3,Eigen::RowMajor> orientation_cov_ned;
-  Eigen::Matrix<double,3,1>   angular_velocity_ned;
-  Eigen::Matrix<std_msgs::Float64,3,3,Eigen::RowMajor> angular_vel_cov_ned;
-  Eigen::Matrix<double,3,1>   linear_acceleration_ned;
-  Eigen::Matrix<std_msgs::Float64,3,3,Eigen::RowMajor> linear_acc_vel_cov_ned;
+  sensor_msgs::Imu                          imu_ned;
+  Eigen::Quaterniond                        q_orientation_ned;
+  Eigen::Matrix<double,3,3,Eigen::RowMajor> orientation_cov_ned;
+  Eigen::Matrix<double,3,1>                 angular_velocity_ned;
+  Eigen::Matrix<double,3,3,Eigen::RowMajor> angular_vel_cov_ned;
+  Eigen::Matrix<double,3,1>                 linear_acceleration_ned;
+  Eigen::Matrix<double,3,3,Eigen::RowMajor> linear_acc_cov_ned;
 
   tf::Quaternion              tf_quat;
   Eigen::Quaterniond          eig_quat;
   Eigen::Matrix<double,3,1>   eig_vec3;
+  Eigen::Matrix<double,3,3>   eig_matrix3;
+  std::vector<double>         std_vecd;
 
-  /* conversion in three steps: msg_sensor/imu to tf::quaternion to eigen::quaternion. */
-
-  /* orientation. */
-  tf::quaternionMsgToTF(      imu_enu->orientation,     tf_quat);
+  /* orientation: msg_sensor/imu to tf::quaternion to eigen::quaternion. */
+  tf::quaternionMsgToTF(      imu_enu_p->orientation,     tf_quat);
   tf::quaternionTFToEigen(    tf_quat,                  eig_quat);
   q_orientation_ned         = q_ned_enu_ * eig_quat;
+  /* orientation_covariance: msg_sensor/imu to eigen::matrix. */
+  /** @todo find a better solution to this workaround. */
+  std_vecd.assign(&(imu_enu_p->orientation_covariance[0]), 
+                  (&(imu_enu_p->orientation_covariance[0])) + 9);
+  eig_matrix3               = Eigen::Map<const Eigen::Matrix<double,3,3,Eigen::RowMajor> >(std_vecd.data());                                  
+  orientation_cov_ned       = q_ned_enu_.matrix() * eig_matrix3 * q_ned_enu_.matrix().transpose();
 
-  /*
-  ROS_INFO("q_enu: %f, %f, %f, %f", eig_quat.w(),
-                                    eig_quat.x(),
-                                    eig_quat.y(),
-                                    eig_quat.z());
-  ROS_INFO("q_ned: %f, %f, %f, %f", q_orientation_ned.w(),
-                                    q_orientation_ned.x(),
-                                    q_orientation_ned.y(),
-                                    q_orientation_ned.z());*/
-
-  /** @todo Add orientation_covariance_ned */
-
-  /* angular velocity. */
-  tf::vectorMsgToEigen(       imu_enu->angular_velocity,  eig_vec3);
+  /* angular velocity: msgs_sensor/imu to eigen::matrix. */
+  tf::vectorMsgToEigen(       imu_enu_p->angular_velocity,  eig_vec3);
   angular_velocity_ned      = q_ned_enu_.matrix() * eig_vec3;
-
-  /*
-  ROS_INFO("omega_enu: %f, %f, %f",     eig_vec3.x(),
-                                        eig_vec3.y(),
-                                        eig_vec3.z());
-
-  ROS_INFO("omega_ned: %f, %f, %f",     angular_velocity_ned.x(),
-                                        angular_velocity_ned.y(),
-                                        angular_velocity_ned.z());*/
-
-  /** @todo Add angular_velocity_covariance_ned */
+  /* angular_velocity_covariance. */
+  /** @todo find a better solution to this workaround. */
+  std_vecd.assign(&(imu_enu_p->angular_velocity_covariance[0]), 
+                  (&(imu_enu_p->angular_velocity_covariance[0])) + 9);
+  eig_matrix3               = Eigen::Map<const Eigen::Matrix<double,3,3,Eigen::RowMajor> >(std_vecd.data());                                  
+  angular_vel_cov_ned       = q_ned_enu_.matrix() * eig_matrix3 * q_ned_enu_.matrix().transpose();
 
   /* linear acceleration. */
-  tf::vectorMsgToEigen(       imu_enu->linear_acceleration,  eig_vec3);
+  tf::vectorMsgToEigen(       imu_enu_p->linear_acceleration,  eig_vec3);
   linear_acceleration_ned   = q_ned_enu_.matrix() * eig_vec3;
-  /*
-  ROS_INFO("a_enu: %f, %f, %f",         eig_vec3.x(),
-                                        eig_vec3.y(),
-                                        eig_vec3.z());
-
-  ROS_INFO("a_ned: %f, %f, %f",         linear_acceleration_ned.x(),
-                                        linear_acceleration_ned.y(),
-                                        linear_acceleration_ned.z());*/
-
-  /** @todo Add linear_acceleration_covariance_ned */
-
-
-  //Eigen::Matrix<std_msgs::Float64,3,3> matx;
-  //matx(1,1) = imu_enu->orientation_covariance[0];
-  /*double pippo[9];
-  for(int i=0; i<9; i++){ 
-    pippo[i] = imu_enu->orientation_covariance[i];
-  }*/
-  //orientation_cov_ned       = Eigen::Map<Eigen::Matrix<std_msgs::Float64,3,3,Eigen::RowMajor> >(imu_enu->orientation_covariance, 9); 
-                              /*r_ned_enu_.transpose();*/
-  //Eigen::Map<Eigen::VectorXd> (static_cast<double*>(imu_enu->orientation_covariance), 9);
-  Eigen::Matrix<double,3,3,Eigen::RowMajor> m1 = Eigen::Map<const Eigen::Matrix<double,3,3,Eigen::RowMajor> >(imu_enu->orientation_covariance, 9); 
+  /* linear_acceleration_covariance. */
+  /** @todo find a better solution to this workaround. */
+  std_vecd.assign(&(imu_enu_p->linear_acceleration_covariance[0]), 
+                  (&(imu_enu_p->linear_acceleration_covariance[0])) + 9);
+  eig_matrix3               = Eigen::Map<const Eigen::Matrix<double,3,3,Eigen::RowMajor> >(std_vecd.data());                                  
+  linear_acc_cov_ned        = q_ned_enu_.matrix() * eig_matrix3 * q_ned_enu_.matrix().transpose();
 
 
   /* fill the imu_ned message and publish it. */
-  imu_ned.header            = imu_enu->header;
+  imu_ned.header            = imu_enu_p->header;
+
   tf::quaternionEigenToMsg(   q_orientation_ned,        imu_ned.orientation);
-  /** @todo Add orientation_covariance_ned */
+  /** @todo orientation_cov_ned. */
+
   tf::vectorEigenToMsg(       angular_velocity_ned,     imu_ned.angular_velocity);
-  /** @todo Add angular_velocity_covariance_ned */
+  /** @todo angular_vel_cov_ned */
   tf::vectorEigenToMsg(       linear_acceleration_ned,  imu_ned.linear_acceleration);
-  /** @todo Add linear_acceleration_covariance_ned */
-
-
-  //tf::matrixEigenToMsg(       orientation_cov_ned,      imu_ned.orientation_covariance);
-  //
+  /** @todo linear_acc_cov_ned */
   
   /* publish imu_ned*/
   imu_ned_publisher_.publish(imu_ned);
@@ -169,19 +140,15 @@ void SkyeRos::imuEnuCallback(const sensor_msgs::ImuConstPtr &imu_enu)
 
 }
 
-void SkyeRos::myMsgToEig(const std_msgs::Float64         *msg,
-                         const int                       msg_length,
-                         Eigen::MatrixXd                 &matrix) 
+void SkyeRos::myStdVecToMsg(const Eigen::MatrixXd           &matrix,
+                            const int                       msg_length,
+                            double                          *array_p)
 {
-  /* temporary workaround. */
-  /** @todo fix this with a more appropriate solution. */
-  /*double*   copy_msg  = new double[msg_length];
+  const double  *p  = matrix.data();
 
   for(int i = 0; i < msg_length; ++i) {
-    copy_msg  = msg[i];
+    array_p[i]  = p[i];
   }
-
-  matrix  = Eigen::Map<Eigen::Matrix<double,-1,-1,Eigen::RowMajor> >(copy_msg, msg_length);*/
 }
 
 } // namespace skye_ros

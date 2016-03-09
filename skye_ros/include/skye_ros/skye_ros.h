@@ -7,6 +7,7 @@
 
 #include <ros/ros.h>
 
+#include <vector>
 #include <Eigen/Geometry>
 #include <Eigen/Core>
 #include <eigen_conversions/eigen_msg.h>
@@ -39,29 +40,14 @@ public:
      *
      * @param[in]  imu_enu  Imu data expressed in local ENU frame, IMU attached to Skye.
      */
-    void imuEnuCallback(    const sensor_msgs::ImuConstPtr &imu_enu);
+    void imuEnuCallback(    const sensor_msgs::ImuConstPtr &imu_enu_p);
 
-    
     /**
-     * @brief      Utility function to copy Float64 to Eigen matrix.
-     *
-     * @param[in]  msg         Float64[] input.
-     * @param[in]  msg_length  Length of msg array.
-     * @param[out] matrix      Eigen::MatrixXd
+     * @brief      Temporary utility function to copy Eigen::matrix to Float64[].
      */
-    void myMsgToEig(        const std_msgs::Float64         *msg,
+    void myStdVecToMsg(     const Eigen::MatrixXd           &matrix,
                             const int                       msg_length,
-                            Eigen::MatrixXd                 &matrix);
-    /**
-     * @brief      Utility function to copy Eigen matrix to Float64 array.
-     *
-     * @param[in]  matrix      Eigen::MatrixXd
-     * @param[in]  msg_length  Length of msg array.
-     * @param[out] msg         Float64[] input.
-     */
-    void myEigToMsg(        const Eigen::MatrixXd           &matrix,
-                            const int                       msg_length,
-                            std_msgs::Float64               *msg);
+                            double                          *array_p);
 
 
 private:
