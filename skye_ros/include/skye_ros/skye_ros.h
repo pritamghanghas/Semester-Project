@@ -13,13 +13,17 @@
 #include <eigen_conversions/eigen_msg.h>
 #include <tf_conversions/tf_eigen.h>
 #include <cstring>
+//#include <string.h>
 //#include <tf_conversions/transform_datatypes.h>
 
-#include <std_msgs/Float64.h>
+//#include <std_msgs/Float64.h>
 #include <sensor_msgs/Imu.h>
 #include <geometry_msgs/Quaternion.h>
 #include <gazebo_msgs/ApplyBodyWrench.h>
 #include <gazebo_msgs/GetLinkState.h>
+#include <gazebo_msgs/LinkState.h>
+
+#include "skye_ros/ApplyWrenchCog.h"
 
 namespace skye_ros {
 
@@ -41,21 +45,47 @@ public:
      *
      * @param[in]  imu_enu  Imu data expressed in local ENU frame, IMU attached to Skye.
      */
-    void imuEnuCallback(    const sensor_msgs::ImuConstPtr &imu_enu_p);
+    void imuEnuCallback(const sensor_msgs::ImuConstPtr      &imu_enu_p);
 
-
+    /**
+     * @brief      Callback function when apply_wrench_cog service is called.
+     *
+     * @param      req   Service request.
+     * @param      rep   Service response.
+     *
+     */
+    bool applyWrenchCog(skye_ros::ApplyWrenchCog::Request   &req,
+                        skye_ros::ApplyWrenchCog::Response  &rep);
 
 private:
-    ros::NodeHandle     nh_;                            /**< Main access point to communicate with ROS. */
-    ros::Subscriber     imu_enu_subscriber_;            /**< Sub. to ENU Imu data. */
-    ros::Publisher      imu_ned_publisher_;             /**< Pub. of NED Imu data. */
-    Eigen::Quaterniond  q_ned_enu_;                     /**< Quaternion from ENU to NED frame. */
-    Eigen::Quaterniond  q_enu_ned_;                     /**< Quaternion from NED to ENU frame. */
-    ros::ServiceClient  client_gz_apply_body_wrench_;   /**< client to apply a body wrench in Gazebo. */
-    ros::ServiceClient  client_gz_get_link_state_;      /**< client to get link state in Gazebo. */
+    ros::NodeHandle     nh_;                        /**< Main access point to communicate with ROS. */
+    ros::Subscriber     imu_enu_subscriber_;        /**< Sub. to ENU Imu data. */
+    ros::Publisher      imu_ned_publisher_;         /**< Pub. of NED Imu data. */
+    Eigen::Quaterniond  q_ned_enu_;                 /**< Quaternion from ENU to NED frame. */
+    Eigen::Quaterniond  q_enu_ned_;                 /**< Quaternion from NED to ENU frame. */
+    ros::ServiceClient  ct_gz_apply_body_wrench_;   /**< client to apply a body wrench in Gazebo. */
+    ros::ServiceClient  ct_gz_get_link_state_;      /**< client to get link state in Gazebo. */
+    ros::ServiceServer  sr_apply_wrench_cog_;       /**< client to apply wrench in cog of Skye. */
 
+    /**
+     * @brief      Get link state from Gazebo.
+     *
+     * @param[in]  link_name   link_name in Gazebo.
+     * @param[out]      link_state  link state: pose and twist.
+     *
+     * @return     true on success, false otherwise.
+     */
+    bool getLinkState(const std::string                   &link_name,
+                      gazebo_msgs::LinkState              &link_state);
 
-
+    /**
+     * @brief      Convert ROS geometry_msgs::Quaternion to Eigen::Quaternion.
+     *
+     * @param[in]  quat_in   ROS quaternion.
+     * @param[out] quat_out  Eigen quaternion.
+     */
+    void quaternionMsgToEigen(const geometry_msgs::Quaternion     &quat_in,
+                              Eigen::Quaterniond                  &quat_out);
 };
 
 } // namespace skye_ros
