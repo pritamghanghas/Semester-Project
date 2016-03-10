@@ -16,7 +16,7 @@ Installation: first, make sure your Debian package index is up-to-date.
 ```bash
 sudo apt-get update
 ```
-Install the default Desktop-Full Install version of ROS Indigo.
+Install the default Desktop-Full Install version of ROS Indigo. This version provides you ROS, rqt, rviz, robot-generic libraries, 2D/3D simulators, navigation and 2D/3D perception.
 ```bash
 sudo apt-get install ros-indigo-desktop-full
 ```
@@ -33,4 +33,24 @@ source ~/.bashrc
 Rosinstall is a frequently used command-line tool in ROS that is distributed separately. It enables you to easily download many source trees for ROS packages with one command.
  ```bash
 sudo apt-get install python-rosinstall
+```
+## Create A Catkin Workspace And Compile Source Code
+Create a catkin workspace in your home folder where you are going to install every package needed to simulate Skye.
+ ```bash
+cd ~
+mkdir -p catkin_ws/src
+```
+Clone the "skye_gazebo_simulation" repo in the src folder:
+ ```bash
+cd ~/catkin_ws/src
+git clone https://github.com/skye-git/skye_gazebo_simulation -b indigo-devel
+```
+Clone the "hector_gazebo" repo which containes usefull plugin for our simulation in Gazebo (make sure you are still in the 'catkin_ws/src' folder).
+ ```bash
+git clone https://github.com/skye-git/hector_gazebo -b indigo-devel
+```
+Compile the packages you have just cloned.
+```bash
+cd ~/catkin_ws
+catkin_make
 ```
