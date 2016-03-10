@@ -14,11 +14,14 @@ SkyeRos::SkyeRos()
   imu_ned_publisher_  = nh_.advertise<sensor_msgs::Imu>("sensor_msgs/imu_ned", 10);
 
   /* Services. */
-  ct_gz_apply_body_wrench_ = nh_.serviceClient<gazebo_msgs::ApplyBodyWrench>("gazebo/apply_body_wrench");
-  ct_gz_get_link_state_ = nh_.serviceClient<gazebo_msgs::GetLinkState>("gazebo/get_link_state");
-  sr_apply_wrench_cog_ = nh_.advertiseService("skye_ros/apply_wrench_cog",
-                                              &SkyeRos::applyWrenchCog,
-                                              this);
+  client_gz_apply_body_wrench_ = nh_.serviceClient<gazebo_msgs::ApplyBodyWrench>("gazebo/apply_body_wrench");
+  client_gz_get_link_state_ = nh_.serviceClient<gazebo_msgs::GetLinkState>("gazebo/get_link_state");
+  server_apply_wrench_cog_ = nh_.advertiseService("skye_ros/apply_wrench_cog",
+                                                  &SkyeRos::applyWrenchCog,
+                                                  this);
+  server_get_link_state_ned_ = nh_.advertiseService("skye_ros/get_link_state_ned",
+                                                    &SkyeRos::getLinkStateNed,
+                                                    this);
   /* Rotation matrices and quaternions. */
   q_ned_enu_ = Eigen::AngleAxisd(-M_PI, Eigen::Vector3d::UnitX());
   q_enu_ned_ = q_ned_enu_.inverse();
@@ -108,9 +111,11 @@ bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCog::Request   &req,
   Eigen::Quaterniond          q_world_skye_enu;   /* Orientation of Skye's ENU frame in Gazebo wolrd frame. */    
   Eigen::Matrix<double,3,3>   r_world_skye_ned;   /* Rotation matrix from Skye NED to Gazebo wolrd frame. */
   Eigen::Matrix<double,6,6>   rotation_matrix_wrench; 
+  bool                        success;
+  std::string                 status_message;
 
   /* Get skye::hull state information from Gazebo. */
-  getLinkState("hull", hull_state);
+  getLinkState("hull", hull_state, success, status_message);
   quaternionMsgToEigen(hull_state.pose.orientation, q_world_skye_enu);
 
   /* Rotation matrix for the wrench. */
@@ -136,13 +141,13 @@ bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCog::Request   &req,
   srv.request.start_time        = req.start_time;
   srv.request.duration          = req.duration;
 
-  if (ct_gz_apply_body_wrench_.call(srv))
+  if (client_gz_apply_body_wrench_.call(srv))
   {
       ROS_INFO("wrench applied!");
   }
   else
   {
-      ROS_ERROR("Failed to call service apply_body_wrench!");
+      ROS_ERROR("Failed to call service apply_body_wrench from gazebo_ros pkg!");
   }
 
   rep.success = srv.response.success;
@@ -152,34 +157,85 @@ bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCog::Request   &req,
 }
 
 
-bool SkyeRos::getLinkState(const std::string                   &link_name,
-                           gazebo_msgs::LinkState             &link_state)
+bool SkyeRos::getLinkStateNed(skye_ros::GetLinkStateNed::Request   &req,
+                              skye_ros::GetLinkStateNed::Response  &rep)
 {
-    gazebo_msgs::GetLinkState   srv;
-    bool                        ret =   true;
+  gazebo_msgs::LinkState      link_state;
+  Eigen::Matrix<double,3,1>   p_skye_enu;         /* Position of link's ENU frame in Gazebo wolrd frame. */
+  Eigen::Quaterniond          q_world_skye_enu;   /* Orientation of link's ENU frame in Gazebo wolrd frame. */
+  Eigen::Matrix<double,3,1>   v_skye_enu;         /* Linear velocity of link's ENU frame in Gazebo wolrd frame. */
+  Eigen::Matrix<double,3,1>   w_skye_enu;         /* Angular velocity of link's ENU frame in Gazebo wolrd frame. */
+  bool                        success;
+  std::string                 status_message;
 
-    srv.request.link_name         = link_name;
-    srv.request.reference_frame   = ""; /**< currently to leave "", otherwise get error. */
+  Eigen::Matrix<double,3,1>   p_skye_ned;         /* Position of the link in NED wolrd frame. */
+  Eigen::Quaterniond          q_world_skye_ned;   /* Orientation of the link in NED wolrd frame. */
+  Eigen::Matrix<double,3,1>   v_skye_ned;         /* Linear velocity of the link in NED wolrd frame. */
+  Eigen::Matrix<double,3,1>   w_skye_ned;         /* Angular velocity of the link in NED wolrd frame. */
 
-    if (ct_gz_get_link_state_.call(srv))
-    {
-        link_state = srv.response.link_state;
-    }
-    else
-    {
-        ROS_ERROR("Failed to call service get_link_state!");
-        ret = false;
-    }
+  /* Get link state, from Gazebo, expressed in Gazebo's ENU fixed world frame.
+   * Convert in in a NED fixed frame with same origin than Gazebo's wolrd frame.
+   */
+  getLinkState(req.link_name, link_state, success, status_message);
 
-    return ret;
+  tf::pointMsgToEigen(link_state.pose.position, p_skye_enu);
+  quaternionMsgToEigen(link_state.pose.orientation, q_world_skye_enu);
+  tf::vectorMsgToEigen(link_state.twist.linear, v_skye_enu);
+  tf::vectorMsgToEigen(link_state.twist.angular, w_skye_enu);
+
+  p_skye_ned = q_ned_enu_.matrix() * p_skye_enu;
+  q_world_skye_ned = q_ned_enu_ * q_world_skye_enu;
+  v_skye_ned = q_ned_enu_.matrix() * v_skye_enu;
+  w_skye_ned = q_ned_enu_.matrix() * w_skye_enu;
+
+  /* Fill the service response. */
+  rep.link_state.link_name = link_state.link_name;
+  tf::pointEigenToMsg(p_skye_ned, rep.link_state.pose.position);
+  tf::quaternionEigenToMsg(q_world_skye_ned, rep.link_state.pose.orientation);
+  tf::vectorEigenToMsg(v_skye_ned, rep.link_state.twist.linear);
+  tf::vectorEigenToMsg(w_skye_ned, rep.link_state.twist.angular);
+
+  rep.success = success;
+  rep.status_message = status_message;
+
+
+  return true;
 }
 
-void SkyeRos::quaternionMsgToEigen(const geometry_msgs::Quaternion     &quat_in,
-                                   Eigen::Quaterniond                  &quat_out)
+
+bool SkyeRos::getLinkState(const std::string            &link_name,
+                           gazebo_msgs::LinkState       &link_state,
+                           bool                         &success,
+                           std::string                  &status_message)
 {
-    tf::Quaternion tf_quat; 
-    tf::quaternionMsgToTF(quat_in, tf_quat);
-    tf::quaternionTFToEigen(tf_quat, quat_out);
+  gazebo_msgs::GetLinkState   srv;
+  bool                        ret =   true;
+
+  srv.request.link_name         = link_name;
+  srv.request.reference_frame   = ""; /**< currently to leave "", otherwise get error. */
+
+  if (client_gz_get_link_state_.call(srv))
+  {
+      link_state = srv.response.link_state;
+  }
+  else
+  {
+      ROS_ERROR("Failed to call service get_link_state from gazebo_ros pkg!");
+      ret = false;
+  }
+
+  success = srv.response.success;
+  status_message = srv.response.status_message;
+
+  return ret;
+}
+
+void SkyeRos::quaternionMsgToEigen(const geometry_msgs::Quaternion  &quat_in,
+                                   Eigen::Quaterniond               &quat_out)
+{
+  tf::Quaternion tf_quat; 
+  tf::quaternionMsgToTF(quat_in, tf_quat);
+  tf::quaternionTFToEigen(tf_quat, quat_out);
 }
 
 } // namespace skye_ros
@@ -187,11 +243,11 @@ void SkyeRos::quaternionMsgToEigen(const geometry_msgs::Quaternion     &quat_in,
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "skye_ros_node");
+  ros::init(argc, argv, "skye_ros_node");
 
-    skye_ros::SkyeRos skye_ros_interface;
+  skye_ros::SkyeRos skye_ros_interface;
 
-    ros::spin();
+  ros::spin();
 
-    return 0;
+  return 0;
 }

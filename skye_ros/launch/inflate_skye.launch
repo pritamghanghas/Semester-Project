@@ -7,6 +7,7 @@
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
 
+  <!-- Call pkg "skye_gazebo" to start gazebo and spawn Skye. -->
   <include file="$(find skye_gazebo)/launch/skye_empty_world.launch">
     <arg name="paused" value="$(arg paused)"/>
     <arg name="use_sim_time" value="$(arg use_sim_time)"/>
@@ -14,5 +15,9 @@
     <arg name="headless" value="$(arg headless)"/>
     <arg name="debug" value="$(arg debug)"/>
   </include>
+
+  <!-- Start "skye_ros_node" to provide an interface to interact with Skye in Gazebo. -->
+  <node name="skye_ros_node" pkg="skye_ros" type="skye_ros_node"
+        respawn="false" output="screen"/>
 
 </launch>

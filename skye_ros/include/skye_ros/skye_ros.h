@@ -24,6 +24,7 @@
 #include <gazebo_msgs/LinkState.h>
 
 #include "skye_ros/ApplyWrenchCog.h"
+ #include "skye_ros/GetLinkStateNed.h"
 
 namespace skye_ros {
 
@@ -44,47 +45,68 @@ public:
      *
      * @param[in]  imu_enu  Imu data expressed in local ENU frame, IMU attached to Skye.
      */
-    void imuEnuCallback(const sensor_msgs::ImuConstPtr      &imu_enu_p);
+    void imuEnuCallback(const sensor_msgs::ImuConstPtr  &imu_enu_p);
 
     /**
      * @brief      Callback function when apply_wrench_cog service is called.
+     * 
+     * Convert the requested wrench, expressed in Skue's NED local frame, to
+     * a wrench expressed in Gazebo's ENU world frame and apply it in Gazebo.
      *
-     * @param      req   Service request.
-     * @param      rep   Service response.
+     * @param[in]  req   Service request.
+     * @param[out] rep   Service response.
      *
      */
     bool applyWrenchCog(skye_ros::ApplyWrenchCog::Request   &req,
                         skye_ros::ApplyWrenchCog::Response  &rep);
 
+    /**
+     * @brief      Callback function when get_link_state_ned service is called.
+     * 
+     * Return the link state expressed in a NED world fixed frame.
+     *
+     * @param      req   Service request.   
+     * @param      req   Service response.
+     *
+     * @return     { description_of_the_return_value }
+     */
+    bool getLinkStateNed(skye_ros::GetLinkStateNed::Request   &req,
+                         skye_ros::GetLinkStateNed::Response  &rep);
+
 private:
-    ros::NodeHandle     nh_;                        /**< Main access point to communicate with ROS. */
-    ros::Subscriber     imu_enu_subscriber_;        /**< Sub. to ENU Imu data. */
-    ros::Publisher      imu_ned_publisher_;         /**< Pub. of NED Imu data. */
-    Eigen::Quaterniond  q_ned_enu_;                 /**< Quaternion from ENU to NED frame. */
-    Eigen::Quaterniond  q_enu_ned_;                 /**< Quaternion from NED to ENU frame. */
-    ros::ServiceClient  ct_gz_apply_body_wrench_;   /**< client to apply a body wrench in Gazebo. */
-    ros::ServiceClient  ct_gz_get_link_state_;      /**< client to get link state in Gazebo. */
-    ros::ServiceServer  sr_apply_wrench_cog_;       /**< client to apply wrench in cog of Skye. */
+    ros::NodeHandle     nh_;                          /**< Main access point to communicate with ROS. */
+    ros::Subscriber     imu_enu_subscriber_;          /**< Sub. to ENU Imu data. */
+    ros::Publisher      imu_ned_publisher_;           /**< Pub. of NED Imu data. */
+    Eigen::Quaterniond  q_ned_enu_;                   /**< Quaternion from ENU to NED frame. */
+    Eigen::Quaterniond  q_enu_ned_;                   /**< Quaternion from NED to ENU frame. */
+    ros::ServiceClient  client_gz_apply_body_wrench_; /**< Client to apply a body wrench in Gazebo. */
+    ros::ServiceClient  client_gz_get_link_state_;    /**< Client to get link state in Gazebo. */
+    ros::ServiceServer  server_apply_wrench_cog_;     /**< Server to apply wrench in cog of Skye. */
+    ros::ServiceServer  server_get_link_state_ned_;   /**< Server to get link state in world NED frame. */
 
     /**
      * @brief      Get link state from Gazebo.
      *
-     * @param[in]  link_name   link_name in Gazebo.
-     * @param[out]      link_state  link state: pose and twist.
+     * @param[in]  link_name        link_name in Gazebo.
+     * @param[out] link_state       link state: pose and twist.
+     * @param[out] success          return true if get info is successful
+     * @param[out] status_message   comments if available
      *
      * @return     true on success, false otherwise.
      */
-    bool getLinkState(const std::string                   &link_name,
-                      gazebo_msgs::LinkState              &link_state);
+    bool getLinkState(const std::string       &link_name,
+                      gazebo_msgs::LinkState  &link_state,
+                      bool                    &success,
+                      std::string             &status_message);
 
     /**
      * @brief      Convert ROS geometry_msgs::Quaternion to Eigen::Quaternion.
      *
-     * @param[in]  quat_in   ROS quaternion.
-     * @param[out] quat_out  Eigen quaternion.
+     * @param[in]  quat_in         ROS quaternion.
+     * @param[out] quat_out        Eigen quaternion.
      */
-    void quaternionMsgToEigen(const geometry_msgs::Quaternion     &quat_in,
-                              Eigen::Quaterniond                  &quat_out);
+    void quaternionMsgToEigen(const geometry_msgs::Quaternion   &quat_in,
+                              Eigen::Quaterniond                &quat_out);
 };
 
 } // namespace skye_ros

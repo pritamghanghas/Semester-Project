@@ -60,6 +60,7 @@ include_directories(${EIGEN_INCLUDE_DIRS})
  add_service_files(
    FILES
    ApplyWrenchCog.srv
+   GetLinkStateNed.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -74,6 +75,7 @@ generate_messages(
   DEPENDENCIES
   std_msgs  
   geometry_msgs
+  gazebo_msgs
 )
 
 ################################################
