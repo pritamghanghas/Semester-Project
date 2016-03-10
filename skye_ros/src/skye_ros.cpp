@@ -16,7 +16,7 @@ SkyeRos::SkyeRos()
   /* Services. */
   client_gz_apply_body_wrench_ = nh_.serviceClient<gazebo_msgs::ApplyBodyWrench>("gazebo/apply_body_wrench");
   client_gz_get_link_state_ = nh_.serviceClient<gazebo_msgs::GetLinkState>("gazebo/get_link_state");
-  server_apply_wrench_cog_ = nh_.advertiseService("skye_ros/apply_wrench_cog",
+  server_apply_wrench_cog_ = nh_.advertiseService("skye_ros/apply_wrench_cog_ned",
                                                   &SkyeRos::applyWrenchCog,
                                                   this);
   server_get_link_state_ned_ = nh_.advertiseService("skye_ros/get_link_state_ned",
@@ -126,20 +126,20 @@ bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCog::Request   &req,
   /* Convert the requested wrench from Skye'NED frame to Gazebo world frame. */
   Eigen::Matrix<double,6,1>   wrench_cog_skye_ned;
   Eigen::Matrix<double,6,1>   wrench_cog_wolrd;
-  tf::wrenchMsgToEigen(       req.wrench, wrench_cog_skye_ned);
-  wrench_cog_wolrd        =   rotation_matrix_wrench * wrench_cog_skye_ned;
+  tf::wrenchMsgToEigen(req.wrench, wrench_cog_skye_ned);
+  wrench_cog_wolrd = rotation_matrix_wrench * wrench_cog_skye_ned;
 
   /* Send the converted wrench to Gazebo. */
   gazebo_msgs::ApplyBodyWrench  srv;
 
-  srv.request.body_name         = "skye::hull"; /** @todo parametrize body_name */
-  srv.request.reference_frame   = ""; /**< currently to leave "", otherwise get error. */
+  srv.request.body_name = "skye::hull"; /** @todo parametrize body_name */
+  srv.request.reference_frame = "";     /**< currently to leave "", otherwise get error. */
   srv.request.reference_point.x = 0.0;
   srv.request.reference_point.y = 0.0;
   srv.request.reference_point.z = 0.0;
   tf::wrenchEigenToMsg(wrench_cog_wolrd, srv.request.wrench);
-  srv.request.start_time        = req.start_time;
-  srv.request.duration          = req.duration;
+  srv.request.start_time = req.start_time;
+  srv.request.duration = req.duration;
 
   if (client_gz_apply_body_wrench_.call(srv))
   {
@@ -198,7 +198,6 @@ bool SkyeRos::getLinkStateNed(skye_ros::GetLinkStateNed::Request   &req,
   rep.success = success;
   rep.status_message = status_message;
 
-
   return true;
 }
 
@@ -209,10 +208,10 @@ bool SkyeRos::getLinkState(const std::string            &link_name,
                            std::string                  &status_message)
 {
   gazebo_msgs::GetLinkState   srv;
-  bool                        ret =   true;
+  bool                        ret = true;
 
-  srv.request.link_name         = link_name;
-  srv.request.reference_frame   = ""; /**< currently to leave "", otherwise get error. */
+  srv.request.link_name = link_name;
+  srv.request.reference_frame = ""; /**< currently to leave "", otherwise get error. */
 
   if (client_gz_get_link_state_.call(srv))
   {

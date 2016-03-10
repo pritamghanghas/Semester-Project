@@ -24,7 +24,7 @@
 #include <gazebo_msgs/LinkState.h>
 
 #include "skye_ros/ApplyWrenchCog.h"
- #include "skye_ros/GetLinkStateNed.h"
+#include "skye_ros/GetLinkStateNed.h"
 
 namespace skye_ros {
 
@@ -40,7 +40,7 @@ public:
      * @brief      Callback function when a new imu msg has been received from Gazebo.
      * 
      * Converts Imu data from local ENU frame, attached to the Imu box in Gazebo, to
-     * local NED frame and publish this new data. 
+     * a local NED frame and publish this new data. 
      * This NED frame has the same origin of the ENU frame.
      *
      * @param[in]  imu_enu  Imu data expressed in local ENU frame, IMU attached to Skye.
@@ -50,7 +50,7 @@ public:
     /**
      * @brief      Callback function when apply_wrench_cog service is called.
      * 
-     * Convert the requested wrench, expressed in Skue's NED local frame, to
+     * Converts the requested wrench, expressed in Skye's NED local frame, to
      * a wrench expressed in Gazebo's ENU world frame and apply it in Gazebo.
      *
      * @param[in]  req   Service request.
@@ -68,7 +68,6 @@ public:
      * @param      req   Service request.   
      * @param      req   Service response.
      *
-     * @return     { description_of_the_return_value }
      */
     bool getLinkStateNed(skye_ros::GetLinkStateNed::Request   &req,
                          skye_ros::GetLinkStateNed::Response  &rep);
@@ -92,7 +91,6 @@ private:
      * @param[out] success          return true if get info is successful
      * @param[out] status_message   comments if available
      *
-     * @return     true on success, false otherwise.
      */
     bool getLinkState(const std::string       &link_name,
                       gazebo_msgs::LinkState  &link_state,
