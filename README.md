@@ -16,11 +16,11 @@ Installation: first, make sure your Debian package index is up-to-date.
 ```bash
 sudo apt-get update
 ```
-Install the default Desktop-Full Install version of ROS Indigo. This version provides you ROS, rqt, rviz, robot-generic libraries, 2D/3D simulators, navigation and 2D/3D perception.
+Install the Desktop Install version, which provides you: ROS, rqt, rviz, and robot-generic libraries
 ```bash
-sudo apt-get install ros-indigo-desktop-full
+sudo apt-get install ros-indigo-desktop
 ```
- Initialize ROS.
+Initialize ROS.
  ```bash
 sudo rosdep init
 rosdep update
@@ -30,10 +30,50 @@ It's convenient if the ROS environment variables are automatically added to your
 echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
-Rosinstall is a frequently used command-line tool in ROS that is distributed separately. It enables you to easily download many source trees for ROS packages with one command.
+rosinstall is a frequently used command-line tool in ROS that is distributed separately. It enables you to easily download many source trees for ROS packages with one command.
  ```bash
 sudo apt-get install python-rosinstall
 ```
+## Install Gazebo6
+Since some of the required plugins are not available in Gazebo2 (the offiacial supported version of Gazebo in ROS Indigo) it is necessary to manually install Gazebo6 and its integration with ROS. To do so first install 
+ ```bash
+sudo apt-get install ros-indigo-gazebo6-ros-pkgs
+```
+And now install all the other required ROS-Gazebo packages:
+ ```bash
+sudo apt-get install ros-indigo-gazebo6-msgs
+sudo apt-get install ros-indigo-gazebo6-plugins
+```
+
+## Test Gazebo-ROS Integration
+Make sure the stand-alone Gazebo works by running in terminal:
+ ```bash
+gazebo
+```
+You should see the GUI open with an empty world. Also, test adding a model by clicking on the "Insert" tab on the left and selecting a model to add (then clicking on the simulation to select where to place the model). Now you can close Gazebo and you can kill all of its processes by
+ ```bash
+killall -9 gazebo & killall -9 gzserver & killall -9 gzclient
+```
+Finally we can test Gazebo with ROS Integration.
+ ```bash
+roscore &
+rosrun gazebo_ros gazebo
+```
+The Gazebo GUI should appear with nothing inside the viewing window. To verify that the proper ROS connections are setup, view the available ROS topics by typing in a new terminal the command
+ ```bash
+rostopic list
+```
+You should see within the lists topics such as:
+ ```bash
+/gazebo/link_states
+/gazebo/model_states
+/gazebo/parameter_descriptions
+/gazebo/parameter_updates
+/gazebo/set_link_state
+/gazebo/set_model_state
+```
+Now you can close Gazebo.
+
 ## Create A Catkin Workspace And Compile Source Code
 Create a catkin workspace in your home folder where you are going to install every package needed to simulate Skye.
  ```bash
