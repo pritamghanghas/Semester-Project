@@ -121,6 +121,7 @@ To launch a first simlation of Skye in an empty world in Gazebo type
 ```bash
 roslaunch skye_ros inflate_skye.launch
 ```
+The launch file 'inflate_skye.launch' does several things for you: it starts roscore, launches Gazebo with an instance of Skye and starts the node interface called 'skye_ros_node'.
 
 ## Skye-ROS Interface 
 The package "skye_ros" provides an easy interface to interact with a simulation of Skye in Gazebo.
@@ -129,7 +130,7 @@ The package "skye_ros" provides an easy interface to interact with a simulation 
   * /skye_ros/sensor_msgs/imu_ned IMU data expressed in a local NED frame attached to the IMU box.
  
 ### Advertised Services
-  * /skye_ros/apply_wrench_cog_ned service to apply a wrench (i.e. a force and a torque) in the center of gravity (CoG) of  Skye. Wrench expressed in a NED frame attached to the CoG of Skye
+  * /skye_ros/apply_wrench_cog_ned service to apply a wrench (i.e. a force and a torque) in the center of gravity (CoG) of  Skye. Wrench expressed in a NED frame attached to the CoG of Skye.
   * /skye_ros/get_link_state_ned service to get a link state (position, orientation, linear and angular velocity). This state is expressed in a world fixed NED frame.
 
 
