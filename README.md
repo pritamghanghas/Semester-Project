@@ -1,4 +1,4 @@
-# Simulation Framework For Skye Based On Gazebo And ROS
+# Simulation Framework For Skye
 This repository contains everything you need to simulate the airship Skye in [Gazebo](http://gazebosim.org/) and interact with it by using the Robotic Operating System [ROS](http://www.ros.org/).
 
 ## ROS Installation
@@ -115,3 +115,22 @@ The Imu plugin from "hector_gazebo" package is located, by default, in '~/catkin
 echo "export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/catkin_ws/devel/lib/" >> ~/.bashrc
 source ~/.bashrc
 ```
+
+## Launch A Simulation With Empty World
+To launch a first simlation of Skye in an empty world in Gazebo type
+```bash
+roslaunch skye_ros inflate_skye.launch
+```
+
+## Skye-ROS Interface 
+The package "skye_ros" provides an easy interface to interact with a simulation of Skye in Gazebo.
+
+### Advertised Topics
+  * /skye_ros/sensor_msgs/imu_ned IMU data expressed in a local NED frame attached to the IMU box.
+ 
+### Advertised Services
+  * /skye_ros/apply_wrench_cog_ned service to apply a wrench (i.e. a force and a torque) in the center of gravity (CoG) of  Skye. Wrench expressed in a NED frame attached to the CoG of Skye
+  * /skye_ros/get_link_state_ned service to get a link state (position, orientation, linear and angular velocity). This state is expressed in a world fixed NED frame.
+
+
+
