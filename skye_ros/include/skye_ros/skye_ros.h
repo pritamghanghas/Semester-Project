@@ -5,7 +5,9 @@
 #ifndef SKYE_ROS_H
 #define SKYE_ROS_H
 
+
 #include <ros/ros.h>
+
 
 #include <vector>
 #include <Eigen/Geometry>
@@ -13,10 +15,8 @@
 #include <eigen_conversions/eigen_msg.h>
 #include <tf_conversions/tf_eigen.h>
 #include <cstring>
-//#include <string.h>
-//#include <tf_conversions/transform_datatypes.h>
 
-//#include <std_msgs/Float64.h>
+
 #include <sensor_msgs/Imu.h>
 #include <geometry_msgs/Quaternion.h>
 #include <gazebo_msgs/ApplyBodyWrench.h>
@@ -26,7 +26,6 @@
 #include "skye_ros/ApplyWrenchCog.h"
 
 namespace skye_ros {
-
 
 class SkyeRos
 {
