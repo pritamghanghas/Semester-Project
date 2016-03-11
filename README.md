@@ -1,5 +1,5 @@
 # Simulation Framework For Skye
-This repository contains everything you need to simulate the airship Skye in [Gazebo](http://gazebosim.org/) and interact with it by using the Robotic Operating System [ROS](http://www.ros.org/).
+This repository contains everything you need to simulate the airship Skye in [Gazebo](http://gazebosim.org/) and interact with it by using the Robotic Operating System [ROS](http://www.ros.org/). The reccomanded OS is Ubuntu 14.04.
 
 ## ROS Installation
 These steps are taken from the main instllation page of ROS. 
@@ -34,19 +34,23 @@ rosinstall is a frequently used command-line tool in ROS that is distributed sep
  ```bash
 sudo apt-get install python-rosinstall
 ```
-## Install Gazebo6
-Since some of the required plugins are not available in Gazebo2 (the offiacial supported version of Gazebo in ROS Indigo) it is necessary to manually install Gazebo6 and its integration with ROS. To do so first install 
+## Gazebo6 Installation
+Since some of the required plugins are not available in Gazebo2 (the offiacial supported version of Gazebo in ROS Indigo) it is necessary to manually install Gazebo6 and its integration with ROS. To do so setup your computer to accept software from packages.osrfoundation.org.
  ```bash
-sudo apt-get install ros-indigo-gazebo6-ros-pkgs
+sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
 ```
-And now install all the other required ROS-Gazebo packages:
+Setup keys
  ```bash
-sudo apt-get install ros-indigo-gazebo6-msgs
-sudo apt-get install ros-indigo-gazebo6-plugins
+wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
+```
+Install Gazebo with ROS integration.
+ ```bash
+sudo apt-get update
+sudo apt-get install ros-indigo-gazebo6-ros-pkgs
 ```
 
 ## Test Gazebo-ROS Integration
-Make sure the stand-alone Gazebo works by running in terminal:
+Make sure the stand-alone Gazebo works by running in terminal (this command may need a couple of minutes the first time your run it):
  ```bash
 gazebo
 ```
@@ -72,7 +76,10 @@ You should see within the lists topics such as:
 /gazebo/set_link_state
 /gazebo/set_model_state
 ```
-Now you can close Gazebo.
+Now you can close Gazebo. To Make sure every processes started from the previous command has been close you can run
+ ```bash
+killall -9 gazebo & killall -9 gzserver & killall -9 gzclient
+```
 
 ## Create A Catkin Workspace And Compile Source Code
 Create a catkin workspace in your home folder where you are going to install every package needed to simulate Skye.
@@ -107,7 +114,7 @@ source <install_path>/share/gazebo/setup.sh
 ```
 where '<install_path>' is the path where Gazebo has been insalled in your computer. For example the previous command should look like similar to
 ```bash
-source /usr/share/share/gazebo/setup.sh
+source /usr/share/gazebo/setup.sh
 ```
 Now you can modify the path where Gazebo searchs for the plugin shared libraries at runtime.
 The Imu plugin from "hector_gazebo" package is located, by default, in '~/catkin_ws/devel/lib/'.
