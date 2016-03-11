@@ -11,7 +11,7 @@ SkyeRos::SkyeRos()
                                                         1,
                                                         boost::bind(&SkyeRos::imuEnuCallback, this, _1));
   /* Advertise topics. */
-  imu_ned_publisher_  = nh_.advertise<sensor_msgs::Imu>("sensor_msgs/imu_ned", 10);
+  imu_ned_publisher_  = nh_.advertise<sensor_msgs::Imu>("skye_ros/sensor_msgs/imu_ned", 10);
 
   /* Services. */
   client_gz_apply_body_wrench_ = nh_.serviceClient<gazebo_msgs::ApplyBodyWrench>("gazebo/apply_body_wrench");
