@@ -1,5 +1,5 @@
 # Simulation Framework For Skye
-This repository contains everything you need to simulate the airship Skye in [Gazebo](http://gazebosim.org/) and interact with it by using the Robotic Operating System [ROS](http://www.ros.org/). The reccomanded OS is Ubuntu 14.04.
+This repository contains everything you need to simulate the airship Skye in [Gazebo](http://gazebosim.org/) and interact with it by using the Robotic Operating System [ROS](http://www.ros.org/). The recommended OS is Ubuntu 14.04.
 
 ## ROS Installation
 These steps are taken from the main instllation page of ROS. 
@@ -92,11 +92,17 @@ Clone the "skye_gazebo_simulation" repo in the src folder:
 cd ~/catkin_ws/src
 git clone https://github.com/skye-git/skye_gazebo_simulation -b indigo-devel
 ```
-Clone the "hector_gazebo" repo which containes usefull plugin for our simulation in Gazebo (make sure you are still in the 'catkin_ws/src' folder).
+Compile it.
+```bash
+cd ~/catkin_ws
+catkin_make
+```
+Clone the "hector_gazebo" repo which containes usefull plugin for our simulation in Gazebo.
  ```bash
+cd ~/catkin_ws/src
 git clone https://github.com/skye-git/hector_gazebo -b indigo-devel
 ```
-Compile the packages you have just cloned.
+Compile it.
 ```bash
 cd ~/catkin_ws
 catkin_make
@@ -112,7 +118,7 @@ To include the needed plugins in Gazebo6 you first must source the Gazebo setup.
 ```bash
 source <install_path>/share/gazebo/setup.sh
 ```
-where '<install_path>' is the path where Gazebo has been insalled in your computer. For example the previous command should look like similar to
+where *\<install_path\>* is the path where Gazebo has been insalled in your computer. For example the previous command should look like similar to
 ```bash
 source /usr/share/gazebo/setup.sh
 ```
