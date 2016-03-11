@@ -100,8 +100,8 @@ void SkyeRos::imuEnuCallback(const sensor_msgs::ImuConstPtr &imu_enu_p)
   imu_ned_publisher_.publish(imu_ned);  
 }
 
-bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCog::Request   &req,
-                             skye_ros::ApplyWrenchCog::Response  &rep)
+bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCogNed::Request   &req,
+                             skye_ros::ApplyWrenchCogNed::Response  &rep)
 {
   /* Get skye::hull true orientation in Gazebo world frame and use it
    * to rotate the received wrench from skye's NED frame to Gazebo

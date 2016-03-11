@@ -59,7 +59,7 @@ include_directories(${EIGEN_INCLUDE_DIRS})
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
-   ApplyWrenchCog.srv
+   ApplyWrenchCogNed.srv
    GetLinkStateNed.srv
 )
 

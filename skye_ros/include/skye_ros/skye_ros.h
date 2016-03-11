@@ -23,7 +23,7 @@
 #include <gazebo_msgs/GetLinkState.h>
 #include <gazebo_msgs/LinkState.h>
 
-#include "skye_ros/ApplyWrenchCog.h"
+#include "skye_ros/ApplyWrenchCogNed.h"
 #include "skye_ros/GetLinkStateNed.h"
 
 namespace skye_ros {
@@ -57,8 +57,8 @@ public:
      * @param[out] rep   Service response.
      *
      */
-    bool applyWrenchCog(skye_ros::ApplyWrenchCog::Request   &req,
-                        skye_ros::ApplyWrenchCog::Response  &rep);
+    bool applyWrenchCog(skye_ros::ApplyWrenchCogNed::Request   &req,
+                        skye_ros::ApplyWrenchCogNed::Response  &rep);
 
     /**
      * @brief      Callback function when get_link_state_ned service is called.
