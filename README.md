@@ -2,7 +2,7 @@
 This repository contains everything you need to simulate the airship Skye in [Gazebo](http://gazebosim.org/) and interact with it by using the Robotic Operating System [ROS](http://www.ros.org/). The recommended OS is Ubuntu 14.04.
 
 ## ROS Installation
-These steps are taken from the main instllation page of ROS. 
+These steps are taken from the main installation page of ROS. 
 Configure your Ubuntu repositories to allow "restricted," "universe," and "multiverse." You can [follow the Ubuntu guide](https://help.ubuntu.com/community/Repositories/Ubuntu) for instructions on doing this.
 Setup your computer to accept software from packages.ros.org. ROS Indigo ONLY supports Saucy (13.10) and Trusty (14.04) for debian packages.
 ```bash
@@ -35,7 +35,7 @@ rosinstall is a frequently used command-line tool in ROS that is distributed sep
 sudo apt-get install python-rosinstall
 ```
 ## Gazebo6 Installation
-Since some of the required plugins are not available in Gazebo2 (the offiacial supported version of Gazebo in ROS Indigo) it is necessary to manually install Gazebo6 and its integration with ROS. To do so setup your computer to accept software from packages.osrfoundation.org.
+Since some of the required plugins are not available in Gazebo2 (the official supported version of Gazebo in ROS Indigo) it is necessary to manually install Gazebo6 and its integration with ROS. To do so setup your computer to accept software from packages.osrfoundation.org.
  ```bash
 sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
 ```
@@ -76,7 +76,7 @@ You should see within the lists topics such as:
 /gazebo/set_link_state
 /gazebo/set_model_state
 ```
-Now you can close Gazebo. To Make sure every processes started from the previous command has been close you can run
+Now you can close Gazebo. To Make sure every processes started from the previous command has been closed you can run
  ```bash
 killall -9 gazebo & killall -9 gzserver & killall -9 gzclient
 ```
@@ -97,7 +97,7 @@ Compile it.
 cd ~/catkin_ws
 catkin_make
 ```
-Clone the "hector_gazebo" repo which containes usefull plugin for our simulation in Gazebo.
+Clone the "hector_gazebo" repo which containes useful plugin for our simulation in Gazebo.
  ```bash
 cd ~/catkin_ws/src
 git clone https://github.com/skye-git/hector_gazebo -b indigo-devel
@@ -118,7 +118,7 @@ To include the needed plugins in Gazebo6 you first must locate the Gazebo setup.
 ```bash
 <install_path>/share/gazebo/setup.sh
 ```
-where *\<install_path\>* is the path where Gazebo has been insalled in your computer. For example the previous command should look like similar to
+where *\<install_path\>* is the path where Gazebo has been installed in your computer. For example the previous command should look similar to
 ```bash
 /usr/share/gazebo/setup.sh
 ```
@@ -131,7 +131,7 @@ source ~/.bashrc
 ```
 
 ## Launch A Simulation With Empty World
-To launch a first simlation of Skye in an empty world in Gazebo type
+To launch a first simulation of Skye in an empty world in Gazebo type
 ```bash
 roslaunch skye_ros inflate_skye.launch
 ```
