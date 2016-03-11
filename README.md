@@ -141,11 +141,24 @@ The launch file 'inflate_skye.launch' does several things for you: it starts ros
 The package "skye_ros" provides an easy interface to interact with a simulation of Skye in Gazebo.
 
 ### Advertised Topics
-  * /skye_ros/sensor_msgs/imu_ned IMU data expressed in a local NED frame attached to the IMU box.
- 
+  * /skye_ros/sensor_msgs/imu_ned IMU data expressed in a local NED frame attached to the IMU box. 
+
+Example: echo imu_ned message. 
+```bash
+rostopic echo /skye_ros/sensor_msgs/imu_ned
+```
+
 ### Advertised Services
   * /skye_ros/apply_wrench_cog_ned service to apply a wrench (i.e. a force and a torque) in the center of gravity (CoG) of  Skye. Wrench expressed in a NED frame attached to the CoG of Skye.
   * /skye_ros/get_link_state_ned service to get a link state (position, orientation, linear and angular velocity). This state is expressed in a world fixed NED frame.
 
 
 
+Example: apply a torque of 3 Nm around Skye's X axes (in local NED frame).
+```bash
+rosservice call /skye_ros/apply_wrench_cog_ned '{wrench: { force: { x: 0, y: 0, z: 0 }, torque: {x: 3, y: 0, z: 0} }, start_time: 0, duration: -1 }'
+```
+Example: get Skye's hull pose (orientation and position) and twist (linear and angular velocity) in local world fixed NED frame.
+```bash
+rosservice call /skye_ros/get_link_state_ned '{link_name: "hull"}'
+```
