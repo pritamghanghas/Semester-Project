@@ -114,9 +114,9 @@ source ~/.bashrc
 ```
 
 ## Include Needed Plugins
-To include the needed plugins in Gazebo6 you first must source the Gazebo setup.sh file:
+To include the needed plugins in Gazebo6 you first must locate the Gazebo setup.sh file:
 ```bash
-source <install_path>/share/gazebo/setup.sh
+<install_path>/share/gazebo/setup.sh
 ```
 where *\<install_path\>* is the path where Gazebo has been insalled in your computer. For example the previous command should look like similar to
 ```bash
@@ -125,6 +125,7 @@ source /usr/share/gazebo/setup.sh
 Now you can modify the path where Gazebo searchs for the plugin shared libraries at runtime.
 The Imu plugin from "hector_gazebo" package is located, by default, in '~/catkin_ws/devel/lib/'.
 ```bash
+echo "source <install_path>/share/gazebo/setup.sh" >> ~/.bashrc
 echo "export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/catkin_ws/devel/lib/" >> ~/.bashrc
 source ~/.bashrc
 ```
