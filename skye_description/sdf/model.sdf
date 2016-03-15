@@ -4,8 +4,7 @@
 
         <!-- We want Skye to be movable, set static element to false -->
         <static>false</static>
-
-
+        <pose>0 0 0 0 0 0</pose>
         <!-- WARNING: to have weight force == buoyancy force, the mass
                of each element must be calculated as:
                mass = fluid_density * volume_collision_element

@@ -48,8 +48,9 @@ void SkyeRos::imuEnuCallback(const sensor_msgs::ImuConstPtr &imu_enu_p)
   Eigen::Matrix<double,3,3>                 eig_matrix3;
 
   /* orientation: msg_sensor/imu to tf::quaternion to eigen::quaternion. */
-  tf::quaternionMsgToTF(imu_enu_p->orientation, tf_quat);
-  tf::quaternionTFToEigen(tf_quat, eig_quat);
+  quaternionMsgToEigen(imu_enu_p->orientation, eig_quat);
+  /*tf::quaternionMsgToTF(imu_enu_p->orientation, tf_quat);
+  tf::quaternionTFToEigen(tf_quat, eig_quat);*/
   q_orientation_ned = q_ned_enu_ * eig_quat;
 
   /* orientation_covariance: msg_sensor/imu to eigen::matrix. */
@@ -108,8 +109,8 @@ bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCogNed::Request   &req,
    * world frame.
   */
   gazebo_msgs::LinkState      hull_state;
-  Eigen::Quaterniond          q_world_skye_enu;   /* Orientation of Skye's ENU frame in Gazebo wolrd frame. */    
-  Eigen::Matrix<double,3,3>   r_world_skye_ned;   /* Rotation matrix from Skye NED to Gazebo wolrd frame. */
+  Eigen::Quaterniond          q_world_skye_enu;   /* Orientation of Skye's ENU frame in Gazebo ENU wolrd frame. */    
+  Eigen::Matrix<double,3,3>   r_world_skye_ned;   /* Rotation matrix from Skye NED to Gazebo ENU wolrd frame. */
   Eigen::Matrix<double,6,6>   rotation_matrix_wrench; 
   bool                        success;
   std::string                 status_message;
@@ -123,7 +124,7 @@ bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCogNed::Request   &req,
   rotation_matrix_wrench.topLeftCorner(r_world_skye_ned.rows(), r_world_skye_ned.cols()) = r_world_skye_ned;
   rotation_matrix_wrench.bottomRightCorner(r_world_skye_ned.rows(), r_world_skye_ned.cols()) = r_world_skye_ned;
 
-  /* Convert the requested wrench from Skye'NED frame to Gazebo world frame. */
+  /* Convert the requested wrench from Skye's NED frame to Gazebo world frame. */
   Eigen::Matrix<double,6,1>   wrench_cog_skye_ned;
   Eigen::Matrix<double,6,1>   wrench_cog_wolrd;
   tf::wrenchMsgToEigen(req.wrench, wrench_cog_skye_ned);
@@ -161,39 +162,42 @@ bool SkyeRos::getLinkStateNed(skye_ros::GetLinkStateNed::Request   &req,
                               skye_ros::GetLinkStateNed::Response  &rep)
 {
   gazebo_msgs::LinkState      link_state;
-  Eigen::Matrix<double,3,1>   p_skye_enu;         /* Position of link's ENU frame in Gazebo wolrd frame. */
-  Eigen::Quaterniond          q_world_skye_enu;   /* Orientation of link's ENU frame in Gazebo wolrd frame. */
-  Eigen::Matrix<double,3,1>   v_skye_enu;         /* Linear velocity of link's ENU frame in Gazebo wolrd frame. */
-  Eigen::Matrix<double,3,1>   w_skye_enu;         /* Angular velocity of link's ENU frame in Gazebo wolrd frame. */
+  Eigen::Matrix<double,3,1>   p_link_enu;         /* Position of link's ENU frame in Gazebo ENU wolrd frame. */
+  Eigen::Quaterniond          q_world_link_enu;   /* Orientation of link's ENU frame in Gazebo ENU wolrd frame. */
+  Eigen::Matrix<double,3,1>   v_link_enu;         /* Linear velocity of link's ENU frame in Gazebo ENU wolrd frame. */
+  Eigen::Matrix<double,3,1>   w_link_enu;         /* Angular velocity of link's ENU frame in Gazebo ENU wolrd frame. */
   bool                        success;
   std::string                 status_message;
 
-  Eigen::Matrix<double,3,1>   p_skye_ned;         /* Position of the link in NED wolrd frame. */
-  Eigen::Quaterniond          q_world_skye_ned;   /* Orientation of the link in NED wolrd frame. */
-  Eigen::Matrix<double,3,1>   v_skye_ned;         /* Linear velocity of the link in NED wolrd frame. */
-  Eigen::Matrix<double,3,1>   w_skye_ned;         /* Angular velocity of the link in NED wolrd frame. */
+  Eigen::Matrix<double,3,1>   p_link_ned;         /* Position of the link in Gazebo NED wolrd frame. */
+  Eigen::Quaterniond          q_world_link_ned;   /* Orientation of the link in Gazebo NED wolrd frame. */
+  Eigen::Matrix<double,3,1>   v_link_ned;         /* Linear velocity of the link in Gazebo NED wolrd frame. */
+  Eigen::Matrix<double,3,1>   w_link_ned;         /* Angular velocity of the link in Gazebo NED wolrd frame. */
 
   /* Get link state, from Gazebo, expressed in Gazebo's ENU fixed world frame.
-   * Convert in in a NED fixed frame with same origin than Gazebo's wolrd frame.
+   * Convert in in a NED fixed frame with same origin than Gazebo's wolrd frame. This is
+   * the Gazebo NED fixed frame.
    */
   getLinkState(req.link_name, link_state, success, status_message);
 
-  tf::pointMsgToEigen(link_state.pose.position, p_skye_enu);
-  quaternionMsgToEigen(link_state.pose.orientation, q_world_skye_enu);
-  tf::vectorMsgToEigen(link_state.twist.linear, v_skye_enu);
-  tf::vectorMsgToEigen(link_state.twist.angular, w_skye_enu);
+  tf::pointMsgToEigen(link_state.pose.position, p_link_enu);
+  quaternionMsgToEigen(link_state.pose.orientation, q_world_link_enu);
+  tf::vectorMsgToEigen(link_state.twist.linear, v_link_enu);
+  tf::vectorMsgToEigen(link_state.twist.angular, w_link_enu);
 
-  p_skye_ned = q_ned_enu_.matrix() * p_skye_enu;
-  q_world_skye_ned = q_ned_enu_ * q_world_skye_enu;
-  v_skye_ned = q_ned_enu_.matrix() * v_skye_enu;
-  w_skye_ned = q_ned_enu_.matrix() * w_skye_enu;
+
+  p_link_ned = q_ned_enu_.matrix() * p_link_enu;
+  q_world_link_ned = q_ned_enu_ * q_world_link_enu * q_enu_ned_; //orientation of link's NED frame in Gazebo's NED f.
+  v_link_ned = q_ned_enu_.matrix() * v_link_enu;
+  //w_link_ned = q_ned_enu_.matrix() * w_link_enu;//wrong transformation /**@todo fix this */
+  w_link_ned = Eigen::Matrix<double,3,1>::Zero(); /**@todo write the right transformation. */
 
   /* Fill the service response. */
   rep.link_state.link_name = link_state.link_name;
-  tf::pointEigenToMsg(p_skye_ned, rep.link_state.pose.position);
-  tf::quaternionEigenToMsg(q_world_skye_ned, rep.link_state.pose.orientation);
-  tf::vectorEigenToMsg(v_skye_ned, rep.link_state.twist.linear);
-  tf::vectorEigenToMsg(w_skye_ned, rep.link_state.twist.angular);
+  tf::pointEigenToMsg(p_link_ned, rep.link_state.pose.position);
+  tf::quaternionEigenToMsg(q_world_link_ned, rep.link_state.pose.orientation);
+  tf::vectorEigenToMsg(v_link_ned, rep.link_state.twist.linear);
+  tf::vectorEigenToMsg(w_link_ned, rep.link_state.twist.angular);
 
   rep.success = success;
   rep.status_message = status_message;
