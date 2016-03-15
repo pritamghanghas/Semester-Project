@@ -86,6 +86,8 @@ Create a catkin workspace in your home folder where you are going to install eve
  ```bash
 cd ~
 mkdir -p catkin_ws/src
+cd ~/catkin_ws/src
+catkin_init_workspace
 ```
 Clone the "skye_gazebo_simulation" repo in the src folder:
  ```bash
