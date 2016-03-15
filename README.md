@@ -162,3 +162,11 @@ Example: get Skye's hull pose (orientation and position) and twist (linear and a
 ```bash
 rosservice call /skye_ros/get_link_state_ned '{link_name: "hull"}'
 ```
+## Repository Layout
+The following describes the directory structure and important files in the skye_gazebo_simulation repository
+
+Folders:
+
+  * skye_description   - Skye's Gazebo model descritpion in SDF.
+  * skye_gazebo        - Contains launch files to run Gazebo and spawn Skye.
+  * skye_ros           - Containes a simple interface which converts data from Gazebo ENU frame to Skye's NED frame.
