@@ -25,6 +25,7 @@
 
 #include "skye_ros/ApplyWrenchCogNed.h"
 #include "skye_ros/GetLinkStateNed.h"
+#include "skye_ros/ImuAttitudeNed.h"
 
 namespace skye_ros {
 
@@ -81,7 +82,13 @@ private:
     ros::ServiceClient  client_gz_apply_body_wrench_; /**< Client to apply a body wrench in Gazebo. */
     ros::ServiceClient  client_gz_get_link_state_;    /**< Client to get link state in Gazebo. */
     ros::ServiceServer  server_apply_wrench_cog_;     /**< Server to apply wrench in cog of Skye. */
-    ros::ServiceServer  server_get_link_state_ned_;   /**< Server to get link state in world NED frame. */
+
+    /* Removed server_get_link_state_ned_; gazebo provides wrong twist.angular data! 
+     * Do not allow an external user to use this service.
+     * The function getLinkStateNed can be still used internally to retrieve 
+     * information about the pose of one link.
+    */
+    //ros::ServiceServer  server_get_link_state_ned_;   /**< Server to get link state in world NED frame. */
 
     /**
      * @brief      Get link state from Gazebo.
@@ -105,6 +112,15 @@ private:
      */
     void quaternionMsgToEigen(const geometry_msgs::Quaternion   &quat_in,
                               Eigen::Quaterniond                &quat_out);
+
+    /**
+     * @brief      Convert IMU data from a local ENU frame attached to the IMU to local NED frame.
+     *
+     * @param[in]  imu_enu_p  imu data in local ENU frame attached to the IMU
+     * @param[out] imu_ned    imu data in local NED frame attached to the IMU
+     */
+    void imuEnuToNed(const sensor_msgs::ImuConstPtr     &imu_enu_p,
+                     sensor_msgs::Imu                   &imu_ned);
 };
 
 } // namespace skye_ros

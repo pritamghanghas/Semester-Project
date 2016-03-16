@@ -60,7 +60,7 @@ include_directories(${EIGEN_INCLUDE_DIRS})
  add_service_files(
    FILES
    ApplyWrenchCogNed.srv
-   GetLinkStateNed.srv
+   GetLinkStateNed.srv 
 )
 
 ## Generate actions in the 'action' folder
