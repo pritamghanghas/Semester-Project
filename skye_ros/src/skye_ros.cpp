@@ -47,11 +47,37 @@ void SkyeRos::imuEnuCallback(const sensor_msgs::ImuConstPtr &imu_enu_p)
   Eigen::Matrix<double,3,1>                 eig_vec3;
   Eigen::Matrix<double,3,3>                 eig_matrix3;
 
-  /* orientation: msg_sensor/imu to tf::quaternion to eigen::quaternion. */
+  /* Orientation: msg_sensor/imu to tf::quaternion to eigen::quaternion. */
   quaternionMsgToEigen(imu_enu_p->orientation, eig_quat);
-  /*tf::quaternionMsgToTF(imu_enu_p->orientation, tf_quat);
-  tf::quaternionTFToEigen(tf_quat, eig_quat);*/
-  q_orientation_ned = q_ned_enu_ * eig_quat;
+  /* Rotation from local NED frame to local ENU. Then rotation from local ENU
+   * to to world ENU. Finally rotation from world ENU to world NED frame.
+   */
+  q_orientation_ned = q_ned_enu_ * eig_quat * q_enu_ned_;
+
+  //---------------- debug ------------------
+  /*Eigen::Vector3d ea = q_orientation_ned.matrix().eulerAngles(2, 1, 0);
+  ROS_INFO("q.w: %f\tq.x: %f\tq.y: %f\tq.z: %f\nyaw: %f\tpitch: %f\t roll: %f\n", 
+            q_orientation_ned.w(), q_orientation_ned.x(), q_orientation_ned.y(), q_orientation_ned.z(),
+            ea[0] * 180 / M_PI, ea[1] * 180 / M_PI, ea[2] * 180 / M_PI);*/
+  /*skye_ros::GetLinkStateNed::Request   req;
+  skye_ros::GetLinkStateNed::Response  rep;
+
+  req.link_name = "hull";
+  getLinkStateNed(req, rep);
+
+  quaternionMsgToEigen(rep.link_state.pose.orientation, eig_quat);*/
+  
+  /*Eigen::Vector3d ea = eig_quat.matrix().eulerAngles(2, 1, 0);
+  ROS_INFO("q.w: %f\tq.x: %f\tq.y: %f\tq.z: %f\nyaw: %f\tpitch: %f\t roll: %f\n", 
+            eig_quat.w(), eig_quat.x(), eig_quat.y(), eig_quat.z(),
+            ea[0] * 180 / M_PI, ea[1] * 180 / M_PI, ea[2] * 180 / M_PI);*/
+  /*ROS_INFO("ref_frame: %s\tw[0]: %f\tw[1]: %f\t w[2]: %f\n", 
+            rep.link_state.reference_frame.c_str(),
+            rep.link_state.twist.angular.x,
+            rep.link_state.twist.angular.y,
+            rep.link_state.twist.angular.z);*/
+
+  //---------------- end debug ------------------
 
   /* orientation_covariance: msg_sensor/imu to eigen::matrix. */
   /** @todo find a better solution to this workaround: &(array[0]). */
@@ -189,8 +215,8 @@ bool SkyeRos::getLinkStateNed(skye_ros::GetLinkStateNed::Request   &req,
   p_link_ned = q_ned_enu_.matrix() * p_link_enu;
   q_world_link_ned = q_ned_enu_ * q_world_link_enu * q_enu_ned_; //orientation of link's NED frame in Gazebo's NED f.
   v_link_ned = q_ned_enu_.matrix() * v_link_enu;
-  //w_link_ned = q_ned_enu_.matrix() * w_link_enu;//wrong transformation /**@todo fix this */
-  w_link_ned = Eigen::Matrix<double,3,1>::Zero(); /**@todo write the right transformation. */
+  w_link_ned = q_ned_enu_.matrix() * w_link_enu;//wrong transformation /**@todo fix this */
+  //w_link_ned = Eigen::Matrix<double,3,1>::Zero(); /**@todo write the right transformation. */
 
   /* Fill the service response. */
   rep.link_state.link_name = link_state.link_name;
