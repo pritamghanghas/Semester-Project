@@ -25,7 +25,6 @@
 
 #include "skye_ros/ApplyWrenchCogNed.h"
 #include "skye_ros/GetLinkStateNed.h"
-#include "skye_ros/ImuAttitudeNed.h"
 
 namespace skye_ros {
 
