@@ -167,3 +167,6 @@ Folders:
   * skye_description   - Skye's Gazebo model descritpion in SDF.
   * skye_gazebo        - Contains launch files to run Gazebo and spawn Skye.
   * skye_ros           - Containes a simple interface which converts data from Gazebo ENU frame to Skye's NED frame.
+
+## Frame Convention
+Gazebo and ROS use ENU frame convention, i.e. X axis points to East, Y axis to North and Z axis up. We refer (maybe with a little abused of notation) to a local NED frame as the frame attached to a link (for example the hull or the IMU) which has the X axis pointing geometrically forward W.R.T the link, the Y axis pointing geometrically right W.R.T the link and the Z axis pointing geometrically down W.R.T the link. Note that, according to the literature, a NED frame should be always alligned with North, East and Down directions.
