@@ -128,7 +128,7 @@ Now you can modify the path where Gazebo searchs for the plugin shared libraries
 The Imu plugin from "hector_gazebo" package is located, by default, in '~/catkin_ws/devel/lib/'.
 ```bash
 echo "source <install_path>/share/gazebo/setup.sh" >> ~/.bashrc
-echo "export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/catkin_ws/devel/lib/" >> ~/.bashrc
+echo "export GAZEBO_PLUGIN_PATH=~/catkin_ws/devel/lib:${GAZEBO_PLUGIN_PATH}" >> ~/.bashrc
 source ~/.bashrc
 ```
 
