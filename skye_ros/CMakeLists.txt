@@ -10,6 +10,8 @@ find_package(catkin REQUIRED COMPONENTS
   cmake_modules
   tf_conversions
   eigen_conversions
+  geometry_msgs
+  gazebo_msgs
   message_generation
 )
 
@@ -108,9 +110,9 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES skye_ros
-#  CATKIN_DEPENDS gazebo_ros roscpp
+  CATKIN_DEPENDS message_runtime std_msgs geometry_msgs gazebo_msgs
 #  DEPENDS system_lib
 )
 
@@ -141,6 +143,8 @@ add_executable(skye_ros_node src/skye_ros.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 #add_dependencies(skye_ros ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#CMakeList fixed according to http://answers.ros.org/question/188982/message-headers-wont-build-first/
+add_dependencies(skye_ros_node skye_ros_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(skye_ros_node ${catkin_LIBRARIES})
