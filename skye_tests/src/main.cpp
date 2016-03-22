@@ -1,8 +1,16 @@
+/*
+ * Author: Marco Zorzi
+ * Description: Main cpp file to start a ROS node that
+ * performs actions on the SKye Gazebo model.
+ *
+ * TODO: improve action input through a ROS topic
+ * so the test can be run more easily and repeatedly.
+ * */
+
 #include <stdlib.h>
 #include <vector>
 #include <stdio.h>
 #include <ros/ros.h>
-
 #include <skye_ros/ApplyWrenchCogNed.h>
 #include <skye_tests/action_skye.h>
 
@@ -18,7 +26,6 @@ int main (int argc, char** argv) {
 
 
     //Declare parameters to be imported
-
     std::string wrench_service_name;
     int sleeping_time, is_poke_requested,
         is_twist_requested, is_move_requested,
@@ -62,6 +69,7 @@ int main (int argc, char** argv) {
 
     //Wait until everything else is setup
     //TODO: Fix this with some better code.
+    //TODO: Talk to Marco T to better understand gazebo boot proc.
     std::cout << "going to sleep.." << std::endl;
     usleep(sleeping_time);
     std::cout << "Just woke up" << std::endl;
@@ -71,7 +79,6 @@ int main (int argc, char** argv) {
 
     //Create skye actions
     Actions_skye action(wrench_service);
-    //skye.init(wrench_service);
 
     if(is_poke_requested) {
         ROS_INFO("Poking");
