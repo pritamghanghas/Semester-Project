@@ -4,7 +4,7 @@ is_poke_requested: 0
 poke_duration_in_sec: 1
 is_twist_requested: 0
 twist_duration_in_sec: 1
-is_move_requested: 1
+is_move_requested: 0
 move_duration_in_sec: 1
 force_x: 1
 force_y: 1

@@ -31,7 +31,6 @@ include_directories(
 add_executable(skye_tests_node
                     src/main.cpp
                     src/action_skye.cpp
-                    src/poke_skye.cpp
                     src/skye.cpp)
 
 

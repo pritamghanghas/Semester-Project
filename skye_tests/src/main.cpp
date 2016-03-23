@@ -13,6 +13,7 @@
 #include <ros/ros.h>
 #include <skye_ros/ApplyWrenchCogNed.h>
 #include <skye_tests/action_skye.h>
+#include <geometry_msgs/Wrench.h>
 
 
 int main (int argc, char** argv) {
@@ -78,7 +79,7 @@ int main (int argc, char** argv) {
     ros::service::waitForService(wrench_service_name);
 
     //Create skye actions
-    Actions_skye action(wrench_service);
+    Actions_skye action(wrench_service, poke_duration_in_sec*1000000);
 
     if(is_poke_requested) {
         ROS_INFO("Poking");
@@ -93,6 +94,15 @@ int main (int argc, char** argv) {
         action.move(force, torque, move_duration_in_sec*1000000);
     }
 
+
+    ros::Publisher poke_pub = nh.advertise<geometry_msgs::Wrench>("/skye_tests/poke", 1, true);
+    ros::Publisher twist_pub = nh.advertise<geometry_msgs::Wrench>("/skye_tests/twist", 1, true);
+    ros::Publisher move_pub = nh.advertise<geometry_msgs::Wrench>("/skye_tests/move", 1, true);
+
+    // Create a ROS subscriber for the input point cloud
+    ros::Subscriber poke_sub = nh.subscribe ("/skye_tests/poke", 1, &Actions_skye::poke_callback, &action);
+    ros::Subscriber twist_sub = nh.subscribe ("/skye_tests/twist", 1, &Actions_skye::twist_callback, &action);
+    ros::Subscriber move_sub = nh.subscribe ("/skye_tests/move", 1, &Actions_skye::move_callback, &action);
 
     ros::spin();
 

@@ -1,8 +1,14 @@
+/*
+ * Author: Marco Zorzi
+ * Description: Skye interface to interact with gazebo
+ *
+ * TODO: add callbacks to get acceleration, position and velocity of Skye.
+ *
+ * */
+
 #include <skye_tests/skye.h>
 
-
 Skye::Skye() {
-    //
 }
 
 bool Skye::init(ros::ServiceClient a_wrench_service){
