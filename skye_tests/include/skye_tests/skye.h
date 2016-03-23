@@ -15,10 +15,10 @@ public:
     bool apply_wrench(Eigen::Vector3d force, Eigen::Vector3d torque);
 
 private:
-    Eigen::Vector3d position;
-    Eigen::Vector3d velocity;
-    Eigen::Vector3d attitude;
-    Eigen::Vector3d angular_velocity;
+    Eigen::Vector3d position_;
+    Eigen::Vector3d velocity_;
+    Eigen::Vector3d attitude_;
+    Eigen::Vector3d angular_velocity_;
 
     ros::ServiceClient wrench_service;
     skye_ros::ApplyWrenchCogNed srv;
