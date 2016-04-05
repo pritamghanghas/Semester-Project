@@ -5,9 +5,8 @@
 #ifndef SKYE_ROS_H
 #define SKYE_ROS_H
 
-
 #include <ros/ros.h>
-
+#include <ros/console.h>
 
 #include <vector>
 #include <Eigen/Geometry>
@@ -28,6 +27,8 @@
 
 namespace skye_ros {
 
+#define HULL_GROUND_TRUTH_HZ 100 //publishing frequency of ground truth inf of the hull
+
 class SkyeRos
 {
 public:
@@ -40,14 +41,13 @@ public:
      * @brief      Callback function when a new imu msg has been received from
      *             Gazebo.
      *
-     *             Converts Imu data from local Gazebo frame, attached to the
-     *             Imu box in Gazebo, to a local body frame and publish this new
-     *             data. This body frame has X poitning forward, Y poiting right
-     *             and Z poiting downwards.
+     *             Converts Imu data from local Gazebo IMU frame (X forward, Y left, Z up), 
+     *             attached to the Imu box in Gazebo, to Skye's IMU frame (X forward, Y right, Z down)
+     *             and publish this new data.
      *
-     * @param[in]  imu_gz_bf_p  imu data in Gazebo body frame.
+     * @param[in]  imu_gz_sk_p  imu data in Gazebo IMU frame.
      */
-    void imuCallback(const sensor_msgs::ImuConstPtr  &imu_gz_bf_p);
+    void imuCallback(const sensor_msgs::ImuConstPtr  &imu_gz_sk_p);
 
     /**
      * @brief      Callback function when apply_wrench_cog service is called.
@@ -64,34 +64,34 @@ public:
 
     /**
      * @brief      Callback function when get_link_state_ned service is called.
-     * 
-     * Return the link state expressed in a NED world fixed frame.
      *
-     * @param      req   Service request.   
+     *             Return the link state expressed in a NED world fixed frame.
+     *
+     * @param[in]  link_name  name of the link to get the state
      * @param      req   Service response.
      *
+     * @return     { description_of_the_return_value }
      */
-    bool getLinkStateNed(skye_ros::GetLinkStateNed::Request   &req,
+    bool getLinkStateNed(const std::string                    link_name,
                          skye_ros::GetLinkStateNed::Response  &rep);
+
+    /**
+     * @brief      Publish ground truth infomration of the Skye's hull.
+     */
+    void pubHullGroundTruth();
 
 private:
     ros::NodeHandle     nh_;                          /**< Main access point to communicate with ROS. */
-    ros::Subscriber     imu_gz_bf_subscriber_;        /**< Sub. to gazebo body frame Imu data. */
-    ros::Publisher      imu_bf_publisher_;            /**< Pub. of body frame Imu data. */
+    ros::Subscriber     imu_gz_sk_subscriber_;        /**< Sub. to gazebo IMU frame data. */
+    ros::Publisher      imu_sk_publisher_;            /**< Pub. of Skye Imu frame data. */
+    ros::Publisher      hull_ground_truth_publisher_; /**< Pub. of the true ground state of the hull. */
     ros::ServiceClient  client_gz_apply_body_wrench_; /**< Client to apply a body wrench in Gazebo. */
     ros::ServiceClient  client_gz_get_link_state_;    /**< Client to get link state in Gazebo. */
     ros::ServiceServer  server_apply_wrench_cog_;     /**< Server to apply wrench in cog of Skye. */
-    Eigen::Quaterniond  q_gzbf_bf_;                   /**< Quaternion from Skye's body frame to Gazebo body frame. */
+    Eigen::Quaterniond  q_gz_sk_;                     /**< Quaternion from Skye's IMU frame to Gazebo IMU frame. */
     Eigen::Quaterniond  q_ned_enu_;                   /**< Quaternion from ENU world frame to NED world frame. */
-    Eigen::Quaterniond  q_bf_gzbf_;                   /**< Quaternion from Gazebo body frame to Skye's body frame. */
+    Eigen::Quaterniond  q_sk_gz_;                     /**< Quaternion from Gazebo IMU frame to Skye's IMU frame. */
     Eigen::Quaterniond  q_enu_ned_;                   /**< Quaternion from NED world frame to ENU world frame. */
-
-    /* Removed server_get_link_state_ned_; 
-     * Do not allow an external user to use this service.
-     * The function getLinkStateNed can be still used internally to retrieve 
-     * information about the pose of one link.
-    */
-    //ros::ServiceServer  server_get_link_state_ned_;   /**< Server to get link state in world NED frame. */
 
     /**
      * @brief      Get link state from Gazebo.
@@ -115,6 +115,7 @@ private:
      */
     void quaternionMsgToEigen(const geometry_msgs::Quaternion   &quat_in,
                               Eigen::Quaterniond                &quat_out);
+
 };
 
 } // namespace skye_ros
