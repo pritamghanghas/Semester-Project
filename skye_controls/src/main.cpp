@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <Eigen/Eigen>
 #include <ros/ros.h>
-#include <skye_ros/ApplyWrenchCogNed.h>
+#include <skye_ros/ApplyWrenchCogBf.h>
 #include <skye_controls/skye_position_controller.h>
 #include <geometry_msgs/Wrench.h>
 #include <sensor_msgs/Imu.h>
@@ -70,7 +70,7 @@ void callback(const sensor_msgs::Imu::ConstPtr& msg){
 
 
 
-    skye_ros::ApplyWrenchCogNed srv;
+    skye_ros::ApplyWrenchCogBf srv;
     srv.request.start_time.nsec = 0;
     srv.request.duration.sec =  -1;
 
@@ -106,13 +106,13 @@ int main (int argc, char** argv) {
     ros::init(argc, argv, "skye_position_controller_node");
     ros::NodeHandle nh;
 
-    ros::service::waitForService("skye_ros/apply_wrench_cog_ned");
+    ros::service::waitForService("skye_ros/apply_wrench_cog_bf");
 
     //Setup service
     ros::ServiceClient wrench_service;
-    wrench_service = nh.serviceClient<skye_ros::ApplyWrenchCogNed>("skye_ros/apply_wrench_cog_ned", true);
+    wrench_service = nh.serviceClient<skye_ros::ApplyWrenchCogBf>("skye_ros/apply_wrench_cog_bf", true);
 
-    ros::Subscriber pos_sub = nh.subscribe ("/skye_ros/sensor_msgs/imu_ned", 1, &callback);
+    ros::Subscriber pos_sub = nh.subscribe ("/skye_ros/sensor_msgs/imu_bf", 1, &callback);
 
     ros::spin();
 }

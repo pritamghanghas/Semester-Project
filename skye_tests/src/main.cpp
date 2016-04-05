@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ros/ros.h>
-#include <skye_ros/ApplyWrenchCogNed.h>
+#include <skye_ros/ApplyWrenchCogBf.h>
 #include <skye_tests/action_skye.h>
 #include <geometry_msgs/Wrench.h>
 
@@ -58,7 +58,7 @@ int main (int argc, char** argv) {
 
     //Setup service
     ros::ServiceClient wrench_service;
-    wrench_service = nh.serviceClient<skye_ros::ApplyWrenchCogNed>("skye_ros/apply_wrench_cog_ned", true);
+    wrench_service = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name, true);
 
     //Setup F and M vectors
     Eigen::Vector3d force;
@@ -105,7 +105,7 @@ int main (int argc, char** argv) {
     ros::Subscriber twist_sub = nh.subscribe ("/skye_tests/twist", 1, &Actions_skye::twist_callback, &action);
     ros::Subscriber move_sub = nh.subscribe ("/skye_tests/move", 1, &Actions_skye::move_callback, &action);
 
-    ros::Subscriber pos_sub = nh.subscribe ("/skye_ros/sensor_msgs/imu_ned", 1, &Skye::acceleration_callback, &skye);
+    ros::Subscriber pos_sub = nh.subscribe ("/skye_ros/sensor_msgs/imu_bf", 1, &Skye::acceleration_callback, &skye);
 
 
     ros::spin();

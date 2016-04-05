@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <Eigen/Eigen>
 #include <ros/ros.h>
-#include <skye_ros/ApplyWrenchCogNed.h>
+#include <skye_ros/ApplyWrenchCogBf.h>
 #include <sensor_msgs/Imu.h>
 
 class Skye
@@ -31,7 +31,7 @@ private:
 
 
     ros::ServiceClient wrench_service;
-    skye_ros::ApplyWrenchCogNed srv;
+    skye_ros::ApplyWrenchCogBf srv;
 
 };
 
