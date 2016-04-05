@@ -8,7 +8,6 @@
  * */
 
 #include <stdlib.h>
-#include <vector>
 #include <stdio.h>
 #include <ros/ros.h>
 #include <skye_ros/ApplyWrenchCogNed.h>
@@ -78,8 +77,11 @@ int main (int argc, char** argv) {
     ROS_INFO("started waiting for service");
     ros::service::waitForService(wrench_service_name);
 
+    Skye skye;
+    skye.init(wrench_service);
+
     //Create skye actions
-    Actions_skye action(wrench_service, poke_duration_in_sec*1000000);
+    Actions_skye action(poke_duration_in_sec*1000000, &skye);
 
     if(is_poke_requested) {
         ROS_INFO("Poking");
@@ -94,7 +96,6 @@ int main (int argc, char** argv) {
         action.move(force, torque, move_duration_in_sec*1000000);
     }
 
-
     ros::Publisher poke_pub = nh.advertise<geometry_msgs::Wrench>("/skye_tests/poke", 1, true);
     ros::Publisher twist_pub = nh.advertise<geometry_msgs::Wrench>("/skye_tests/twist", 1, true);
     ros::Publisher move_pub = nh.advertise<geometry_msgs::Wrench>("/skye_tests/move", 1, true);
@@ -103,6 +104,9 @@ int main (int argc, char** argv) {
     ros::Subscriber poke_sub = nh.subscribe ("/skye_tests/poke", 1, &Actions_skye::poke_callback, &action);
     ros::Subscriber twist_sub = nh.subscribe ("/skye_tests/twist", 1, &Actions_skye::twist_callback, &action);
     ros::Subscriber move_sub = nh.subscribe ("/skye_tests/move", 1, &Actions_skye::move_callback, &action);
+
+    ros::Subscriber pos_sub = nh.subscribe ("/skye_ros/sensor_msgs/imu_ned", 1, &Skye::acceleration_callback, &skye);
+
 
     ros::spin();
 

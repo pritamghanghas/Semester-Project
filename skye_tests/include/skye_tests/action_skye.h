@@ -9,7 +9,7 @@
 class Actions_skye
 {
 public:
-    Actions_skye(ros::ServiceClient wrench_service, int a_time_in_ms_);
+    Actions_skye(int a_time_in_ms_, Skye *a_skye); //ros::ServiceClient wrench_service,
 
     bool poke(Eigen::Vector3d force, int duration);
     bool twist(Eigen::Vector3d torque, int duration);

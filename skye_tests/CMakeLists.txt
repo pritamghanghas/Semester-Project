@@ -10,11 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   skye_ros
 )
-#find_package(Eigen REQUIRED)
-#include_directories(${EIGEN_INCLUDE_DIRS})
-
-#find_package(skye_ros REQUIRED)
-#include_directories(${skye_ros_INCLUDE_DIRS})
 
 catkin_package(
   INCLUDE_DIRS include
