@@ -82,29 +82,20 @@ killall -9 gazebo & killall -9 gzserver & killall -9 gzclient
 ```
 
 ## Create A Catkin Workspace And Compile Source Code
-Create a catkin workspace in your home folder where you are going to install every package needed to simulate Skye.
+Create a catkin workspace in your home folder where you are going to clone every package needed to simulate Skye.
  ```bash
 cd ~
 mkdir -p catkin_ws/src
 cd ~/catkin_ws/src
 catkin_init_workspace
 ```
-Clone the "skye_gazebo_simulation" repo in the src folder:
+Clone the required reposotories in the src folder:
  ```bash
 cd ~/catkin_ws/src
 git clone https://github.com/skye-git/skye_gazebo_simulation -b indigo-devel
-```
-Compile it.
-```bash
-cd ~/catkin_ws
-catkin_make
-```
-Clone the "hector_gazebo" repo which containes useful plugin for our simulation in Gazebo.
- ```bash
-cd ~/catkin_ws/src
 git clone https://github.com/skye-git/hector_gazebo -b indigo-devel
 ```
-Compile it.
+Compile them. Suggestion: use the option **-j** to specify the number of jobs to run simultaneously; for example `catkin_make -j4`
 ```bash
 cd ~/catkin_ws
 catkin_make
@@ -128,7 +119,7 @@ Now you can modify the path where Gazebo searchs for the plugin shared libraries
 The Imu plugin from "hector_gazebo" package is located, by default, in '~/catkin_ws/devel/lib/'.
 ```bash
 echo "source <install_path>/share/gazebo/setup.sh" >> ~/.bashrc
-echo "export GAZEBO_PLUGIN_PATH=~/catkin_ws/devel/lib:\${GAZEBO_PLUGIN_PATH}" >> ~/.bashrc
+echo "export GAZEBO_PLUGIN_PATH=~/catkin_ws/devel/lib:${GAZEBO_PLUGIN_PATH}" >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -143,21 +134,24 @@ The launch file 'inflate_skye.launch' does several things for you: it starts ros
 The package "skye_ros" provides an easy interface to interact with a simulation of Skye in Gazebo.
 
 ### Advertised Topics
-  * /skye_ros/sensor_msgs/imu_ned IMU data expressed in a local NED frame attached to the IMU box. 
+  * /skye_ros/sensor_msgs/imu_sk IMU data expressed in a local frame attached to the IMU box, called IMU frame. See section *Frame Convetions* for further information.
+  * /skye_ros/ground_truth/hull ground truth infomration of the hull. Contains the position, orientation and 
+  linear velocity of the hull, expressed in the world NED frame (see below section **Frames Convetion** for further information). **Warning**: angular velocity field into this topic is filled with zeros as long as 
+  a problem in Gazebo is not resolved. 
 
-Example: echo imu_ned message. 
+Example: echo imu_sk message. 
 ```bash
-rostopic echo /skye_ros/sensor_msgs/imu_ned
+rostopic echo /skye_ros/sensor_msgs/imu_sk
 ```
 
 ### Advertised Services
-  * /skye_ros/apply_wrench_cog_ned service to apply a wrench (i.e. a force and a torque) in the center of gravity (CoG) of  Skye. Wrench expressed in a NED frame attached to the CoG of Skye.
+  * /skye_ros/apply_wrench_cog_bf service to apply a wrench (i.e. a force and a torque) in the center of gravity (CoG) of  Skye. Wrench expressed in Skye's body frame attached to the CoG of Skye. See below section **Frames Convetion** for further information.
 
 
 
-Example: apply a torque of 3 Nm around Skye's X axes (in local NED frame).
+Example: apply a torque of 3 Nm around Skye's X axes (in body frame).
 ```bash
-rosservice call /skye_ros/apply_wrench_cog_ned '{wrench: { force: { x: 0, y: 0, z: 0 }, torque: {x: 3, y: 0, z: 0} }, start_time: 0, duration: -1 }'
+rosservice call /skye_ros/apply_wrench_cog_bf '{wrench: { force: { x: 0, y: 0, z: 0 }, torque: {x: 3, y: 0, z: 0} }, start_time: 0, duration: -1 }'
 ```
 ## Repository Layout
 The following describes the directory structure and important files in the skye_gazebo_simulation repository
@@ -168,5 +162,16 @@ Folders:
   * skye_gazebo        - Contains launch files to run Gazebo and spawn Skye.
   * skye_ros           - Containes a simple interface which converts data from Gazebo ENU frame to Skye's NED frame.
 
-## Frame Convention
-Gazebo and ROS use ENU frame convention, i.e. X axis points to East, Y axis to North and Z axis up. We refer (maybe with a little abused of notation) to a local NED frame as the frame attached to a link (for example the hull or the IMU) which has the X axis pointing geometrically forward W.R.T the link, the Y axis pointing geometrically right W.R.T the link and the Z axis pointing geometrically down W.R.T the link. Note that, according to the literature, a NED frame should be always alligned with North, East and Down directions.
+## Frames Convention
+Gazebo and ROS use ENU frame convention, i.e. X axis points to East, Y axis to North and Z axis up. We use
+trhee slightly different frames, that are common in air vehicles: r
+
+  * World NED frame: X axis pointing to North, Y axis pointing to East and Z axis pointing to Down.
+  * Skye's body frame: frame attached to the Center of Gravity (CoG) of the hull. It has the X axis pointing geometrically forward W.R.T the eye, the Y axis pointing geometrically right W.R.T the hull and the Z axis pointing geometrically down W.R.T the hull.
+  * IMU frame: frame attached to the center of the IMU (red box). It has the X axis pointing geometrically forward W.R.T the eye, the Y axis pointing geometrically right W.R.T the hull and the Z axis pointing geometrically down W.R.T the hull.
+
+The picture below gives an overview of these three frames. Note that the initial default position of Skye is rotated of 90 degrees about the Z axis with respect to the world NED frame.
+
+<p align="center">
+  <img src="skye_ros/doc/frames.png" width="650"/>
+</p>
