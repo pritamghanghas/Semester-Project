@@ -4,10 +4,7 @@ project(skye_tests)
 find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
   roscpp
-  cmake_modules
-  tf_conversions
   eigen_conversions
-  message_generation
   skye_ros
 )
 

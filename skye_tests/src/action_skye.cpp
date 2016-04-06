@@ -17,26 +17,25 @@ Actions_skye::Actions_skye(int a_time_in_ms_, Skye *a_skye) //ros::ServiceClient
 bool Actions_skye::poke(Eigen::Vector3d force, int duration){
   bool result = true;
   result = result && skye.apply_force(force);
-//  usleep(duration);
-//  result = result && skye.apply_force(zero);
+  usleep(duration);
+  result = result && skye.apply_force(zero);
   return result;
 }
 
 bool Actions_skye::twist(Eigen::Vector3d torque, int duration){
     bool result = true;
     result = result && skye.apply_torque(torque);
-//    usleep(duration);
-//    result = result && skye.apply_torque(zero);
+    usleep(duration);
+    result = result && skye.apply_torque(zero);
     return result;
 }
 
 bool Actions_skye::move(Eigen::Vector3d force, Eigen::Vector3d torque, int duration){
     bool result = true;
     result = result && skye.apply_wrench(force, torque);
-//    usleep(duration);
-//    result = result && skye.apply_wrench(zero, zero);
+    usleep(duration);
+    result = result && skye.apply_wrench(zero, zero);
     return result;
-
 }
 
 int Actions_skye::duration_in_ms(){

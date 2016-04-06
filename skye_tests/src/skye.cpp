@@ -12,9 +12,7 @@ Skye::Skye() {
     srv.request.start_time.nsec = 0;
     srv.request.duration.sec =  -1;
     timestamp_ = 0.01;
-    counter_ = 0;
     zero << 0,0,0;
-    start_counting_ = false;
 }
 
 bool Skye::init(ros::ServiceClient a_wrench_service){
@@ -24,24 +22,18 @@ bool Skye::init(ros::ServiceClient a_wrench_service){
 }
 
 bool Skye::apply_force(Eigen::Vector3d force){
-    counter_ = 0;
-    start_counting_ = true;
     Eigen::Vector3d torque;
     torque << 0,0,0;
     return apply_wrench(force, torque);
 }
 
 bool Skye::apply_torque(Eigen::Vector3d torque){
-    counter_ = 0;
-    start_counting_ = true;
     Eigen::Vector3d force;
     force << 0,0,0;
     return apply_wrench(force, torque);
 }
 
 bool Skye::apply_wrench(Eigen::Vector3d force, Eigen::Vector3d torque){
-    counter_ = 0;
-    start_counting_ = true;
     geometry_msgs::Wrench temporaryWrench;
     temporaryWrench.force.x = force(0);
     temporaryWrench.force.y = force(1);
@@ -71,7 +63,7 @@ void Skye::acceleration_callback(const sensor_msgs::Imu::ConstPtr& msg){
     Eigen::Vector3d new_acceleration_;
     new_acceleration_<< msg->linear_acceleration.x,
             msg->linear_acceleration.y,
-            msg->linear_acceleration.z;
+            msg->linear_acceleration.z - 9.81;
 
     Eigen::Vector3d new_velocity_;
 

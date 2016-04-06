@@ -2,6 +2,8 @@
 #define SKYE_POSITION_CONTROLLER_H
 
 #include <Eigen/Eigen>
+#include <stdlib.h>
+#include <iostream>
 
 class PositionController
 {

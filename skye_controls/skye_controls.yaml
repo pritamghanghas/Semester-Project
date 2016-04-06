@@ -1,0 +1,2 @@
+wrench_service_name: skye_ros/apply_wrench_cog_bf
+imu_topic: skye_ros/ground_truth/hull

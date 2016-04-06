@@ -11,4 +11,6 @@
   <node name="skye_controls_node" pkg="skye_controls" type="skye_controls_node"
         respawn="false" output="screen"/>
 
+  <rosparam command="load" file="$(find skye_controls)/skye_controls.yaml"/>
+
 </launch>

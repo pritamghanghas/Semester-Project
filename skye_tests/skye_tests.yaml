@@ -1,5 +1,11 @@
-wrench_service_name: skye_ros/apply_wrench_cog_ned
-sleeping_time: 10000000
+wrench_service_name: skye_ros/apply_wrench_cog_bf
+poke_topic: skye_tests/poke
+twist_topic: skye_tests/twist
+move_topic: skye_tests/move
+imu_topic: skye_ros/sensor_msgs/imu_bf
+
+
+sleeping_time: 1000000
 is_poke_requested: 0
 poke_duration_in_sec: 1
 is_twist_requested: 0

@@ -25,7 +25,8 @@ include_directories(
 ## Declare a C++ executable
 add_executable(skye_controls_node
                     src/main.cpp
-                    src/skye_position_controller.cpp)
+                    src/skye_position_controller.cpp
+                    src/skye_geometric_controller.cpp)
 
 
 ## Specify libraries to link a library or executable target against

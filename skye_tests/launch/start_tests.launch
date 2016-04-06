@@ -24,9 +24,9 @@
   <node name="skye_tests_node" pkg="skye_tests" type="skye_tests_node"
         respawn="false" output="screen"/>
 
-  <!-- Start "skye_controls" to perform tests on Skye in Gazebo.-->
+  <!-- Start "skye_controls" to perform tests on Skye in Gazebo.
   <node name="skye_controls_node" pkg="skye_controls" type="skye_controls_node"
-        respawn="false" output="screen"/> 
+        respawn="false" output="screen"/> -->
 
   <rosparam command="load" file="$(find skye_tests)/skye_tests.yaml"/>
 
