@@ -3,7 +3,6 @@
 
 #include <Eigen/Eigen>
 
-
 class SkyeGeometricController
 {
 private:
@@ -17,16 +16,16 @@ private:
                     desired_angular_acceleration_,
                     desired_acceleration_;
 
-    Eigen::Matrix3d desired_attitude_, inertia_;
+    Eigen::Matrix3d inertia_;
 
-    Eigen::Vector3d
-//                    position_error_,
-//                    velocity_error_,
+    Eigen::Vector3d position_error_,
+                    velocity_error_,
                     attitude_error_,
                     angular_velocity_error_;
 
-//    Eigen::Matrix3d R_;
+    Eigen::Matrix3d R_, R_des_;
     Eigen::Vector3d angular_velocity_;
+
 
 public:
     SkyeGeometricController();
@@ -36,12 +35,16 @@ public:
     Eigen::Vector3d desired_velocity();
 
 
-
-void computeForce(Eigen::Vector3d &position_error_,
-                  Eigen::Vector3d &velocity_error_,
-                  Eigen::Matrix3d &R_,
-                  Eigen::Vector3d &output_force_);
 void InitializeParams();
+void updateParameters(Eigen::Vector3d & poisiton_,
+                      Eigen::Vector3d & velocity_,
+                      Eigen::Quaterniond & orientation,
+                      Eigen::Vector3d & a_angular_velocity_);
+
+void computeForce(Eigen::Vector3d &output_force_);
+void computeMomentum(Eigen::Vector3d & output_momentum_);
+
+
 
 };
 
