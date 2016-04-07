@@ -5,59 +5,48 @@
 
 #include <skye_controls/skye_geometric_controller.h>
 
-SkyeGeometricController::SkyeGeometricController()
-{
+SkyeGeometricController::SkyeGeometricController(){
+    InitializeParams();
 }
+
+Eigen::Vector3d SkyeGeometricController::desired_position(){
+    return desired_position_;
+}
+
+Eigen::Vector3d SkyeGeometricController::desired_velocity(){
+    return desired_velocity_;
+}
+
 
 void SkyeGeometricController::InitializeParams() {
-//  gain_attitude_(0) = 3; //4
-//  gain_attitude_(1) = 3; //4
-//  gain_attitude_(2) = 0.035;
+    mass_ = 4;
 
-//  gain_angular_rate_(0) = 0.52;//0.6;
-//  gain_angular_rate_(1) = 0.52;//0.6;
-//  gain_angular_rate_(2) = 0.025;
+    k_x_ << 1, 1, 1;
+    k_v_ << 1, 1, 1;
+    k_omega_ << 1, 1, 1;
+    k_R_ << 1, 1, 1;
 
-//  amount_rotors_ = 6;
-//  allocation_matrix_.resize(4,amount_rotors_);
-//  allocation_matrix_ << sin(M_PI/6),  1,  sin(M_PI/6), -sin(M_PI/6), -1, -sin(M_PI/6),
-//                       -cos(M_PI/6),  0,  cos(M_PI/6),  cos(M_PI/6), 0, -cos(M_PI/6),
-//                       -1,  1, -1,  1, -1, 1,
-//                        1,  1,  1,  1, 1, 1;
+    desired_position_ << 0,0,-3;
+    desired_velocity_ << 0,0,0;
+    desired_angular_velocity_ << 0,0,0;
+    desired_angular_acceleration_ << 0,0,0;
+    desired_acceleration_ << 0,0,0;
 
-//  inertia_matrix_<< 0.0347563,  0,  0,
-//                    0,  0.0458929,  0,
-//                    0,  0, 0.0977;
-
-//  // to make the tuning independent of the inertia matrix we divide here
-//  gain_attitude_ = gain_attitude_.transpose() * inertia_matrix_.inverse();
-
-//  // to make the tuning independent of the inertia matrix we divide here
-//  gain_angular_rate_ = gain_angular_rate_.transpose() * inertia_matrix_.inverse();
-
-//  const double rotor_force_constant = 0.00000854858;  //F_i = k_n * rotor_velocity_i^2
-//  const double rotor_moment_constant = 0.016;  // M_i = k_m * F_i
-
-//  angular_acc_to_rotor_velocities_.resize(amount_rotors_, 4);
-//  const double arm_length = 0.215;
-
-//  Eigen::Matrix4d K;
-//  K.setZero();
-//  K(0, 0) = arm_length * rotor_force_constant;
-//  K(1, 1) = arm_length * rotor_force_constant;
-//  K(2, 2) = rotor_force_constant * rotor_moment_constant;
-//  K(3, 3) = rotor_force_constant;
-
-//  Eigen::Matrix4d I;
-//  I.setZero();
-//  I.block<3, 3>(0, 0) = inertia_matrix_;
-//  I(3, 3) = 1;
-//  angular_acc_to_rotor_velocities_ = allocation_matrix_.transpose()
-//      * (allocation_matrix_ * allocation_matrix_.transpose()).inverse() * K.inverse() * I;
-//  initialized_params_ = true;
-}
-
-
-void SkyeGeometricController::computeForce(){
+    desired_attitude_ << 1,0,0,
+            0,1,0,
+            0,0,1;
+    inertia_ << 8.9927, 0.1046, -0.0843,
+            0.1046, 10.1374, 0.0243,
+            -0.0843, 0.0243, 10.1823;
 
 }
+
+void SkyeGeometricController::computeForce(Eigen::Vector3d & position_error_,
+                                           Eigen::Vector3d & velocity_error_,
+                                           Eigen::Matrix3d & R_,
+                                           Eigen::Vector3d & output_force_){
+
+    output_force_ = R_*(k_x_.cwiseProduct(position_error_) + k_v_.cwiseProduct(velocity_error_) - mass_*desired_acceleration_ ) ;
+
+}
+

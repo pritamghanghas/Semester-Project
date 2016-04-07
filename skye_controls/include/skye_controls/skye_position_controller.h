@@ -10,7 +10,7 @@ class PositionController
 public:
     PositionController();
 
-    Eigen::Vector3d computeForce(Eigen::Vector3d error, Eigen::Vector3d output_force);
+    Eigen::Vector3d computeForce(Eigen::Vector3d error);
 
 };
 

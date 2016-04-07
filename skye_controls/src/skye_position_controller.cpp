@@ -4,8 +4,8 @@
 PositionController::PositionController(){
 }
 
-Eigen::Vector3d PositionController::computeForce(Eigen::Vector3d error, Eigen::Vector3d output_force){
-    
+Eigen::Vector3d PositionController::computeForce(Eigen::Vector3d error){
+    Eigen::Vector3d output_force;
     double kp = 0.5;
     std::cout << "error: " << error(0) <<
                  " | y: " << error(1) <<

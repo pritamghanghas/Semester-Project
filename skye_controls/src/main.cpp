@@ -18,6 +18,7 @@
 #include <ros/ros.h>
 #include <skye_ros/ApplyWrenchCogBf.h>
 #include <skye_controls/skye_position_controller.h>
+#include <skye_controls/skye_geometric_controller.h>
 #include <geometry_msgs/Wrench.h>
 #include <sensor_msgs/Imu.h>
 #include <gazebo_msgs/LinkState.h>
@@ -26,8 +27,13 @@ Eigen::Vector3d position_, acceleration_, velocity_, angular_velocity_, referenc
 ros::ServiceClient wrench_service;
 skye_ros::ApplyWrenchCogBf srv;
 geometry_msgs::Wrench temporaryWrench;
-Eigen::Vector3d error, control_input_;
+Eigen::Vector3d position_error_, velocity_error_;
+Eigen::Vector3d control_input_;
+//Eigen::Vector3d error;
 PositionController controller;
+SkyeGeometricController geometric_controller;
+Eigen::Matrix3d R_;
+Eigen::Quaterniond orientation_;
 
 
 double timestamp_ = 0.01;
@@ -38,23 +44,45 @@ void callback(const gazebo_msgs::LinkState::ConstPtr& msg){
             msg->pose.position.y,
             msg->pose.position.z;
 
-    std::cout << //"counter:" << counter_ <<
+    velocity_ << msg->twist.linear.x,
+            msg->twist.linear.y,
+            msg->twist.linear.z;
+
+    orientation_.x() = msg->pose.orientation.x;
+    orientation_.y() = msg->pose.orientation.y;
+    orientation_.z() = msg->pose.orientation.z;
+    orientation_.w() = msg->pose.orientation.w;
+
+    R_ = orientation_.toRotationMatrix();
+
+    std::cout << "--------------------------------------------------" << std::endl <<
                  "position_: " << position_(0) <<
                  " | y: " << position_(1) <<
                  " | z: " << position_(2) <<
                  std::endl;
 
-    error << reference_pos_(0) - position_(0),
-            reference_pos_(1) - position_(1),
-            reference_pos_(2) - position_(2);
-    control_input_ = controller.computeForce(error, control_input_);
+    //    error << reference_pos_(0) - position_(0),
+    //            reference_pos_(1)- position_(1),
+    //            reference_pos_(2) - position_(2);
+    //    control_input_ = controller.computeForce(error);
 
-    std::cout << //"counter:" << counter_ <<
-                 "control_input_: " << control_input_(0) <<
+
+    position_error_ << geometric_controller.desired_position()(0) - position_(0),
+            geometric_controller.desired_position()(1) - position_(1),
+            geometric_controller.desired_position()(2) - position_(2);
+
+    velocity_error_ << geometric_controller.desired_velocity()(0) - velocity_(0),
+            geometric_controller.desired_velocity()(1) - velocity_(1),
+            geometric_controller.desired_velocity()(2) - velocity_(2);
+
+
+
+    geometric_controller.computeForce(position_error_, velocity_error_, R_, control_input_);
+
+    std::cout << "control_input_: " << control_input_(0) <<
                  " | y: " << control_input_(1) <<
                  " | z: " << control_input_(2) <<
                  std::endl;
-
 
 
 }
@@ -66,8 +94,6 @@ int main (int argc, char** argv) {
     velocity_ << 0,0,0;
     angular_velocity_ << 0,0,0;
     reference_pos_ << 0,0,-3;
-
-
 
     //    usleep(20000000);
     ros::init(argc, argv, "skye_position_controller_node");
