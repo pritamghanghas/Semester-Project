@@ -17,10 +17,6 @@
 
 int main (int argc, char** argv) {
 
-    std::printf("-----------------------------\n");
-    std::printf("------ TESTS LAUNCHED -------\n");
-    std::printf("-----------------------------\n");
-
     ros::init (argc, argv, "skye_tests_node");
     ros::NodeHandle nh;
 
@@ -55,10 +51,7 @@ int main (int argc, char** argv) {
 
 
     //Check if the parameters were correctly imported
-    if (read_all_parameters) {
-        ROS_INFO("Parameters imported" );
-    }
-    else{
+    if (!read_all_parameters) {
         ROS_ERROR("Parameters import failed");
     }
 
@@ -71,37 +64,14 @@ int main (int argc, char** argv) {
     force << force_x, force_y, force_z;
     Eigen::Vector3d torque;
     torque << torque_x, torque_y, torque_z;
-    ROS_INFO("Vectors packed");
 
-    //Wait until everything else is setup
-    //TODO: Fix this with some better code.
-    //TODO: Talk to Marco T to better understand gazebo boot proc.
-//    std::cout << "going to sleep.." << std::endl;
-//    usleep(sleeping_time);
-//    std::cout << "Just woke up" << std::endl;
-
-    ROS_INFO("started waiting for service");
     ros::service::waitForService(wrench_service_name);
-
 
     Skye skye;
     skye.init(wrench_service);
 
     //Create skye actions
     Actions_skye action(poke_duration_in_sec*1000000, &skye);
-
-//    if(is_poke_requested) {
-//        ROS_INFO("Poking");
-//        action.poke(force, poke_duration_in_sec*1000000);
-//    }
-//    else if(is_twist_requested){
-//        ROS_INFO("Twisting");
-//        action.twist(torque, twist_duration_in_sec*1000000);
-//    }
-//    else if(is_move_requested){
-//        ROS_INFO("Moving Skye");
-//        action.move(force, torque, move_duration_in_sec*1000000);
-//    }
 
     ros::Publisher poke_pub = nh.advertise<geometry_msgs::Wrench>(poke_topic, 1, true);
     ros::Publisher twist_pub = nh.advertise<geometry_msgs::Wrench>(twist_topic, 1, true);
@@ -111,10 +81,6 @@ int main (int argc, char** argv) {
     ros::Subscriber poke_sub = nh.subscribe (poke_topic, 1, &Actions_skye::poke_callback, &action);
     ros::Subscriber twist_sub = nh.subscribe (twist_topic, 1, &Actions_skye::twist_callback, &action);
     ros::Subscriber move_sub = nh.subscribe (move_topic, 1, &Actions_skye::move_callback, &action);
-
-    std::cout << "going to sleep.." << std::endl;
-    usleep(sleeping_time);
-    std::cout << "Just woke up" << std::endl;
 
     ros::Subscriber pos_sub = nh.subscribe (imu_topic, 1, &Skye::acceleration_callback, &skye);
 

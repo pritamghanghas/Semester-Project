@@ -2,13 +2,18 @@
 #define SKYE_GEOMETRIC_CONTROLLER_H
 
 #include <Eigen/Eigen>
+#include <iostream>
 
 class SkyeGeometricController
 {
 private:
-    double mass_; //relative mass
-    //coeffs
-    Eigen::Vector3d k_x_, k_v_, k_R_, k_omega_;
+    //Control coefficients
+    double  k_x_, k_v_, k_R_, k_omega_;
+
+    //Skye's mass
+    //TODO: check what should go here!
+    double mass_;
+
     // desired poses
     Eigen::Vector3d desired_position_,
                     desired_velocity_,
@@ -16,26 +21,38 @@ private:
                     desired_angular_acceleration_,
                     desired_acceleration_;
 
-    Eigen::Matrix3d inertia_;
-
     Eigen::Vector3d position_error_,
                     velocity_error_,
                     attitude_error_,
                     angular_velocity_error_;
 
+    Eigen::Matrix3d inertia_;
     Eigen::Matrix3d R_, R_des_;
     Eigen::Vector3d angular_velocity_;
+
+    Eigen::Vector3d normalized_k_R_;
+    Eigen::Vector3d normalized_k_omega_;
 
 
 public:
     SkyeGeometricController();
-    const static double gravity_acceleration_ = 9.81;
 
     Eigen::Vector3d desired_position();
     Eigen::Vector3d desired_velocity();
 
 
-void InitializeParams();
+void initializeParams(double input_k_x_,
+                      double input_k_v_,
+                      double input_k_omega_,
+                      double input_k_R_,
+                      double input_mass_,
+                      Eigen::Vector3d & input_desired_position_,
+                      Eigen::Vector3d & input_desired_velocity_,
+                      Eigen::Vector3d & input_desired_angular_velocity_,
+                      Eigen::Vector3d & input_desired_angular_acceleration_,
+                      Eigen::Vector3d & input_desired_acceleration_,
+                      Eigen::Matrix3d inertia_);
+
 void updateParameters(Eigen::Vector3d & poisiton_,
                       Eigen::Vector3d & velocity_,
                       Eigen::Quaterniond & orientation,

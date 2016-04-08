@@ -1,7 +1,7 @@
 wrench_service_name: skye_ros/apply_wrench_cog_bf
 imu_topic: skye_ros/ground_truth/hull
-k_x: 4
-k_v: 6
+k_x: 6
+k_v: 3
 k_omega: 0
 k_R: 0
 mass: 4
