@@ -305,9 +305,9 @@
              is aligned to the world gazebo frame at the beginning of the simulation. -->
 
          <plugin name="hector_imu_sim" filename="libhector_gazebo_ros_imu.so">
-            <updateRate>100.0</updateRate>
+            <updateRate>50.0</updateRate>
             <bodyName>imu</bodyName>
-            <topicName>/sensor_msgs/imu_gz_bf</topicName>
+            <topicName>/sensor_msgs/imu_gz</topicName>
             <!-- <frameId>imu</frameId> -->
             <xyzOffset>0 0 0</xyzOffset>
             <rpyOffset>0 0 0</rpyOffset>
