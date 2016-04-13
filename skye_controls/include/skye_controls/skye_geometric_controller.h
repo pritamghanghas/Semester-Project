@@ -33,6 +33,7 @@ private:
     Eigen::Vector3d normalized_k_R_;
     Eigen::Vector3d normalized_k_omega_;
 
+    inline void ComputeNormalizedParameters();
 
 public:
     SkyeGeometricController();
@@ -41,7 +42,7 @@ public:
     Eigen::Vector3d desired_velocity();
 
 
-void initializeParams(double input_k_x_,
+void InitializeParams(double input_k_x_,
                       double input_k_v_,
                       double input_k_omega_,
                       double input_k_R_,
@@ -51,18 +52,19 @@ void initializeParams(double input_k_x_,
                       Eigen::Vector3d & input_desired_angular_velocity_,
                       Eigen::Vector3d & input_desired_angular_acceleration_,
                       Eigen::Vector3d & input_desired_acceleration_,
-                      Eigen::Matrix3d inertia_);
+                      Eigen::Matrix3d & inertia_);
 
-void updateParameters(Eigen::Vector3d & poisiton_,
+void UpdateParameters(Eigen::Vector3d & poisiton_,
                       Eigen::Vector3d & velocity_,
                       Eigen::Quaterniond & orientation,
                       Eigen::Vector3d & a_angular_velocity_);
 
-void computeForce(Eigen::Vector3d &output_force_);
-void computeMomentum(Eigen::Vector3d & output_momentum_);
-
-
-
+void ComputeForce(Eigen::Vector3d &output_force_);
+void ComputeAcceleration(Eigen::Vector3d & output_momentum_);
+void UpdateGains(double k_x,
+                 double k_v,
+                 double k_R,
+                 double k_omega);
 };
 
 #endif // SKYE_GEOMETRIC_CONTROLLER_H

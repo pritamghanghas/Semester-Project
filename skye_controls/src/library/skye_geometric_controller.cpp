@@ -20,7 +20,18 @@ inline void vectorFromSkewMatrix(Eigen::Matrix3d& skew_matrix, Eigen::Vector3d* 
     *vector << skew_matrix(2, 1), skew_matrix(0,2), skew_matrix(1, 0);
 }
 
-void SkyeGeometricController::initializeParams(double input_k_x_,
+inline void SkyeGeometricController::ComputeNormalizedParameters(){
+    // To make the tuning independent of the inertia matrix we divide here.
+    normalized_k_R_ << k_R_, k_R_, k_R_;
+    normalized_k_R_ = normalized_k_R_.transpose()*inertia_.inverse();
+
+    // To make the tuning independent of the inertia matrix we divide here.
+    normalized_k_omega_ << k_omega_,k_omega_,k_omega_;
+    normalized_k_omega_ = normalized_k_omega_.transpose()*inertia_.inverse();
+
+}
+
+void SkyeGeometricController::InitializeParams(double input_k_x_,
                                                double input_k_v_,
                                                double input_k_omega_,
                                                double input_k_R_,
@@ -30,13 +41,14 @@ void SkyeGeometricController::initializeParams(double input_k_x_,
                                                Eigen::Vector3d & input_desired_angular_velocity_,
                                                Eigen::Vector3d & input_desired_angular_acceleration_,
                                                Eigen::Vector3d & input_desired_acceleration_,
-                                               Eigen::Matrix3d inertia_) {
+                                               Eigen::Matrix3d & inertia) {
 
     k_x_ = input_k_x_;
     k_v_ = input_k_v_;
     k_omega_ = input_k_omega_;
     k_R_ = input_k_R_;
     mass_ = input_mass_;
+    inertia_ = inertia;
 
     desired_position_ = input_desired_position_;
     desired_velocity_ = input_desired_velocity_;
@@ -45,26 +57,35 @@ void SkyeGeometricController::initializeParams(double input_k_x_,
     desired_acceleration_ = input_desired_acceleration_;
 
 
-    // To make the tuning independent of the inertia matrix we divide here.
-    normalized_k_R_ << k_R_, k_R_, k_R_;
-    normalized_k_R_ = normalized_k_R_.transpose()*inertia_.inverse();
+    this->ComputeNormalizedParameters();
 
-    // To make the tuning independent of the inertia matrix we divide here.
-    normalized_k_omega_ << k_omega_,k_omega_,k_omega_;
-    normalized_k_omega_ = normalized_k_omega_.transpose()*inertia_.inverse();
+    std::cout << "--------------------------------------------------" << std::endl <<
+                 "normalized_k_R_: " << normalized_k_R_(0) <<
+                 " | y: " << normalized_k_R_(1) <<
+                 " | z: " << normalized_k_R_(2) <<
+                 std::endl << std::endl;
 
-    //    R_des_ << 1,0,0,
-    //            0,1,0,
-    //            0,0,1;
+    std::cout << "--------------------------------------------------" << std::endl <<
+                 "normalized_k_omega_: " << normalized_k_omega_(0) <<
+                 " | y: " << normalized_k_omega_(1) <<
+                 " | z: " << normalized_k_omega_(2) <<
+                 std::endl << std::endl;
+
+    R_des_ << 1,0,0,
+              0,1,0,
+              0,0,1;
 
 }
 
-void SkyeGeometricController::updateParameters(Eigen::Vector3d & position_,
+void SkyeGeometricController::UpdateParameters(Eigen::Vector3d & position_,
                                                Eigen::Vector3d & velocity_,
                                                Eigen::Quaterniond & orientation_,
                                                Eigen::Vector3d & a_angular_velocity_){
+
+    // General calculations
     R_ = orientation_.inverse().matrix();
 
+    //Position control parameters
     position_error_ << desired_position_(0) - position_(0),
             desired_position_(1) - position_(1),
             desired_position_(2) - position_(2);
@@ -72,11 +93,20 @@ void SkyeGeometricController::updateParameters(Eigen::Vector3d & position_,
     velocity_error_ << desired_velocity_(0) - velocity_(0),
             desired_velocity_(1) - velocity_(1),
             desired_velocity_(2) - velocity_(2) ;
-
     position_error_ = R_*position_error_;
     velocity_error_ = R_*velocity_error_;
 
-    //    angular_velocity_ = a_angular_velocity_;
+    //Attitude control parameters
+    angular_velocity_ = a_angular_velocity_;
+
+
+    /*********************************************************************************/
+    Eigen::Matrix3d angle_error_matrix = 0.5 * (R_des_.transpose() * R_ - R_.transpose() * R_des_);
+    vectorFromSkewMatrix(angle_error_matrix, &attitude_error_);
+    /*********************************************************************************/
+
+    angular_velocity_error_ =  angular_velocity_ - R_.transpose() * R_des_ * desired_angular_velocity_;
+
 
     /******************** DEBUG *************************/
     std::cout << "--------------------------------------------------" << std::endl <<
@@ -96,30 +126,46 @@ void SkyeGeometricController::updateParameters(Eigen::Vector3d & position_,
                  " | z: " << velocity_error_(2) <<
                  std::endl << std::endl;
 
-    std::cout << "R_:" << R_ << std::endl << std::endl;
+    std::cout << "attitude_error_: " << attitude_error_(0) <<
+                 " | y: " << attitude_error_(1) <<
+                 " | z: " << attitude_error_(2) <<
+                 std::endl << std::endl;
 
 
+    std::cout << "angular_velocity_error_: " << angular_velocity_error_(0) <<
+                 " | y: " << angular_velocity_error_(1) <<
+                 " | z: " << angular_velocity_error_(2) <<
+                 std::endl << std::endl;
+
+    //std::cout << "R_:" << R_ << std::endl << std::endl;
     /******************** END DEBUG *************************/
-
-
-    /*********************************************************************************
-    Eigen::Matrix3d angle_error_matrix = 0.5 * (R_des_.transpose() * R_ - R_.transpose() * R_des_);
-    vectorFromSkewMatrix(angle_error_matrix, &attitude_error_);
-    /*********************************************************************************/
-
-    //    angular_velocity_error_ =  angular_velocity_ - R_.transpose() * R_des_ * desired_angular_velocity_;
 
 }
 
-void SkyeGeometricController::computeForce(Eigen::Vector3d & output_force_){
+void SkyeGeometricController::UpdateGains(double k_x,
+                                          double k_v,
+                                          double k_R,
+                                          double k_omega){
+    k_x_ = k_x;
+    k_v_ = k_v;
+    k_R_ = k_R;
+    k_omega_ = k_omega;
+    this->ComputeNormalizedParameters();
+
+}
+
+
+void SkyeGeometricController::ComputeForce(Eigen::Vector3d & output_force_){
 
     output_force_ = (k_x_*(position_error_) + k_v_*(velocity_error_) - mass_*desired_acceleration_ );
     std::cout << "errors:" << std::endl << output_force_ << std::endl;
 }
 
-void SkyeGeometricController::computeMomentum(Eigen::Vector3d & output_momentum_){
+void SkyeGeometricController::ComputeAcceleration(Eigen::Vector3d & output_momentum_){
 
-    //    output_momentum_ = -k_R_.cwiseProduct(attitude_error_) - k_omega_.cwiseProduct(angular_velocity_error_) + angular_velocity_.cross(inertia_*angular_velocity_)
-    //                       - inertia_*(angular_velocity_.cross(R_.transpose()*(R_des_*desired_velocity())) - R_.transpose()*(R_des_*desired_angular_acceleration_));
+    output_momentum_ = -normalized_k_R_.cwiseProduct(attitude_error_)
+                       - normalized_k_omega_.cwiseProduct(angular_velocity_error_)
+                       + angular_velocity_.cross(angular_velocity_);
+
 }
 

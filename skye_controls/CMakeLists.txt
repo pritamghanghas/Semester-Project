@@ -8,11 +8,19 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   skye_ros
   eigen_conversions
+  dynamic_reconfigure
 )
 
 
+generate_dynamic_reconfigure_options(
+  cfg/skye_params.cfg
+)
+# make sure configure headers are built before any node using them
+#add_dependencies(dynamic_reconfigure_node ${PROJECT_NAME}_gencfg)
+
 catkin_package(
   INCLUDE_DIRS include
+  CATKIN_DEPENDS dynamic_reconfigure
 )
 
 include_directories(
@@ -20,13 +28,14 @@ include_directories(
   ${roscpp_INCLUDE_DIRS}
   ${skye_ros_INCLUDE_DIRS}
   include
+  src/node
 )
 
 ## Declare a C++ executable
 add_executable(skye_controls_node
-                    src/main.cpp
-                    src/skye_position_controller.cpp
-                    src/skye_geometric_controller.cpp)
+                   # src/node/main.cpp
+                    src/node/pose_control_node.cpp
+                    src/library/skye_geometric_controller.cpp)
 
 
 ## Specify libraries to link a library or executable target against
