@@ -27,7 +27,7 @@
 
 namespace skye_ros {
 
-#define HULL_GROUND_TRUTH_HZ 100 //publishing frequency of ground truth inf of the hull
+#define HULL_GROUND_TRUTH_HZ 50 //publishing frequency of ground truth inf of the hull
 
 class SkyeRos
 {

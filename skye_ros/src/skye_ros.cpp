@@ -118,7 +118,7 @@ bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCogBf::Request   &req,
    * attached to Skye, expressed in Gazebo ENU world frame.
    */
   if(!getLinkState("hull", hull_state, success, status_message)){ /**@todo remove hardcoded string "hull" */
-    ROS_ERROR("Error in getting link state: %s", status_message.c_str());
+    ROS_ERROR("[skye_ros] Error in getting link state. Msg: %s", status_message.c_str());
     return false;
   }
      
@@ -153,7 +153,7 @@ bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCogBf::Request   &req,
   }
   else
   {
-    ROS_ERROR("Failed to call service apply_body_wrench from gazebo_ros pkg");
+    ROS_ERROR("[skye_ros] Failed to call service apply_body_wrench from gazebo_ros pkg");
   }
 
   rep.success = srv.response.success;
@@ -184,7 +184,7 @@ bool SkyeRos::getLinkStateNed(const std::string                    link_name,
    * the Gazebo NED world frame.
    */
   if(!getLinkState(link_name, link_state, success, status_message)){
-    ROS_ERROR("Error in getting link state: %s", status_message.c_str());
+    ROS_ERROR("[skye_ros] Error in getting link state. Msg: %s", status_message.c_str());
     return false;
   }
 
@@ -251,7 +251,7 @@ bool SkyeRos::getLinkState(const std::string            &link_name,
   }
   else
   {
-      ROS_ERROR("Failed to call service get_link_state from gazebo_ros pkg");
+      ROS_ERROR("[skye_ros] Failed to call service get_link_state from gazebo_ros pkg");
       ret = false;
   }
 
