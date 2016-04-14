@@ -27,28 +27,34 @@ public:
     void ConfigCallback(skye_controls::skye_paramsConfig& config, uint32_t level);
     void PositionCallback(const gazebo_msgs::LinkState::ConstPtr& msg);
     void AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg);
-
     bool CallService();
-private:
 
+private:
+    //functions
+    bool ParseParameters(ros::NodeHandle nh);
+
+    //variables
+    double k_x, k_v, k_R, k_omega, k_if, k_im;
+    std::string wrench_service_name_;
+
+    //ros stuff
     geometry_msgs::Wrench temporaryWrench_;
     ros::ServiceClient wrench_service_;
     skye_ros::ApplyWrenchCogBf srv_;
 
-    Eigen::Vector3d position_, velocity_, angular_velocity_;
-    Eigen::Vector3d control_force_, control_momentum_;
-    SkyeGeometricController geometric_controller;
-    Eigen::Quaterniond orientation_;
-
-    Eigen::Matrix3d R_des_;
-
+    //dynamic reconfigure server for dynamic parameters
     dynamic_reconfigure::Server<skye_controls::skye_paramsConfig> dr_srv_;
     dynamic_reconfigure::Server<skye_controls::skye_paramsConfig>::CallbackType cb;
 
-    Eigen::Matrix3d inertia_;
-    double k_x, k_v, k_R, k_omega;
+    //Skye node
+    SkyeGeometricController geometric_controller;
+    SkyeParameters parameters;
 
-
+    //Eigen variables
+    Eigen::Vector3d position_, velocity_, angular_velocity_;
+    Eigen::Quaterniond orientation_;
+    Eigen::Vector3d control_force_, control_acceleration_, control_momentum_;
+    Eigen::Matrix3d R_des_, inertia_;
 
 };
 
