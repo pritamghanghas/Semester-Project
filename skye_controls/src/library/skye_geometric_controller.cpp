@@ -50,12 +50,6 @@ void SkyeGeometricController::InitializeParams(SkyeParameters param){
     //Compute maximum acceleration cog
     maximum_acceleration_cog_ = (maximum_force_cog_/number_of_actuators_) * radius_;
 
-
-//    std::cout << "R_des_:" << std::endl << R_des_ << std::endl << std::endl;
-
-//    std::cout << "inertia_:" << std::endl << inertia_ << std::endl << std::endl;
-
-//    inertia_(10,10);
 }
 
 void SkyeGeometricController::UpdateParameters(Eigen::Vector3d & position_,
@@ -111,7 +105,7 @@ void SkyeGeometricController::UpdateParameters(Eigen::Vector3d & position_,
                  " | z: " << integrator_force_error_(2) <<
                  std::endl << std::endl;
 
-
+            // ATTITUDE
 
     std::cout << "attitude_error_: " << attitude_error_(0) <<
                  " | y: " << attitude_error_(1) <<
