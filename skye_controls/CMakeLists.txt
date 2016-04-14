@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   skye_ros
   eigen_conversions
   dynamic_reconfigure
+  tf
 )
 
 
@@ -33,13 +34,19 @@ include_directories(
 
 ## Declare a C++ executable
 add_executable(skye_controls_node
-                   # src/node/main.cpp
                     src/node/pose_control_node.cpp
                     src/library/skye_geometric_controller.cpp)
+add_executable(skye_imu_to_bf
+                    src/node/imu_converter.cpp)
 
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(skye_controls_node
+                          ${catkin_LIBRARIES}
+                          ${roslib_LIBRARIES}
+                          ${skye_ros_LIBRARIES}
+ )
+target_link_libraries(skye_imu_to_bf
                           ${catkin_LIBRARIES}
                           ${roslib_LIBRARIES}
                           ${skye_ros_LIBRARIES}

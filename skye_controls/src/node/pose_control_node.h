@@ -16,7 +16,6 @@
 #include <sensor_msgs/Imu.h>
 #include <gazebo_msgs/LinkState.h>
 #include <skye_controls/skye_paramsConfig.h>
-// Dynamic reconfigure includes.
 #include <dynamic_reconfigure/server.h>
 
 
@@ -27,6 +26,7 @@ public:
 
     void ConfigCallback(skye_controls::skye_paramsConfig& config, uint32_t level);
     void PositionCallback(const gazebo_msgs::LinkState::ConstPtr& msg);
+    void AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg);
 
     bool CallService();
 private:
@@ -40,7 +40,7 @@ private:
     SkyeGeometricController geometric_controller;
     Eigen::Quaterniond orientation_;
 
-    Eigen::Matrix3d R_test;
+    Eigen::Matrix3d R_des_;
 
     dynamic_reconfigure::Server<skye_controls::skye_paramsConfig> dr_srv_;
     dynamic_reconfigure::Server<skye_controls::skye_paramsConfig>::CallbackType cb;
