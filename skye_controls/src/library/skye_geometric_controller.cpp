@@ -8,7 +8,7 @@
 SkyeGeometricController::SkyeGeometricController(){
 }
 
-inline void vectorFromSkewMatrix(Eigen::Matrix3d& skew_matrix, Eigen::Vector3d* vector) {
+inline void vectorFromSkewMatrix(Eigen::Matrix3d& skew_matrix, Eigen::Vector3d * vector) {
     *vector << skew_matrix(2, 1), skew_matrix(0,2), skew_matrix(1, 0);
 }
 
@@ -58,7 +58,7 @@ void SkyeGeometricController::UpdateParameters(Eigen::Vector3d & position_,
                                                Eigen::Vector3d & a_angular_velocity_){
 
     // Calculate rotation matrix from bf to NED
-    R_ = orientation_.inverse().matrix();
+    R_ = orientation_.matrix();
 
     //Calculate errors
     position_error_ << desired_position_(0) - position_(0),
@@ -69,8 +69,8 @@ void SkyeGeometricController::UpdateParameters(Eigen::Vector3d & position_,
             desired_velocity_(1) - velocity_(1),
             desired_velocity_(2) - velocity_(2) ;
     // Convert errors frame
-    position_error_ = R_*position_error_;
-    velocity_error_ = R_*velocity_error_;
+    position_error_ = R_.transpose()*position_error_;
+    velocity_error_ = R_.transpose()*velocity_error_;
 
     // Calculate attitude control errors as per Lee paper.
     Eigen::Matrix3d angle_error_matrix = 0.5 * (R_des_.transpose() * R_ - R_.transpose() * R_des_);
@@ -127,7 +127,9 @@ void SkyeGeometricController::UpdateParameters(Eigen::Vector3d & position_,
                  std::endl << std::endl;
 
 
-    //std::cout << "R_:" << R_ << std::endl << std::endl;
+    std::cout << "R_:" << R_ << std::endl << std::endl;
+
+    std::cout << "R_des_:" << R_des_ << std::endl << std::endl;
     /******************** END DEBUG *************************/
 
 }

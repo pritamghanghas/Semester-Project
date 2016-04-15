@@ -10,7 +10,7 @@ distance_integrator_treshold_: 0.05
 attitude_integrator_treshold_: 0.05
 desired_position_x: 5
 desired_position_y: 5
-desired_position_z: -3
+desired_position_z: -5
 
 inertia_11: 8.9927
 inertia_12: 0.1046

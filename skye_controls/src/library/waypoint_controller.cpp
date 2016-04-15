@@ -3,3 +3,7 @@
 WaypointController::WaypointController()
 {
 }
+
+WaypointController::~WaypointController(){
+
+}

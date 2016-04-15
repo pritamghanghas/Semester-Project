@@ -75,7 +75,7 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
         return false;
     }
 
-    WaypointsParser parser(points_file_path_, waypoint_parameters_.waypoints_);
+//    WaypointsParser parser(points_file_path_, waypoint_parameters_.waypoints_);
 
 
     skye_parameters_.input_desired_position_<< desired_position_x,
