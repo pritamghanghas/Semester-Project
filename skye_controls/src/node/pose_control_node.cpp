@@ -1,4 +1,25 @@
 #include <pose_control_node.h>
+#include <waypoints_parser.h>
+
+
+PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
+
+    this->ParseParameters(nh);
+
+    // Configure callback for dynamic parameters
+    cb = boost::bind(&PoseControllerNode::ConfigCallback, this, _1, _2);
+    dr_srv_.setCallback(cb);
+
+    //Initialize the controller passing all the parameters
+    geometric_controller_.InitializeParams(skye_parameters_);
+
+    //Setup service for control input if the service is ready
+    ros::service::waitForService(wrench_service_name_);
+    wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
+}
+
+PoseControllerNode::~PoseControllerNode (){};
+
 
 bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     //Declare parameters to be imported
@@ -10,14 +31,16 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
             R_des_21, R_des_22, R_des_23,
             R_des_31, R_des_32, R_des_33;
 
+
     //Get the parameters
     bool read_all_parameters = nh.getParam("wrench_service_name", wrench_service_name_) &&
-                               nh.getParam("mass", parameters.input_mass_) &&
-                               nh.getParam("radius_", parameters.input_radius_) &&
-                               nh.getParam("number_of_actuators_", parameters.input_number_of_actuators_) &&
-                               nh.getParam("maximum_force_cog_", parameters.input_maximum_force_cog_) &&
-                               nh.getParam("distance_integrator_treshold_", parameters.input_distance_integrator_treshold_) &&
-                               nh.getParam("attitude_integrator_treshold_", parameters.input_attitude_integrator_treshold_) &&
+                               nh.getParam("points_file_path_", points_file_path_) &&
+                               nh.getParam("mass", skye_parameters_.input_mass_) &&
+                               nh.getParam("radius_", skye_parameters_.input_radius_) &&
+                               nh.getParam("number_of_actuators_", skye_parameters_.input_number_of_actuators_) &&
+                               nh.getParam("maximum_force_cog_", skye_parameters_.input_maximum_force_cog_) &&
+                               nh.getParam("distance_integrator_treshold_", skye_parameters_.input_distance_integrator_treshold_) &&
+                               nh.getParam("attitude_integrator_treshold_", skye_parameters_.input_attitude_integrator_treshold_) &&
                                nh.getParam("desired_position_x", desired_position_x) &&
                                nh.getParam("desired_position_y", desired_position_y) &&
                                nh.getParam("desired_position_z", desired_position_z) &&
@@ -40,11 +63,22 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
                                nh.getParam("R_des_32", R_des_32) &&
                                nh.getParam("R_des_33", R_des_33);
     if (! read_all_parameters){
-        ROS_ERROR("Parameters not imported");
+        ROS_ERROR("Geometric Parameters not imported");
         return false;
     }
 
-    parameters.input_desired_position_<< desired_position_x,
+    //Get the parameters
+    read_all_parameters = nh.getParam("points_file_path_", points_file_path_);
+
+    if (! read_all_parameters){
+        ROS_ERROR("Waypoint controller Parameters not imported");
+        return false;
+    }
+
+    WaypointsParser parser(points_file_path_, waypoint_parameters_.waypoints_);
+
+
+    skye_parameters_.input_desired_position_<< desired_position_x,
             desired_position_y,
             desired_position_z;
 
@@ -56,8 +90,8 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
             R_des_31, R_des_32, R_des_33;
 
 
-    parameters.input_inertia_ = inertia_ ;
-    parameters.input_R_des_ << R_des_11, R_des_12, R_des_13,
+    skye_parameters_.input_inertia_ = inertia_ ;
+    skye_parameters_.input_R_des_ << R_des_11, R_des_12, R_des_13,
             R_des_21, R_des_22, R_des_23,
             R_des_31, R_des_32, R_des_33;
 
@@ -72,42 +106,24 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     pnh.param("k_im", k_im, k_im);
 
 
-    parameters.input_k_x_ = k_x;
-    parameters.input_k_v_ = k_v;
-    parameters.input_k_omega_ = k_omega;
-    parameters.input_k_R_ = k_R;
-    parameters.input_k_if_ = k_if;
-    parameters.input_k_im_ = k_im;
+    skye_parameters_.input_k_x_ = k_x;
+    skye_parameters_.input_k_v_ = k_v;
+    skye_parameters_.input_k_omega_ = k_omega;
+    skye_parameters_.input_k_R_ = k_R;
+    skye_parameters_.input_k_if_ = k_if;
+    skye_parameters_.input_k_im_ = k_im;
 
     Eigen::Vector3d zero_v_;
     zero_v_ << 0,0,0;
-    parameters.input_desired_acceleration_ = zero_v_;
-    parameters.input_desired_angular_acceleration_ = zero_v_;
-    parameters.input_desired_angular_velocity_ = zero_v_;
-    parameters.input_desired_velocity_ = zero_v_;
+    skye_parameters_.input_desired_acceleration_ = zero_v_;
+    skye_parameters_.input_desired_angular_acceleration_ = zero_v_;
+    skye_parameters_.input_desired_angular_velocity_ = zero_v_;
+    skye_parameters_.input_desired_velocity_ = zero_v_;
 
     return true;
 
 }
 
-
-PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
-
-    this->ParseParameters(nh);
-
-    // Configure callback for dynamic parameters
-    cb = boost::bind(&PoseControllerNode::ConfigCallback, this, _1, _2);
-    dr_srv_.setCallback(cb);
-
-    //Initialize the controller passing all the parameters
-    geometric_controller.InitializeParams(parameters);
-
-    //Setup service for control input if the service is ready
-    ros::service::waitForService(wrench_service_name_);
-    wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
-}
-
-PoseControllerNode::~PoseControllerNode (){};
 
 void PoseControllerNode::ConfigCallback(skye_controls::skye_paramsConfig& config, uint32_t level)
 {
@@ -125,8 +141,6 @@ void PoseControllerNode::AngularVelocityCallback(const sensor_msgs::Imu::ConstPt
     angular_velocity_ << msg->angular_velocity.x,
             msg->angular_velocity.y,
             msg->angular_velocity.z;
-
-    //TODO: check frame, is this correct?
 }
 
 void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr& msg){
@@ -144,10 +158,10 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
     orientation_.z() = msg->pose.orientation.z;
     orientation_.w() = msg->pose.orientation.w;
 
-    geometric_controller.UpdateGains(k_x,k_v, k_if, k_im, k_R, k_omega);
-    geometric_controller.UpdateParameters(position_, velocity_, orientation_, angular_velocity_);
-    geometric_controller.ComputeForce(control_force_);
-    geometric_controller.ComputeAcceleration(control_acceleration_);
+    geometric_controller_.UpdateGains(k_x,k_v, k_if, k_im, k_R, k_omega);
+    geometric_controller_.UpdateParameters(position_, velocity_, orientation_, angular_velocity_);
+    geometric_controller_.ComputeForce(control_force_);
+    geometric_controller_.ComputeAcceleration(control_acceleration_);
     control_momentum_ = inertia_*control_acceleration_;
 
 
@@ -195,17 +209,34 @@ int main(int argc, char **argv){
     ros::NodeHandle nh;
 
     // Import ros parameter for service and topic names
-    std::string wrench_service_name, imu_topic, ground_truth_topic;
+    std::string wrench_service_name, imu_topic, ground_truth_topic, points_file_path_;
     bool read_all_parameters = nh.getParam("wrench_service_name", wrench_service_name) &&
                                nh.getParam("ground_truth_topic", ground_truth_topic) &&
                                nh.getParam("imu_topic", imu_topic);
     // Check if names have correctly been imported
     if (! read_all_parameters) ROS_ERROR("Parameters not imported");
 
+
+
+    /******************* PARSING DEBUG ***********************/
+
+//    std::cout << "Parsed parameters" << std::endl <<
+//                 "waypoints size: " << waypoints_.size() <<
+//                 std::endl << std::endl;
+
+//    for (int i = 0; i < waypoints_.size(); ++i) {
+//        std::cout << "waypoint "<< i << " = " << std::endl << waypoints_.at(i) << std::endl;
+//    }
+//    waypoints_.at(100);
+//    return 0;
+    /******************* END PARSING ***********************/
+
+
     //Initialize node and subscribe to topics
     PoseControllerNode node_(nh);
     ros::Subscriber pos_sub_ground_truth = nh.subscribe (ground_truth_topic, 1, &PoseControllerNode::PositionCallback, &node_);
     ros::Subscriber pos_sub_imu = nh.subscribe (imu_topic, 1, &PoseControllerNode::AngularVelocityCallback, &node_);
+
 
     ros::Rate r(50); // 50 hz
     while (nh.ok())

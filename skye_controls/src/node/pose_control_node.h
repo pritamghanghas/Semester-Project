@@ -8,6 +8,7 @@
 #define POSE_CONTROL_NODE_H
 
 #include <stdio.h>
+#include <iostream>
 #include <Eigen/Eigen>
 #include <ros/ros.h>
 #include <skye_ros/ApplyWrenchCogBf.h>
@@ -17,6 +18,7 @@
 #include <gazebo_msgs/LinkState.h>
 #include <skye_controls/skye_paramsConfig.h>
 #include <dynamic_reconfigure/server.h>
+#include <skye_controls/waypoint_controller.h>
 
 
 class PoseControllerNode {
@@ -36,6 +38,7 @@ private:
     //variables
     double k_x, k_v, k_R, k_omega, k_if, k_im;
     std::string wrench_service_name_;
+    std::string points_file_path_;
 
     //ros stuff
     geometry_msgs::Wrench temporaryWrench_;
@@ -46,9 +49,13 @@ private:
     dynamic_reconfigure::Server<skye_controls::skye_paramsConfig> dr_srv_;
     dynamic_reconfigure::Server<skye_controls::skye_paramsConfig>::CallbackType cb;
 
+    //Waypoint Controllers
+    WaypointController waypoint_controller_;
+    WaypointControllerParameters waypoint_parameters_;
+
     //Skye node
-    SkyeGeometricController geometric_controller;
-    SkyeParameters parameters;
+    SkyeGeometricController geometric_controller_;
+    SkyeParameters skye_parameters_;
 
     //Eigen variables
     Eigen::Vector3d position_, velocity_, angular_velocity_;

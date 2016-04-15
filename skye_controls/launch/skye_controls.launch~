@@ -14,9 +14,6 @@
 <!-- Start up the dynamic reconfigure GUI. -->
   <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure"/>
 
-  <!-- Start up rqt_console so we can see the output of listener. -->
-  <node pkg="rqt_console" type="rqt_console" name="rqt_console"/>
-
   <rosparam command="load" file="$(find skye_controls)/skye_controls.yaml"/>
 
 </launch>
