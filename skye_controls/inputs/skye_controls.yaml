@@ -1,6 +1,7 @@
 wrench_service_name: skye_ros/apply_wrench_cog_bf
 ground_truth_topic: skye_ros/ground_truth/hull
 imu_topic: skye_ros/sensor_msgs/imu_sk
+points_file_path_: ./inputs/waypoints.txt
 mass: 12
 radius_: 1.42
 number_of_actuators_: 4
