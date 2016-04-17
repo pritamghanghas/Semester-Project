@@ -23,6 +23,10 @@
 
 class PoseControllerNode {
 public:
+    /**
+     * @brief PoseControllerNode
+     * @param nh
+     */
     PoseControllerNode(ros::NodeHandle nh);
     ~PoseControllerNode ();
 

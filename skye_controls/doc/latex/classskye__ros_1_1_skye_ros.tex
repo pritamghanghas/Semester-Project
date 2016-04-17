@@ -1,0 +1,123 @@
+\hypertarget{classskye__ros_1_1_skye_ros}{\section{skye\-\_\-ros\-:\-:Skye\-Ros Class Reference}
+\label{classskye__ros_1_1_skye_ros}\index{skye\-\_\-ros\-::\-Skye\-Ros@{skye\-\_\-ros\-::\-Skye\-Ros}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classskye__ros_1_1_skye_ros_a267dbb96c571ccfb1bea0a082b5cfb32}{\hyperlink{classskye__ros_1_1_skye_ros_a267dbb96c571ccfb1bea0a082b5cfb32}{Skye\-Ros} ()}\label{classskye__ros_1_1_skye_ros_a267dbb96c571ccfb1bea0a082b5cfb32}
+
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+void \hyperlink{classskye__ros_1_1_skye_ros_a7fce94bed2f513ee63aac089ccf40538}{imu\-Callback} (const sensor\-\_\-msgs\-::\-Imu\-Const\-Ptr \&imu\-\_\-gz\-\_\-sk\-\_\-p)
+\begin{DoxyCompactList}\small\item\em Callback function when a new imu msg has been received from Gazebo. \end{DoxyCompactList}\item 
+bool \hyperlink{classskye__ros_1_1_skye_ros_a3b89852664ebf528e0efd005dfee1cb6}{apply\-Wrench\-Cog} (skye\-\_\-ros\-::\-Apply\-Wrench\-Cog\-Bf\-::\-Request \&req, skye\-\_\-ros\-::\-Apply\-Wrench\-Cog\-Bf\-::\-Response \&rep)
+\begin{DoxyCompactList}\small\item\em Callback function when apply\-\_\-wrench\-\_\-cog service is called. \end{DoxyCompactList}\item 
+bool \hyperlink{classskye__ros_1_1_skye_ros_ac4bd9e5c80045fdf72a0e43eb43434e2}{get\-Link\-State\-Ned} (const std\-::string link\-\_\-name, skye\-\_\-ros\-::\-Get\-Link\-State\-Ned\-::\-Response \&rep)
+\begin{DoxyCompactList}\small\item\em Callback function when get\-\_\-link\-\_\-state\-\_\-ned service is called. \end{DoxyCompactList}\item 
+void \hyperlink{classskye__ros_1_1_skye_ros_a8e2c41ab1a0aa514dff6d31aa6fcd008}{pub\-Hull\-Ground\-Truth} ()
+\begin{DoxyCompactList}\small\item\em Publish ground truth infomration of the \hyperlink{class_skye}{Skye}'s hull. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classskye__ros_1_1_skye_ros_a3b89852664ebf528e0efd005dfee1cb6}{\index{skye\-\_\-ros\-::\-Skye\-Ros@{skye\-\_\-ros\-::\-Skye\-Ros}!apply\-Wrench\-Cog@{apply\-Wrench\-Cog}}
+\index{apply\-Wrench\-Cog@{apply\-Wrench\-Cog}!skye_ros::SkyeRos@{skye\-\_\-ros\-::\-Skye\-Ros}}
+\subsubsection[{apply\-Wrench\-Cog}]{\setlength{\rightskip}{0pt plus 5cm}bool skye\-\_\-ros\-::\-Skye\-Ros\-::apply\-Wrench\-Cog (
+\begin{DoxyParamCaption}
+\item[{skye\-\_\-ros\-::\-Apply\-Wrench\-Cog\-Bf\-::\-Request \&}]{req, }
+\item[{skye\-\_\-ros\-::\-Apply\-Wrench\-Cog\-Bf\-::\-Response \&}]{rep}
+\end{DoxyParamCaption}
+)}}\label{classskye__ros_1_1_skye_ros_a3b89852664ebf528e0efd005dfee1cb6}
+
+
+Callback function when apply\-\_\-wrench\-\_\-cog service is called. 
+
+Converts the requested wrench, expressed in \hyperlink{class_skye}{Skye}'s body frame, to a wrench expressed in Gazebo's E\-N\-U world frame and apply it in Gazebo.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em req} & Service request. \\
+\hline
+\mbox{\tt out}  & {\em rep} & Service response. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000004}{Todo}]remove hardcoded string \char`\"{}hull\char`\"{} \end{DoxyRefDesc}
+
+
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000005}{Todo}]parametrize body\-\_\-name \end{DoxyRefDesc}
+
+
+$<$ currently to leave \char`\"{}\char`\"{}, otherwise get error. \hypertarget{classskye__ros_1_1_skye_ros_ac4bd9e5c80045fdf72a0e43eb43434e2}{\index{skye\-\_\-ros\-::\-Skye\-Ros@{skye\-\_\-ros\-::\-Skye\-Ros}!get\-Link\-State\-Ned@{get\-Link\-State\-Ned}}
+\index{get\-Link\-State\-Ned@{get\-Link\-State\-Ned}!skye_ros::SkyeRos@{skye\-\_\-ros\-::\-Skye\-Ros}}
+\subsubsection[{get\-Link\-State\-Ned}]{\setlength{\rightskip}{0pt plus 5cm}bool skye\-\_\-ros\-::\-Skye\-Ros\-::get\-Link\-State\-Ned (
+\begin{DoxyParamCaption}
+\item[{const std\-::string}]{link\-\_\-name, }
+\item[{skye\-\_\-ros\-::\-Get\-Link\-State\-Ned\-::\-Response \&}]{rep}
+\end{DoxyParamCaption}
+)}}\label{classskye__ros_1_1_skye_ros_ac4bd9e5c80045fdf72a0e43eb43434e2}
+
+
+Callback function when get\-\_\-link\-\_\-state\-\_\-ned service is called. 
+
+Return the link state expressed in a N\-E\-D world fixed frame.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em link\-\_\-name} & name of the link to get the state \\
+\hline
+ & {\em req} & Service response.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\{ description\-\_\-of\-\_\-the\-\_\-return\-\_\-value \} 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000006}{Todo}]delt this and replace with right values. \end{DoxyRefDesc}
+\hypertarget{classskye__ros_1_1_skye_ros_a7fce94bed2f513ee63aac089ccf40538}{\index{skye\-\_\-ros\-::\-Skye\-Ros@{skye\-\_\-ros\-::\-Skye\-Ros}!imu\-Callback@{imu\-Callback}}
+\index{imu\-Callback@{imu\-Callback}!skye_ros::SkyeRos@{skye\-\_\-ros\-::\-Skye\-Ros}}
+\subsubsection[{imu\-Callback}]{\setlength{\rightskip}{0pt plus 5cm}void skye\-\_\-ros\-::\-Skye\-Ros\-::imu\-Callback (
+\begin{DoxyParamCaption}
+\item[{const sensor\-\_\-msgs\-::\-Imu\-Const\-Ptr \&}]{imu\-\_\-gz\-\_\-sk\-\_\-p}
+\end{DoxyParamCaption}
+)}}\label{classskye__ros_1_1_skye_ros_a7fce94bed2f513ee63aac089ccf40538}
+
+
+Callback function when a new imu msg has been received from Gazebo. 
+
+Converts Imu data from local Gazebo I\-M\-U frame (X forward, Y left, Z up), attached to the Imu box in Gazebo, to \hyperlink{class_skye}{Skye}'s I\-M\-U frame (X forward, Y right, Z down) and publish this new data.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em imu\-\_\-gz\-\_\-sk\-\_\-p} & imu data in Gazebo I\-M\-U frame. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000001}{Todo}]find a better solution to this workaround\-: \&(array\mbox{[}0\mbox{]}). \end{DoxyRefDesc}
+
+
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000002}{Todo}]find a better solution to this workaround\-: \&(array\mbox{[}0\mbox{]}). \end{DoxyRefDesc}
+
+
+\begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000003}{Todo}]find a better solution to this workaround\-: \&(array\mbox{[}0\mbox{]}). \end{DoxyRefDesc}
+\hypertarget{classskye__ros_1_1_skye_ros_a8e2c41ab1a0aa514dff6d31aa6fcd008}{\index{skye\-\_\-ros\-::\-Skye\-Ros@{skye\-\_\-ros\-::\-Skye\-Ros}!pub\-Hull\-Ground\-Truth@{pub\-Hull\-Ground\-Truth}}
+\index{pub\-Hull\-Ground\-Truth@{pub\-Hull\-Ground\-Truth}!skye_ros::SkyeRos@{skye\-\_\-ros\-::\-Skye\-Ros}}
+\subsubsection[{pub\-Hull\-Ground\-Truth}]{\setlength{\rightskip}{0pt plus 5cm}void skye\-\_\-ros\-::\-Skye\-Ros\-::pub\-Hull\-Ground\-Truth (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classskye__ros_1_1_skye_ros_a8e2c41ab1a0aa514dff6d31aa6fcd008}
+
+
+Publish ground truth infomration of the \hyperlink{class_skye}{Skye}'s hull. 
+
+\begin{DoxySeeAlso}{See Also}
+Skye\-Ros\-::get\-Link\-State 
+\end{DoxySeeAlso}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+skye\-\_\-ros/include/skye\-\_\-ros/skye\-\_\-ros.\-h\item 
+skye\-\_\-ros/src/skye\-\_\-ros.\-cpp\end{DoxyCompactItemize}

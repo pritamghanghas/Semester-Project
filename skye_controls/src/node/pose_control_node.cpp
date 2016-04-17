@@ -31,16 +31,17 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
             R_des_21, R_des_22, R_des_23,
             R_des_31, R_des_32, R_des_33;
 
-
     //Get the parameters
     bool read_all_parameters = nh.getParam("wrench_service_name", wrench_service_name_) &&
                                nh.getParam("points_file_path_", points_file_path_) &&
-                               nh.getParam("mass", skye_parameters_.input_mass_) &&
-                               nh.getParam("radius_", skye_parameters_.input_radius_) &&
-                               nh.getParam("number_of_actuators_", skye_parameters_.input_number_of_actuators_) &&
-                               nh.getParam("maximum_force_cog_", skye_parameters_.input_maximum_force_cog_) &&
-                               nh.getParam("distance_integrator_treshold_", skye_parameters_.input_distance_integrator_treshold_) &&
-                               nh.getParam("attitude_integrator_treshold_", skye_parameters_.input_attitude_integrator_treshold_) &&
+                               nh.getParam("mass", skye_parameters_.input_mass) &&
+                               nh.getParam("radius_", skye_parameters_.input_radius) &&
+                               nh.getParam("number_of_actuators_", skye_parameters_.input_number_of_actuators) &&
+                               nh.getParam("maximum_force_cog_", skye_parameters_.input_maximum_force_cog) &&
+                               nh.getParam("distance_integrator_treshold_", skye_parameters_.input_distance_integrator_treshold) &&
+                               nh.getParam("attitude_integrator_treshold_", skye_parameters_.input_attitude_integrator_treshold) &&
+                               nh.getParam("maximum_force_integrator_", skye_parameters_.input_maximum_force_integrator) &&
+                               nh.getParam("maximum_momentum_integrator_", skye_parameters_.input_maximum_momentum_integrator) &&
                                nh.getParam("desired_position_x", desired_position_x) &&
                                nh.getParam("desired_position_y", desired_position_y) &&
                                nh.getParam("desired_position_z", desired_position_z) &&
@@ -78,7 +79,7 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
 //    WaypointsParser parser(points_file_path_, waypoint_parameters_.waypoints_);
 
 
-    skye_parameters_.input_desired_position_<< desired_position_x,
+    skye_parameters_.input_desired_position_if<< desired_position_x,
             desired_position_y,
             desired_position_z;
 
@@ -90,8 +91,8 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
             R_des_31, R_des_32, R_des_33;
 
 
-    skye_parameters_.input_inertia_ = inertia_ ;
-    skye_parameters_.input_R_des_ << R_des_11, R_des_12, R_des_13,
+    skye_parameters_.input_inertia = inertia_ ;
+    skye_parameters_.input_R_des_if << R_des_11, R_des_12, R_des_13,
             R_des_21, R_des_22, R_des_23,
             R_des_31, R_des_32, R_des_33;
 
@@ -106,19 +107,19 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     pnh.param("k_im", k_im, k_im);
 
 
-    skye_parameters_.input_k_x_ = k_x;
-    skye_parameters_.input_k_v_ = k_v;
-    skye_parameters_.input_k_omega_ = k_omega;
-    skye_parameters_.input_k_R_ = k_R;
-    skye_parameters_.input_k_if_ = k_if;
-    skye_parameters_.input_k_im_ = k_im;
+    skye_parameters_.input_k_x = k_x;
+    skye_parameters_.input_k_v = k_v;
+    skye_parameters_.input_k_omega = k_omega;
+    skye_parameters_.input_k_R = k_R;
+    skye_parameters_.input_k_if = k_if;
+    skye_parameters_.input_k_im = k_im;
 
     Eigen::Vector3d zero_v_;
     zero_v_ << 0,0,0;
-    skye_parameters_.input_desired_acceleration_ = zero_v_;
-    skye_parameters_.input_desired_angular_acceleration_ = zero_v_;
-    skye_parameters_.input_desired_angular_velocity_ = zero_v_;
-    skye_parameters_.input_desired_velocity_ = zero_v_;
+    skye_parameters_.input_desired_acceleration_if = zero_v_;
+    skye_parameters_.input_desired_angular_acceleration_bf = zero_v_;
+    skye_parameters_.input_desired_angular_velocity_bf = zero_v_;
+    skye_parameters_.input_desired_velocity_if = zero_v_;
 
     return true;
 
@@ -160,8 +161,8 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
 
     geometric_controller_.UpdateGains(k_x,k_v, k_if, k_im, k_R, k_omega);
     geometric_controller_.UpdateParameters(position_, velocity_, orientation_, angular_velocity_);
-    geometric_controller_.ComputeForce(control_force_);
-    geometric_controller_.ComputeAcceleration(control_acceleration_);
+    geometric_controller_.ComputeForce(&control_force_);
+    geometric_controller_.ComputeAcceleration(&control_acceleration_);
     control_momentum_ = inertia_*control_acceleration_;
 
 

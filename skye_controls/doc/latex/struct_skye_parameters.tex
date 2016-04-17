@@ -1,0 +1,86 @@
+\hypertarget{struct_skye_parameters}{\section{Skye\-Parameters Struct Reference}
+\label{struct_skye_parameters}\index{Skye\-Parameters@{Skye\-Parameters}}
+}
+
+
+The \hyperlink{struct_skye_parameters}{Skye\-Parameters} struct this structure is used to pass every parameter from the outside, making the initialization easier and scalable in case of future modifications.  
+
+
+
+
+{\ttfamily \#include $<$skye\-\_\-geometric\-\_\-controller.\-h$>$}
+
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{struct_skye_parameters_a6629521e0b41c5f3729c6bd795c8f787}{int \hyperlink{struct_skye_parameters_a6629521e0b41c5f3729c6bd795c8f787}{input\-\_\-number\-\_\-of\-\_\-actuators}}\label{struct_skye_parameters_a6629521e0b41c5f3729c6bd795c8f787}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-number\-\_\-of\-\_\-actuators \-: the number of actuators skye has. It is used to compute the momentum saturation \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_ae95683393a970fb87018925875109c4a}{double \hyperlink{struct_skye_parameters_ae95683393a970fb87018925875109c4a}{input\-\_\-k\-\_\-x}}\label{struct_skye_parameters_ae95683393a970fb87018925875109c4a}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-k\-\_\-x \-: the position control gain \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a5e8389a9b91d5c1a46631ec59086d166}{double \hyperlink{struct_skye_parameters_a5e8389a9b91d5c1a46631ec59086d166}{input\-\_\-k\-\_\-v}}\label{struct_skye_parameters_a5e8389a9b91d5c1a46631ec59086d166}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-k\-\_\-v \-: the linear velocity control gain \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_ade9a063996652903688f9d5772dba9b9}{double \hyperlink{struct_skye_parameters_ade9a063996652903688f9d5772dba9b9}{input\-\_\-k\-\_\-if}}\label{struct_skye_parameters_ade9a063996652903688f9d5772dba9b9}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-k\-\_\-if \-: the force integrator control gain \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a1ef90e774334e2760de74c2145560289}{double \hyperlink{struct_skye_parameters_a1ef90e774334e2760de74c2145560289}{input\-\_\-k\-\_\-im}}\label{struct_skye_parameters_a1ef90e774334e2760de74c2145560289}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-k\-\_\-im \-: the momentum integrator control gain \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a49e98c5bf14cc7ac7a7ad8a35b09cbb2}{double \hyperlink{struct_skye_parameters_a49e98c5bf14cc7ac7a7ad8a35b09cbb2}{input\-\_\-k\-\_\-omega}}\label{struct_skye_parameters_a49e98c5bf14cc7ac7a7ad8a35b09cbb2}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-k\-\_\-omega \-: the angular velocity control gain \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_ad5566192a0f853462ba63e3ebcb0ba8d}{double \hyperlink{struct_skye_parameters_ad5566192a0f853462ba63e3ebcb0ba8d}{input\-\_\-k\-\_\-\-R}}\label{struct_skye_parameters_ad5566192a0f853462ba63e3ebcb0ba8d}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-k\-\_\-\-R \-: the attitude control gain \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a2b87d8983628d523ba2c00a0840ef4ff}{double \hyperlink{struct_skye_parameters_a2b87d8983628d523ba2c00a0840ef4ff}{input\-\_\-mass}}\label{struct_skye_parameters_a2b87d8983628d523ba2c00a0840ef4ff}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-mass \-: \hyperlink{class_skye}{Skye}'s Mass \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_ade9a962c46f28bf506f39a46da67bb80}{double \hyperlink{struct_skye_parameters_ade9a962c46f28bf506f39a46da67bb80}{input\-\_\-radius}}\label{struct_skye_parameters_ade9a962c46f28bf506f39a46da67bb80}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-radius \-: \hyperlink{class_skye}{Skye}'s radius \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a0eed3d70a979c9672c9d017178711b14}{double \hyperlink{struct_skye_parameters_a0eed3d70a979c9672c9d017178711b14}{input\-\_\-maximum\-\_\-force\-\_\-cog}}\label{struct_skye_parameters_a0eed3d70a979c9672c9d017178711b14}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-maximum\-\_\-force\-\_\-cog \-: unidirectional saturation value for the force \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a00f578515588e5d0ab40cc52febe08bf}{double \hyperlink{struct_skye_parameters_a00f578515588e5d0ab40cc52febe08bf}{input\-\_\-distance\-\_\-integrator\-\_\-treshold}}\label{struct_skye_parameters_a00f578515588e5d0ab40cc52febe08bf}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-distance\-\_\-integrator\-\_\-treshold \-: threshold under which the position integrator is activated \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_af4cc7d48375ee12e4f0e1863e0f11b28}{double \hyperlink{struct_skye_parameters_af4cc7d48375ee12e4f0e1863e0f11b28}{input\-\_\-attitude\-\_\-integrator\-\_\-treshold}}\label{struct_skye_parameters_af4cc7d48375ee12e4f0e1863e0f11b28}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-attitude\-\_\-integrator\-\_\-treshold \-: threshold under which the attitude integrator is activated \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a1bfdd5d7181eaa182e6925545e7b35b5}{double \hyperlink{struct_skye_parameters_a1bfdd5d7181eaa182e6925545e7b35b5}{input\-\_\-maximum\-\_\-force\-\_\-integrator}}\label{struct_skye_parameters_a1bfdd5d7181eaa182e6925545e7b35b5}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-maximum\-\_\-force\-\_\-integrator \-: saturation value for the position control integrator \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a5c05c4be8f429eab4ec19e41130a0d39}{double \hyperlink{struct_skye_parameters_a5c05c4be8f429eab4ec19e41130a0d39}{input\-\_\-maximum\-\_\-momentum\-\_\-integrator}}\label{struct_skye_parameters_a5c05c4be8f429eab4ec19e41130a0d39}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-maximum\-\_\-momentum\-\_\-integrator \-: saturation value for the attitude control integrator \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a2a7f81ce2ec7d633f02c77060da8139c}{Eigen\-::\-Vector3d \hyperlink{struct_skye_parameters_a2a7f81ce2ec7d633f02c77060da8139c}{input\-\_\-desired\-\_\-position\-\_\-if}}\label{struct_skye_parameters_a2a7f81ce2ec7d633f02c77060da8139c}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-desired\-\_\-position\-\_\-if \-: desired position expressed in the inertial frame \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a9f3ba3a6ad434b885dd7ce76fbe9f7b4}{Eigen\-::\-Vector3d \hyperlink{struct_skye_parameters_a9f3ba3a6ad434b885dd7ce76fbe9f7b4}{input\-\_\-desired\-\_\-velocity\-\_\-if}}\label{struct_skye_parameters_a9f3ba3a6ad434b885dd7ce76fbe9f7b4}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-desired\-\_\-velocity\-\_\-if \-: desired linear velocity expressed in the inertial frame \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a931b644ebe7201095e350bf9a1ea1365}{Eigen\-::\-Vector3d \hyperlink{struct_skye_parameters_a931b644ebe7201095e350bf9a1ea1365}{input\-\_\-desired\-\_\-acceleration\-\_\-if}}\label{struct_skye_parameters_a931b644ebe7201095e350bf9a1ea1365}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-desired\-\_\-acceleration\-\_\-if \-: desired linear acceleration expressed in the inertial frame \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a92ab3db245b3e4e62f01f828a4838cdc}{Eigen\-::\-Vector3d \hyperlink{struct_skye_parameters_a92ab3db245b3e4e62f01f828a4838cdc}{input\-\_\-desired\-\_\-angular\-\_\-velocity\-\_\-bf}}\label{struct_skye_parameters_a92ab3db245b3e4e62f01f828a4838cdc}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-desired\-\_\-angular\-\_\-velocity\-\_\-bf \-: desired angular velocity expressed in the body frame \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_af0ea0ec407eaef0ddec28e96ab098d1c}{Eigen\-::\-Vector3d \hyperlink{struct_skye_parameters_af0ea0ec407eaef0ddec28e96ab098d1c}{input\-\_\-desired\-\_\-angular\-\_\-acceleration\-\_\-bf}}\label{struct_skye_parameters_af0ea0ec407eaef0ddec28e96ab098d1c}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-desired\-\_\-angular\-\_\-acceleration\-\_\-bf \-: desired angular acceleration expressed in the body frame \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_a008add5ffc2700bd3af1caec5411af1d}{Eigen\-::\-Matrix3d \hyperlink{struct_skye_parameters_a008add5ffc2700bd3af1caec5411af1d}{input\-\_\-inertia}}\label{struct_skye_parameters_a008add5ffc2700bd3af1caec5411af1d}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-inertia \-: \hyperlink{class_skye}{Skye}'s inertia \end{DoxyCompactList}\item 
+\hypertarget{struct_skye_parameters_acc2c9df1cdc2feb5695ae3dc49c7b838}{Eigen\-::\-Matrix3d \hyperlink{struct_skye_parameters_acc2c9df1cdc2feb5695ae3dc49c7b838}{input\-\_\-\-R\-\_\-des\-\_\-if}}\label{struct_skye_parameters_acc2c9df1cdc2feb5695ae3dc49c7b838}
+
+\begin{DoxyCompactList}\small\item\em input\-\_\-\-R\-\_\-des \-: desired rotation matrix expressed in the inertial frame \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{struct_skye_parameters}{Skye\-Parameters} struct this structure is used to pass every parameter from the outside, making the initialization easier and scalable in case of future modifications. 
+
+The documentation for this struct was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+skye\-\_\-controls/include/skye\-\_\-controls/skye\-\_\-geometric\-\_\-controller.\-h\end{DoxyCompactItemize}

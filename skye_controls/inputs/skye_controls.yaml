@@ -8,6 +8,10 @@ number_of_actuators_: 4
 maximum_force_cog_: 15
 distance_integrator_treshold_: 0.05
 attitude_integrator_treshold_: 0.05
+maximum_force_integrator_: 1
+maximum_momentum_integrator_: 1
+
+
 desired_position_x: 5
 desired_position_y: 5
 desired_position_z: -5

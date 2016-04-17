@@ -1,0 +1,76 @@
+This repository contains everything you need to simulate the airship \hyperlink{class_skye}{Skye} in \href{http://gazebosim.org/}{\tt Gazebo} and interact with it by using the Robotic Operating System \href{http://www.ros.org/}{\tt R\-O\-S}. The recommended O\-S is Ubuntu 14.\-04.
+
+\subsection*{R\-O\-S Installation}
+
+These steps are taken from the main installation page of R\-O\-S. Configure your Ubuntu repositories to allow \char`\"{}restricted,\char`\"{} \char`\"{}universe,\char`\"{} and \char`\"{}multiverse.\char`\"{} You can \href{https://help.ubuntu.com/community/Repositories/Ubuntu}{\tt follow the Ubuntu guide} for instructions on doing this. Setup your computer to accept software from packages.\-ros.\-org. R\-O\-S Indigo O\-N\-L\-Y supports Saucy (13.\-10) and Trusty (14.\-04) for debian packages. ```bash sudo sh -\/c 'echo \char`\"{}deb http\-://packages.\-ros.\-org/ros/ubuntu \$(lsb\-\_\-release -\/sc) main\char`\"{} $>$ /etc/apt/sources.list.\-d/ros-\/latest.list' ``` Set up your keys ```bash sudo apt-\/key adv --keyserver hkp\-://ha.pool.\-sks-\/keyservers.\-net --recv-\/key 0x\-B01\-F\-A116 ``` Installation\-: first, make sure your Debian package index is up-\/to-\/date. ```bash sudo apt-\/get update ``` Install the Desktop Install version, which provides you\-: R\-O\-S, rqt, rviz, and robot-\/generic libraries ```bash sudo apt-\/get install ros-\/indigo-\/desktop ``` Initialize R\-O\-S. ```bash sudo rosdep init rosdep update ``` It's convenient if the R\-O\-S environment variables are automatically added to your bash session every time a new shell is launched\-: ```bash echo \char`\"{}source /opt/ros/indigo/setup.\-bash\char`\"{} $>$$>$ $\sim$/.bashrc source $\sim$/.bashrc ``` rosinstall is a frequently used command-\/line tool in R\-O\-S that is distributed separately. It enables you to easily download many source trees for R\-O\-S packages with one command. ```bash sudo apt-\/get install python-\/rosinstall ``` \subsection*{Gazebo6 Installation}
+
+Since some of the required plugins are not available in Gazebo2 (the official supported version of Gazebo in R\-O\-S Indigo) it is necessary to manually install Gazebo6 and its integration with R\-O\-S. To do so setup your computer to accept software from packages.\-osrfoundation.\-org. ``{\ttfamily bash sudo sh -\/c 'echo \char`\"{}deb http\-://packages.\-osrfoundation.\-org/gazebo/ubuntu-\/stable$<$/tt$>$lsb\-\_\-release -\/cs` main\char`\"{} $>$ /etc/apt/sources.list.\-d/gazebo-\/stable.list' ``` Setup keys ```bash wget \href{http://packages.osrfoundation.org/gazebo.key}{\tt http\-://packages.\-osrfoundation.\-org/gazebo.\-key} -\/\-O -\/ $\vert$ sudo apt-\/key add -\/ ``` Install Gazebo with R\-O\-S integration. ```bash sudo apt-\/get update sudo apt-\/get install ros-\/indigo-\/gazebo6-\/ros-\/pkgs ```}
+
+{\ttfamily \subsection*{Test Gazebo-\/\-R\-O\-S Integration}}
+
+{\ttfamily  Make sure the stand-\/alone Gazebo works by running in terminal (this command may need a couple of minutes the first time your run it)\-: ```bash gazebo ``` You should see the G\-U\-I open with an empty world. Also, test adding a model by clicking on the \char`\"{}\-Insert\char`\"{} tab on the left and selecting a model to add (then clicking on the simulation to select where to place the model). Now you can close Gazebo and you can kill all of its processes by ```bash killall -\/9 gazebo \& killall -\/9 gzserver \& killall -\/9 gzclient ``` Finally we can test Gazebo with R\-O\-S Integration. ```bash roscore \& rosrun gazebo\-\_\-ros gazebo ``` The Gazebo G\-U\-I should appear with nothing inside the viewing window. To verify that the proper R\-O\-S connections are setup, view the available R\-O\-S topics by typing in a new terminal the command ```bash rostopic list ``` You should see within the lists topics such as\-: ```bash /gazebo/link\-\_\-states /gazebo/model\-\_\-states /gazebo/parameter\-\_\-descriptions /gazebo/parameter\-\_\-updates /gazebo/set\-\_\-link\-\_\-state /gazebo/set\-\_\-model\-\_\-state ``` Now you can close Gazebo. To Make sure every processes started from the previous command has been closed you can run ```bash killall -\/9 gazebo \& killall -\/9 gzserver \& killall -\/9 gzclient ```}
+
+{\ttfamily \subsection*{Create A Catkin Workspace And Compile Source Code}}
+
+{\ttfamily  Create a catkin workspace in your home folder where you are going to clone every package needed to simulate \hyperlink{class_skye}{Skye}. ```bash cd $\sim$ mkdir -\/p catkin\-\_\-ws/src cd $\sim$/catkin\-\_\-ws/src catkin\-\_\-init\-\_\-workspace ``` Clone the required reposotories in the src folder\-: ```bash cd $\sim$/catkin\-\_\-ws/src git clone \href{https://github.com/skye-git/skye_gazebo_simulation}{\tt https\-://github.\-com/skye-\/git/skye\-\_\-gazebo\-\_\-simulation} -\/b indigo-\/devel git clone \href{https://github.com/skye-git/hector_gazebo}{\tt https\-://github.\-com/skye-\/git/hector\-\_\-gazebo} -\/b indigo-\/devel ``{\ttfamily  Compile them. Suggestion\-: use the option $\ast$$\ast$-\/j$\ast$$\ast$ to specify the number of jobs to run simultaneously; for example}catkin\-\_\-make -\/j4{\ttfamily  }``bash cd $\sim$/catkin\-\_\-ws catkin\-\_\-make ``` It's convenient if the R\-O\-S environment variables are automatically added to your bash session every time a new shell is launched\-: ```bash echo \char`\"{}source $\sim$/catkin\-\_\-ws/devel/setup.\-bash\char`\"{} $>$$>$ $\sim$/.bashrc source $\sim$/.bashrc ```}
+
+{\ttfamily \subsection*{Include Needed Plugins}}
+
+{\ttfamily  To include the needed plugins in Gazebo6 you first must locate the Gazebo setup.\-sh file\-: ```bash $<$install\-\_\-path$>$/share/gazebo/setup.sh ``` where $\ast$$<$install\-\_\-path$>$$\ast$ is the path where Gazebo has been installed in your computer. For example the previous command should look similar to ```bash /usr/share/gazebo/setup.sh ``` Now you can modify the path where Gazebo searchs for the plugin shared libraries at runtime. The Imu plugin from \char`\"{}hector\-\_\-gazebo\char`\"{} package is located, by default, in '$\sim$/catkin\-\_\-ws/devel/lib/'. ```bash echo \char`\"{}source $<$install\-\_\-path$>$/share/gazebo/setup.\-sh\char`\"{} $>$$>$ $\sim$/.bashrc echo \char`\"{}export G\-A\-Z\-E\-B\-O\-\_\-\-P\-L\-U\-G\-I\-N\-\_\-\-P\-A\-T\-H=$\sim$/catkin\-\_\-ws/devel/lib\-:\$\{\-G\-A\-Z\-E\-B\-O\-\_\-\-P\-L\-U\-G\-I\-N\-\_\-\-P\-A\-T\-H\}\char`\"{} $>$$>$ $\sim$/.bashrc source $\sim$/.bashrc ```}
+
+{\ttfamily \subsection*{Launch A Simulation With Empty World}}
+
+{\ttfamily  To launch a first simulation of \hyperlink{class_skye}{Skye} in an empty world in Gazebo type ```bash roslaunch \hyperlink{namespaceskye__ros}{skye\-\_\-ros} inflate\-\_\-skye.\-launch ``` The launch file 'inflate\-\_\-skye.\-launch' does several things for you\-: it starts roscore, launches Gazebo with an instance of \hyperlink{class_skye}{Skye} and starts the node interface called 'skye\-\_\-ros\-\_\-node'.}
+
+{\ttfamily \subsection*{Skye-\/\-R\-O\-S Interface}}
+
+{\ttfamily  The package \char`\"{}skye\-\_\-ros\char`\"{} provides an easy interface to interact with a simulation of \hyperlink{class_skye}{Skye} in Gazebo.}
+
+{\ttfamily \subsubsection*{Advertised Topics}}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item /skye\-\_\-ros/sensor\-\_\-msgs/imu\-\_\-sk I\-M\-U data expressed in a local frame attached to the I\-M\-U box, called I\-M\-U frame. See section {\itshape Frame Convetions} for further information.
+\item /skye\-\_\-ros/ground\-\_\-truth/hull ground truth infomration of the hull. Contains the position, orientation and linear velocity of the hull, expressed in the world N\-E\-D frame (see below section {\bfseries Frames Convetion} for further information). {\bfseries Warning}\-: angular velocity field into this topic is filled with zeros as long as a problem in Gazebo is not resolved.
+\end{DoxyItemize}}
+
+{\ttfamily Example\-: echo imu\-\_\-sk message. ```bash rostopic echo /skye\-\_\-ros/sensor\-\_\-msgs/imu\-\_\-sk ```}
+
+{\ttfamily \subsubsection*{Advertised Services}}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item /skye\-\_\-ros/apply\-\_\-wrench\-\_\-cog\-\_\-bf service to apply a wrench (i.\-e. a force and a torque) in the center of gravity (Co\-G) of \hyperlink{class_skye}{Skye}. Wrench expressed in \hyperlink{class_skye}{Skye}'s body frame attached to the Co\-G of \hyperlink{class_skye}{Skye}. See below section {\bfseries Frames Convetion} for further information.
+\end{DoxyItemize}}
+
+{\ttfamily Example\-: apply a torque of 3 Nm around \hyperlink{class_skye}{Skye}'s X axes (in body frame). ```bash rosservice call /skye\-\_\-ros/apply\-\_\-wrench\-\_\-cog\-\_\-bf '\{wrench\-: \{ force\-: \{ x\-: 0, y\-: 0, z\-: 0 \}, torque\-: \{x\-: 3, y\-: 0, z\-: 0\} \}, start\-\_\-time\-: 0, duration\-: -\/1 \}' ``` \subsection*{Repository Layout}}
+
+{\ttfamily  The following describes the directory structure and important files in the skye\-\_\-gazebo\-\_\-simulation repository}
+
+{\ttfamily Folders\-:}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item skye\-\_\-description -\/ \hyperlink{class_skye}{Skye}'s Gazebo model descritpion in S\-D\-F.
+\item skye\-\_\-gazebo -\/ Contains launch files to run Gazebo and spawn \hyperlink{class_skye}{Skye}.
+\item \hyperlink{namespaceskye__ros}{skye\-\_\-ros} -\/ Containes a simple interface which converts data from Gazebo E\-N\-U frame to \hyperlink{class_skye}{Skye}'s N\-E\-D frame.
+\end{DoxyItemize}}
+
+{\ttfamily \subsection*{Frames Convention}}
+
+{\ttfamily  Gazebo and R\-O\-S use E\-N\-U frame convention, i.\-e. X axis points to East, Y axis to North and Z axis up. We use trhee slightly different frames, that are common in air vehicles\-: r}
+
+{\ttfamily 
+\begin{DoxyItemize}
+\item World N\-E\-D frame\-: X axis pointing to North, Y axis pointing to East and Z axis pointing to Down.
+\item \hyperlink{class_skye}{Skye}'s body frame\-: frame attached to the Center of Gravity (Co\-G) of the hull. It has the X axis pointing geometrically forward W.\-R.\-T the eye, the Y axis pointing geometrically right W.\-R.\-T the hull and the Z axis pointing geometrically down W.\-R.\-T the hull.
+\item I\-M\-U frame\-: frame attached to the center of the I\-M\-U (red box). It has the X axis pointing geometrically forward W.\-R.\-T the eye, the Y axis pointing geometrically right W.\-R.\-T the hull and the Z axis pointing geometrically down W.\-R.\-T the hull.
+\end{DoxyItemize}}
+
+{\ttfamily The picture below gives an overview of these three frames. Note that the initial default position of \hyperlink{class_skye}{Skye} is rotated of 90 degrees about the Z axis with respect to the world N\-E\-D frame.}
+
+{\ttfamily }
+
+{\ttfamily   }
+
+{\ttfamily  }
