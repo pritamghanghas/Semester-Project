@@ -5,19 +5,15 @@
 \begin{DoxyCompactItemize}
 \item 
 \hyperlink{class_pose_controller_node_a17466a8314ad354402401ba27157594c}{Pose\-Controller\-Node} (ros\-::\-Node\-Handle nh)
-\begin{DoxyCompactList}\small\item\em \hyperlink{class_pose_controller_node}{Pose\-Controller\-Node}. \end{DoxyCompactList}\item 
-\hypertarget{class_pose_controller_node_a819aeca3638e5b53eefc6f9891a8af03}{void {\bfseries Config\-Callback} (skye\-\_\-controls\-::skye\-\_\-params\-Config \&config, uint32\-\_\-t level)}\label{class_pose_controller_node_a819aeca3638e5b53eefc6f9891a8af03}
-
-\item 
-\hypertarget{class_pose_controller_node_ac4582290cf6ff6b5cd9564fd386c3b39}{void {\bfseries Position\-Callback} (const gazebo\-\_\-msgs\-::\-Link\-State\-::\-Const\-Ptr \&msg)}\label{class_pose_controller_node_ac4582290cf6ff6b5cd9564fd386c3b39}
-
-\item 
-\hypertarget{class_pose_controller_node_a1804624b5c2f57b08fcd1c50b8118cd7}{void {\bfseries Angular\-Velocity\-Callback} (const sensor\-\_\-msgs\-::\-Imu\-::\-Const\-Ptr \&msg)}\label{class_pose_controller_node_a1804624b5c2f57b08fcd1c50b8118cd7}
-
-\item 
-\hypertarget{class_pose_controller_node_a0b12265a62dad33caa6063f5cb582c80}{bool {\bfseries Call\-Service} ()}\label{class_pose_controller_node_a0b12265a62dad33caa6063f5cb582c80}
-
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_pose_controller_node}{Pose\-Controller\-Node} \-: the constructor initializes the dynamic parameters, creates the desired controller sets up the service to control skye. \end{DoxyCompactList}\item 
+void \hyperlink{class_pose_controller_node_aab9762d618a38b99cbfbcaecd2163606}{Config\-Callback} (const skye\-\_\-controls\-::skye\-\_\-params\-Config \&config, uint32\-\_\-t level)
+\begin{DoxyCompactList}\small\item\em Config\-Callback \-: Callback for the dynamic configuration of the parameters. \end{DoxyCompactList}\item 
+void \hyperlink{class_pose_controller_node_ac4582290cf6ff6b5cd9564fd386c3b39}{Position\-Callback} (const gazebo\-\_\-msgs\-::\-Link\-State\-::\-Const\-Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Position\-Callback \-: this callback is called by the topic providing \hyperlink{class_skye}{Skye}'s ground truth. \end{DoxyCompactList}\item 
+void \hyperlink{class_pose_controller_node_a1804624b5c2f57b08fcd1c50b8118cd7}{Angular\-Velocity\-Callback} (const sensor\-\_\-msgs\-::\-Imu\-::\-Const\-Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Angular\-Velocity\-Callback \-: this callback receives the angular velocity from the I\-M\-U. \end{DoxyCompactList}\item 
+bool \hyperlink{class_pose_controller_node_a0b12265a62dad33caa6063f5cb582c80}{Call\-Service} ()
+\begin{DoxyCompactList}\small\item\em Call\-Service \-: utility wrapped function to call the service. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \subsection{Constructor \& Destructor Documentation}
@@ -30,11 +26,79 @@
 )}}\label{class_pose_controller_node_a17466a8314ad354402401ba27157594c}
 
 
-\hyperlink{class_pose_controller_node}{Pose\-Controller\-Node}. 
+\hyperlink{class_pose_controller_node}{Pose\-Controller\-Node} \-: the constructor initializes the dynamic parameters, creates the desired controller sets up the service to control skye. 
 
 
 \begin{DoxyParams}{Parameters}
-{\em nh} & \\
+{\em nh} & \-: Ros node handle to create the service\\
+\hline
+\end{DoxyParams}
+The constructor has a fixed service name that is saved as a class member in the main function. The successful creation of this node is conditioned upon succesfully finding the service. In case the service is wrong or not published the node does not created. The dynamic parameters are used for dynamically configure control parameters 
+
+\subsection{Member Function Documentation}
+\hypertarget{class_pose_controller_node_a1804624b5c2f57b08fcd1c50b8118cd7}{\index{Pose\-Controller\-Node@{Pose\-Controller\-Node}!Angular\-Velocity\-Callback@{Angular\-Velocity\-Callback}}
+\index{Angular\-Velocity\-Callback@{Angular\-Velocity\-Callback}!PoseControllerNode@{Pose\-Controller\-Node}}
+\subsubsection[{Angular\-Velocity\-Callback}]{\setlength{\rightskip}{0pt plus 5cm}void Pose\-Controller\-Node\-::\-Angular\-Velocity\-Callback (
+\begin{DoxyParamCaption}
+\item[{const sensor\-\_\-msgs\-::\-Imu\-::\-Const\-Ptr \&}]{msg}
+\end{DoxyParamCaption}
+)}}\label{class_pose_controller_node_a1804624b5c2f57b08fcd1c50b8118cd7}
+
+
+Angular\-Velocity\-Callback \-: this callback receives the angular velocity from the I\-M\-U. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \-: the imu message containing angular velocity \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_pose_controller_node_a0b12265a62dad33caa6063f5cb582c80}{\index{Pose\-Controller\-Node@{Pose\-Controller\-Node}!Call\-Service@{Call\-Service}}
+\index{Call\-Service@{Call\-Service}!PoseControllerNode@{Pose\-Controller\-Node}}
+\subsubsection[{Call\-Service}]{\setlength{\rightskip}{0pt plus 5cm}bool Pose\-Controller\-Node\-::\-Call\-Service (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_pose_controller_node_a0b12265a62dad33caa6063f5cb582c80}
+
+
+Call\-Service \-: utility wrapped function to call the service. 
+
+\begin{DoxyReturn}{Returns}
+\-: true if the service was called correctly 
+\end{DoxyReturn}
+\hypertarget{class_pose_controller_node_aab9762d618a38b99cbfbcaecd2163606}{\index{Pose\-Controller\-Node@{Pose\-Controller\-Node}!Config\-Callback@{Config\-Callback}}
+\index{Config\-Callback@{Config\-Callback}!PoseControllerNode@{Pose\-Controller\-Node}}
+\subsubsection[{Config\-Callback}]{\setlength{\rightskip}{0pt plus 5cm}void Pose\-Controller\-Node\-::\-Config\-Callback (
+\begin{DoxyParamCaption}
+\item[{const skye\-\_\-controls\-::skye\-\_\-params\-Config \&}]{config, }
+\item[{uint32\-\_\-t}]{level}
+\end{DoxyParamCaption}
+)}}\label{class_pose_controller_node_aab9762d618a38b99cbfbcaecd2163606}
+
+
+Config\-Callback \-: Callback for the dynamic configuration of the parameters. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em config} & \-: the skye\-\_\-params congifuration file \\
+\hline
+{\em level} & \-: not used \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_pose_controller_node_ac4582290cf6ff6b5cd9564fd386c3b39}{\index{Pose\-Controller\-Node@{Pose\-Controller\-Node}!Position\-Callback@{Position\-Callback}}
+\index{Position\-Callback@{Position\-Callback}!PoseControllerNode@{Pose\-Controller\-Node}}
+\subsubsection[{Position\-Callback}]{\setlength{\rightskip}{0pt plus 5cm}void Pose\-Controller\-Node\-::\-Position\-Callback (
+\begin{DoxyParamCaption}
+\item[{const gazebo\-\_\-msgs\-::\-Link\-State\-::\-Const\-Ptr \&}]{msg}
+\end{DoxyParamCaption}
+)}}\label{class_pose_controller_node_ac4582290cf6ff6b5cd9564fd386c3b39}
+
+
+Position\-Callback \-: this callback is called by the topic providing \hyperlink{class_skye}{Skye}'s ground truth. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \-: the message containing the lik state This is used as callback to perform the control loop, which means that control inputs are applied every time a new linkstate is received. \\
 \hline
 \end{DoxyParams}
 

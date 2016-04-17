@@ -1,26 +1,6 @@
 #include <pose_control_node.h>
 #include <waypoints_parser.h>
 
-
-PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
-
-    this->ParseParameters(nh);
-
-    // Configure callback for dynamic parameters
-    cb = boost::bind(&PoseControllerNode::ConfigCallback, this, _1, _2);
-    dr_srv_.setCallback(cb);
-
-    //Initialize the controller passing all the parameters
-    geometric_controller_.InitializeParams(skye_parameters_);
-
-    //Setup service for control input if the service is ready
-    ros::service::waitForService(wrench_service_name_);
-    wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
-}
-
-PoseControllerNode::~PoseControllerNode (){};
-
-
 bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     //Declare parameters to be imported
     double desired_position_x, desired_position_y, desired_position_z;
@@ -86,7 +66,7 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     inertia_ << inertia_11, inertia_12, inertia_13,
             inertia_21, inertia_22, inertia_23,
             inertia_31, inertia_32, inertia_33;
-    R_des_ << R_des_11, R_des_12, R_des_13,
+    R_des_if_ << R_des_11, R_des_12, R_des_13,
             R_des_21, R_des_22, R_des_23,
             R_des_31, R_des_32, R_des_33;
 
@@ -99,87 +79,106 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     // Initialize node parameters from launch file or command line. Use a private node handle so that multiple instances
     // of the node can be run simultaneously while using different parameters.
     ros::NodeHandle pnh("~");
-    pnh.param("k_x", k_x, k_x);
-    pnh.param("k_v", k_v, k_v);
-    pnh.param("k_R", k_R, k_R);
-    pnh.param("k_omega", k_omega, k_omega);
-    pnh.param("k_if", k_if, k_if);
-    pnh.param("k_im", k_im, k_im);
+    pnh.param("k_x_", k_x_, k_x_);
+    pnh.param("k_v_", k_v_, k_v_);
+    pnh.param("k_R_", k_R_, k_R_);
+    pnh.param("k_omega_", k_omega_, k_omega_);
+    pnh.param("k_if_", k_if_, k_if_);
+    pnh.param("k_im_", k_im_, k_im_);
 
 
-    skye_parameters_.input_k_x = k_x;
-    skye_parameters_.input_k_v = k_v;
-    skye_parameters_.input_k_omega = k_omega;
-    skye_parameters_.input_k_R = k_R;
-    skye_parameters_.input_k_if = k_if;
-    skye_parameters_.input_k_im = k_im;
+    skye_parameters_.input_k_x = k_x_;
+    skye_parameters_.input_k_v = k_v_;
+    skye_parameters_.input_k_omega = k_omega_;
+    skye_parameters_.input_k_R = k_R_;
+    skye_parameters_.input_k_if = k_if_;
+    skye_parameters_.input_k_im = k_im_;
 
-    Eigen::Vector3d zero_v_;
-    zero_v_ << 0,0,0;
-    skye_parameters_.input_desired_acceleration_if = zero_v_;
-    skye_parameters_.input_desired_angular_acceleration_bf = zero_v_;
-    skye_parameters_.input_desired_angular_velocity_bf = zero_v_;
-    skye_parameters_.input_desired_velocity_if = zero_v_;
+    Eigen::Vector3d zero_v;
+    zero_v << 0,0,0;
+    skye_parameters_.input_desired_acceleration_if = zero_v;
+    skye_parameters_.input_desired_angular_acceleration_bf = zero_v;
+    skye_parameters_.input_desired_angular_velocity_bf = zero_v;
+    skye_parameters_.input_desired_velocity_if = zero_v;
 
     return true;
-
 }
 
 
-void PoseControllerNode::ConfigCallback(skye_controls::skye_paramsConfig& config, uint32_t level)
+PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
+
+    this->ParseParameters(nh);
+
+    // Configure callback for dynamic parameters
+    cb = boost::bind(&PoseControllerNode::ConfigCallback, this, _1, _2);
+    dr_srv_.setCallback(cb);
+
+    //Initialize the controller passing all the parameters
+    geometric_controller_.InitializeParams(skye_parameters_);
+
+    //Setup service for control input if the service is ready
+    ros::service::waitForService(wrench_service_name_);
+    wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
+}
+
+PoseControllerNode::~PoseControllerNode (){};
+
+
+
+void PoseControllerNode::ConfigCallback(const skye_controls::skye_paramsConfig &config, uint32_t level)
 {
     // Set class variables to new values. They match what is input at the dynamic reconfigure GUI.
-    k_x = config.k_x;
-    k_v = config.k_v;
-    k_R = config.k_R;
-    k_omega = config.k_omega;
-    k_if = config.k_if;
-    k_im = config.k_im;
+    k_x_ = config.k_x_;
+    k_v_ = config.k_v_;
+    k_R_ = config.k_R_;
+    k_omega_ = config.k_omega_;
+    k_if_ = config.k_if_;
+    k_im_ = config.k_im_;
 }
 
 
 void PoseControllerNode::AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg){
-    angular_velocity_ << msg->angular_velocity.x,
+    angular_velocity_bf_ << msg->angular_velocity.x,
             msg->angular_velocity.y,
             msg->angular_velocity.z;
 }
 
 void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr& msg){
 
-    position_ <<msg->pose.position.x,
+    position_if_ <<msg->pose.position.x,
             msg->pose.position.y,
             msg->pose.position.z;
 
-    velocity_ << msg->twist.linear.x,
+    velocity_if_ << msg->twist.linear.x,
             msg->twist.linear.y,
             msg->twist.linear.z;
 
-    orientation_.x() = msg->pose.orientation.x;
-    orientation_.y() = msg->pose.orientation.y;
-    orientation_.z() = msg->pose.orientation.z;
-    orientation_.w() = msg->pose.orientation.w;
+    orientation_if_.x() = msg->pose.orientation.x;
+    orientation_if_.y() = msg->pose.orientation.y;
+    orientation_if_.z() = msg->pose.orientation.z;
+    orientation_if_.w() = msg->pose.orientation.w;
 
-    geometric_controller_.UpdateGains(k_x,k_v, k_if, k_im, k_R, k_omega);
-    geometric_controller_.UpdateParameters(position_, velocity_, orientation_, angular_velocity_);
-    geometric_controller_.ComputeForce(&control_force_);
-    geometric_controller_.ComputeAcceleration(&control_acceleration_);
-    control_momentum_ = inertia_*control_acceleration_;
+    geometric_controller_.UpdateGains(k_x_ ,k_v_, k_if_, k_im_, k_R_, k_omega_);
+    geometric_controller_.UpdateParameters(position_if_, velocity_if_, orientation_if_, angular_velocity_bf_);
+    geometric_controller_.ComputeForce(&control_force_bf_);
+    geometric_controller_.ComputeAcceleration(&control_acceleration_bf_);
+    control_momentum_bf_ = inertia_*control_acceleration_bf_;
 
 
     /******************** DEBUG *************************/
-    std::cout << "force: " << control_force_(0) <<
-                 " | y: " << control_force_(1) <<
-                 " | z: " << control_force_(2) <<
+    std::cout << "force: " << control_force_bf_(0) <<
+                 " | y: " << control_force_bf_(1) <<
+                 " | z: " << control_force_bf_(2) <<
                  std::endl;
 
-    std::cout << "acceleration: " << control_acceleration_(0) <<
-                 " | y: " << control_acceleration_(1) <<
-                 " | z: " << control_acceleration_(2) <<
+    std::cout << "acceleration: " << control_acceleration_bf_(0) <<
+                 " | y: " << control_acceleration_bf_(1) <<
+                 " | z: " << control_acceleration_bf_(2) <<
                  std::endl;
 
-    std::cout << "momentum: " << control_momentum_(0) <<
-                 " | y: " << control_momentum_(1) <<
-                 " | z: " << control_momentum_(2) <<
+    std::cout << "momentum: " << control_momentum_bf_(0) <<
+                 " | y: " << control_momentum_bf_(1) <<
+                 " | z: " << control_momentum_bf_(2) <<
                  std::endl;
     /******************** END DEBUG *************************/
 
@@ -190,14 +189,14 @@ bool PoseControllerNode::CallService(){
     srv_.request.start_time.nsec = 0;
     srv_.request.duration.sec =  -1;
 
-    temporaryWrench_.force.x =  control_force_(0);
-    temporaryWrench_.force.y =  control_force_(1);
-    temporaryWrench_.force.z =  control_force_(2);
-    temporaryWrench_.torque.x = control_momentum_(0);
-    temporaryWrench_.torque.y = control_momentum_(1);
-    temporaryWrench_.torque.z = control_momentum_(2);
+    control_wrench_.force.x =  control_force_bf_(0);
+    control_wrench_.force.y =  control_force_bf_(1);
+    control_wrench_.force.z =  control_force_bf_(2);
+    control_wrench_.torque.x = control_momentum_bf_(0);
+    control_wrench_.torque.y = control_momentum_bf_(1);
+    control_wrench_.torque.z = control_momentum_bf_(2);
 
-    srv_.request.wrench = temporaryWrench_;
+    srv_.request.wrench = control_wrench_;
 
     if (!wrench_service_.call(srv_)){
         ROS_ERROR("Failed to contact service. Could not pass wrench");

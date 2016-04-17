@@ -96,19 +96,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a17466a8314ad354402401ba27157594c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pose_controller_node.html#a17466a8314ad354402401ba27157594c">PoseControllerNode</a> (ros::NodeHandle nh)</td></tr>
-<tr class="memdesc:a17466a8314ad354402401ba27157594c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_pose_controller_node.html">PoseControllerNode</a>.  <a href="#a17466a8314ad354402401ba27157594c">More...</a><br/></td></tr>
+<tr class="memdesc:a17466a8314ad354402401ba27157594c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_pose_controller_node.html">PoseControllerNode</a> : the constructor initializes the dynamic parameters, creates the desired controller sets up the service to control skye.  <a href="#a17466a8314ad354402401ba27157594c">More...</a><br/></td></tr>
 <tr class="separator:a17466a8314ad354402401ba27157594c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a819aeca3638e5b53eefc6f9891a8af03"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a819aeca3638e5b53eefc6f9891a8af03"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>ConfigCallback</b> (skye_controls::skye_paramsConfig &amp;config, uint32_t level)</td></tr>
-<tr class="separator:a819aeca3638e5b53eefc6f9891a8af03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4582290cf6ff6b5cd9564fd386c3b39"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac4582290cf6ff6b5cd9564fd386c3b39"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>PositionCallback</b> (const gazebo_msgs::LinkState::ConstPtr &amp;msg)</td></tr>
+<tr class="memitem:aab9762d618a38b99cbfbcaecd2163606"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pose_controller_node.html#aab9762d618a38b99cbfbcaecd2163606">ConfigCallback</a> (const skye_controls::skye_paramsConfig &amp;config, uint32_t level)</td></tr>
+<tr class="memdesc:aab9762d618a38b99cbfbcaecd2163606"><td class="mdescLeft">&#160;</td><td class="mdescRight">ConfigCallback : Callback for the dynamic configuration of the parameters.  <a href="#aab9762d618a38b99cbfbcaecd2163606">More...</a><br/></td></tr>
+<tr class="separator:aab9762d618a38b99cbfbcaecd2163606"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4582290cf6ff6b5cd9564fd386c3b39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pose_controller_node.html#ac4582290cf6ff6b5cd9564fd386c3b39">PositionCallback</a> (const gazebo_msgs::LinkState::ConstPtr &amp;msg)</td></tr>
+<tr class="memdesc:ac4582290cf6ff6b5cd9564fd386c3b39"><td class="mdescLeft">&#160;</td><td class="mdescRight">PositionCallback : this callback is called by the topic providing <a class="el" href="class_skye.html">Skye</a>'s ground truth.  <a href="#ac4582290cf6ff6b5cd9564fd386c3b39">More...</a><br/></td></tr>
 <tr class="separator:ac4582290cf6ff6b5cd9564fd386c3b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1804624b5c2f57b08fcd1c50b8118cd7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1804624b5c2f57b08fcd1c50b8118cd7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>AngularVelocityCallback</b> (const sensor_msgs::Imu::ConstPtr &amp;msg)</td></tr>
+<tr class="memitem:a1804624b5c2f57b08fcd1c50b8118cd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pose_controller_node.html#a1804624b5c2f57b08fcd1c50b8118cd7">AngularVelocityCallback</a> (const sensor_msgs::Imu::ConstPtr &amp;msg)</td></tr>
+<tr class="memdesc:a1804624b5c2f57b08fcd1c50b8118cd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">AngularVelocityCallback : this callback receives the angular velocity from the IMU.  <a href="#a1804624b5c2f57b08fcd1c50b8118cd7">More...</a><br/></td></tr>
 <tr class="separator:a1804624b5c2f57b08fcd1c50b8118cd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b12265a62dad33caa6063f5cb582c80"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0b12265a62dad33caa6063f5cb582c80"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>CallService</b> ()</td></tr>
+<tr class="memitem:a0b12265a62dad33caa6063f5cb582c80"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_pose_controller_node.html#a0b12265a62dad33caa6063f5cb582c80">CallService</a> ()</td></tr>
+<tr class="memdesc:a0b12265a62dad33caa6063f5cb582c80"><td class="mdescLeft">&#160;</td><td class="mdescRight">CallService : utility wrapped function to call the service.  <a href="#a0b12265a62dad33caa6063f5cb582c80">More...</a><br/></td></tr>
 <tr class="separator:a0b12265a62dad33caa6063f5cb582c80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -126,10 +126,113 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>CallService</b> ()</t
       </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_pose_controller_node.html">PoseControllerNode</a>. </p>
+<p><a class="el" href="class_pose_controller_node.html">PoseControllerNode</a> : the constructor initializes the dynamic parameters, creates the desired controller sets up the service to control skye. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">nh</td><td></td></tr>
+    <tr><td class="paramname">nh</td><td>: Ros node handle to create the service</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The constructor has a fixed service name that is saved as a class member in the main function. The successful creation of this node is conditioned upon succesfully finding the service. In case the service is wrong or not published the node does not created. The dynamic parameters are used for dynamically configure control parameters </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a1804624b5c2f57b08fcd1c50b8118cd7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PoseControllerNode::AngularVelocityCallback </td>
+          <td>(</td>
+          <td class="paramtype">const sensor_msgs::Imu::ConstPtr &amp;&#160;</td>
+          <td class="paramname"><em>msg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>AngularVelocityCallback : this callback receives the angular velocity from the IMU. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">msg</td><td>: the imu message containing angular velocity </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a0b12265a62dad33caa6063f5cb582c80"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool PoseControllerNode::CallService </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CallService : utility wrapped function to call the service. </p>
+<dl class="section return"><dt>Returns</dt><dd>: true if the service was called correctly </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aab9762d618a38b99cbfbcaecd2163606"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PoseControllerNode::ConfigCallback </td>
+          <td>(</td>
+          <td class="paramtype">const skye_controls::skye_paramsConfig &amp;&#160;</td>
+          <td class="paramname"><em>config</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>level</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>ConfigCallback : Callback for the dynamic configuration of the parameters. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">config</td><td>: the skye_params congifuration file </td></tr>
+    <tr><td class="paramname">level</td><td>: not used </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ac4582290cf6ff6b5cd9564fd386c3b39"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PoseControllerNode::PositionCallback </td>
+          <td>(</td>
+          <td class="paramtype">const gazebo_msgs::LinkState::ConstPtr &amp;&#160;</td>
+          <td class="paramname"><em>msg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>PositionCallback : this callback is called by the topic providing <a class="el" href="class_skye.html">Skye</a>'s ground truth. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">msg</td><td>: the message containing the lik state This is used as callback to perform the control loop, which means that control inputs are applied every time a new linkstate is received. </td></tr>
   </table>
   </dd>
 </dl>
@@ -143,7 +246,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>CallService</b> ()</t
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 17 2016 13:43:57 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 17 2016 14:27:44 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
