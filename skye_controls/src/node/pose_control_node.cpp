@@ -50,14 +50,16 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     }
 
     //Get the parameters for the waypoint
-    read_all_parameters = nh.getParam("points_file_path_", points_file_path_);
+    read_all_parameters = nh.getParam("points_file_path_", points_file_path_) &&
+                          nh.getParam("goal_change_threshold", waypoint_parameters_.input_goal_change_threshold);
 
     if (! read_all_parameters){
         ROS_ERROR("Waypoint controller Parameters not imported");
         return false;
     }
 
-//    WaypointsParser parser(points_file_path_, waypoint_parameters_.waypoints_);
+    WaypointsParser parser(points_file_path_, waypoint_parameters_.input_waypoints);
+    waypoint_controller_.InitParameters(waypoint_parameters_);
 
     // Pack desired position
     skye_parameters_.input_desired_position_if<< desired_position_x,
@@ -169,20 +171,26 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
     orientation_if_.z() = msg->pose.orientation.z;
     orientation_if_.w() = msg->pose.orientation.w;
 
-    // Update the gains with new dynamic parameters
-    geometric_controller_.UpdateGains(k_x_ ,k_v_, k_if_, k_im_, k_R_, k_omega_);
-    // Update last known state
-    geometric_controller_.UpdateParameters(position_if_, velocity_if_, orientation_if_, angular_velocity_bf_);
-    // Calculate control force
-    geometric_controller_.ComputeForce(&control_force_bf_);
-    // Calculate control acceleration
-    geometric_controller_.ComputeAcceleration(&control_acceleration_bf_);
-    // Calculate control momentum
-    control_momentum_bf_ = inertia_*control_acceleration_bf_;
+    if (waypoint_parameters_.input_waypoints.size() > 0) {
+        Eigen::Vector3d new_goal;
+        waypoint_controller_.ComputeGoal(position_if_, &new_goal);
 
+        geometric_controller_.UpdateDesiredPose(new_goal);
+
+        // Update the gains with new dynamic parameters
+        geometric_controller_.UpdateGains(k_x_ ,k_v_, k_if_, k_im_, k_R_, k_omega_);
+        // Update last known state
+        geometric_controller_.UpdateParameters(position_if_, velocity_if_, orientation_if_, angular_velocity_bf_);
+        // Calculate control force
+        geometric_controller_.ComputeForce(&control_force_bf_);
+        // Calculate control acceleration
+        geometric_controller_.ComputeAcceleration(&control_acceleration_bf_);
+        // Calculate control momentum
+        control_momentum_bf_ = inertia_*control_acceleration_bf_;
+
+    }
 
     /********************* DEBUG *************************/
-
     std::cout << "force: " << control_force_bf_(0) <<
                  " | y: " << control_force_bf_(1) <<
                  " | z: " << control_force_bf_(2) <<
@@ -231,7 +239,6 @@ int main(int argc, char **argv){
     if (! read_all_parameters) ROS_ERROR("Parameters not imported");
 
     /******************* PARSING DEBUG ***********************/
-
 //    std::cout << "Parsed parameters" << std::endl <<
 //                 "waypoints size: " << waypoints_.size() <<
 //                 std::endl << std::endl;
@@ -242,18 +249,16 @@ int main(int argc, char **argv){
 //    waypoints_.at(100);
 //    return 0;
     /******************* END PARSING ***********************/
-\
 
     //Initialize node and subscribe to topics
-    PoseControllerNode node_(nh);
-    ros::Subscriber pos_sub_ground_truth = nh.subscribe (ground_truth_topic, 1, &PoseControllerNode::PositionCallback, &node_);
-    ros::Subscriber pos_sub_imu = nh.subscribe (imu_topic, 1, &PoseControllerNode::AngularVelocityCallback, &node_);
-
+    PoseControllerNode node(nh);
+    ros::Subscriber pos_sub_ground_truth = nh.subscribe (ground_truth_topic, 1, &PoseControllerNode::PositionCallback, &node);
+    ros::Subscriber pos_sub_imu = nh.subscribe (imu_topic, 1, &PoseControllerNode::AngularVelocityCallback, &node);
 
     ros::Rate r(50); // 50 hz
     while (nh.ok())
     {
-        node_.CallService();
+        node.CallService();
         ros::spinOnce();
         r.sleep();
     }

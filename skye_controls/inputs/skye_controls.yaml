@@ -10,7 +10,7 @@ distance_integrator_treshold_: 0.05
 attitude_integrator_treshold_: 0.05
 maximum_force_integrator_: 1
 maximum_momentum_integrator_: 1
-
+goal_change_threshold: 1.5
 
 desired_position_x: 5
 desired_position_y: 5

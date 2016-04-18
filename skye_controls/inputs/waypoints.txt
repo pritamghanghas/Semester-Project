@@ -1,6 +1,7 @@
 Point 1: 0,0,-3
-Point 2: 3,3,-3
+Point 2: 3,3,-4
 Point 3: 3,6,-6
 Point 4: 10,6, -10
-Point 5: 9, -5, -2
-Point 6: 0,0,-3
+Point 5: 9, -5, -3
+Point 6: -9, -5, -8
+Point 7: 0,0,-3

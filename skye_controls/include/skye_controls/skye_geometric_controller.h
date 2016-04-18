@@ -206,7 +206,7 @@ public:
      */
     void ComputeAcceleration(Eigen::Vector3d *output_acceleration_);
 
-
+    void UpdateDesiredPose(const Eigen::Vector3d &desired_position);
 };
 
 #endif // SKYE_GEOMETRIC_CONTROLLER_H

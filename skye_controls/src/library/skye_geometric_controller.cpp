@@ -85,7 +85,7 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
     angular_velocity_ = a_angular_velocity_bf;
     angular_velocity_error_bf_ =  angular_velocity_ - R_if_.transpose() * R_des_if_ * desired_angular_velocity_bf_;
 
-    /******************** DEBUG *************************/
+    /******************** DEBUG ************************
     std::cout << "--------------------------------------------------" << std::endl <<
                  "position_: " << position_if(0) <<
                  " | y: " << position_if(1) <<
@@ -210,3 +210,6 @@ void SkyeGeometricController::ComputeAcceleration(Eigen::Vector3d *output_accele
 
 }
 
+void SkyeGeometricController::UpdateDesiredPose(const Eigen::Vector3d &desired_position){
+    desired_position_if_ = desired_position;
+}

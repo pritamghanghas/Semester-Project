@@ -9,10 +9,10 @@ WaypointsParser::WaypointsParser(std::string input_file_path_, std::vector<Eigen
     std::cout << "STREAM OPENED" << std::endl;
 
     for(std::string line; std::getline(in, line);){
-        std::cout << "Parsed line: " << line << std::endl;
+//        std::cout << "Parsed line: " << line << std::endl;
 
         std::size_t found_point = line.find("Point");
-        std::cout << "Found point: " << found_point << std::endl;
+//        std::cout << "Found point: " << found_point << std::endl;
 
 
         //If there is no point skip the line
@@ -20,10 +20,10 @@ WaypointsParser::WaypointsParser(std::string input_file_path_, std::vector<Eigen
         // Here I have a good line
         std::size_t found_column = line.find(":");
         if (found_column == std::string::npos) continue; //if true the format is wrong
-        std::cout << "found_column: " << found_column<< std::endl;
+//        std::cout << "found_column: " << found_column<< std::endl;
 
         char single_character = line[found_column];
-        std::cout << "single_character: " << single_character << std::endl;
+//        std::cout << "single_character: " << single_character << std::endl;
         int i = found_column;
 
         std::vector<double> single_waypoint;
@@ -40,21 +40,21 @@ WaypointsParser::WaypointsParser(std::string input_file_path_, std::vector<Eigen
 
                 if (is_meaningful_) {
                     vector_element[chars_found_] = single_character;
-                    std::cout << "meaningful_character: " << single_character << std::endl;
+//                    std::cout << "meaningful_character: " << single_character << std::endl;
                     chars_found_++;
                 }
                 i++;
 //                std::cout << "line size: " << line.size() << " | i: " << i << std::endl;
 
             }
-            std::cout << "vector_element: " << vector_element << std::endl;
+//            std::cout << "vector_element: " << vector_element << std::endl;
             single_waypoint.push_back( std::atof(vector_element) );
             i++;
         }
         Eigen::Vector3d final_vec_;
         final_vec_ << single_waypoint.at(0), single_waypoint.at(1), single_waypoint.at(2);
         waypoints_.push_back(final_vec_);
-        std::cout << "final_vec_: " << final_vec_ << std::endl;
+//        std::cout << "final_vec_: " << final_vec_ << std::endl;
 
 
     }
