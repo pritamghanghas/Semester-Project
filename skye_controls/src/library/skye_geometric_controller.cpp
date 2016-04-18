@@ -58,24 +58,24 @@ void SkyeGeometricController::InitializeParams(const SkyeParameters param){
 
 void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_if,
                                                const Eigen::Vector3d &velocity_if,
-                                               const Eigen::Quaterniond &orientation_bf,
+                                               const Eigen::Quaterniond &orientation_if,
                                                const Eigen::Vector3d &a_angular_velocity_bf){
 
-    // Calculate rotation matrix from bf to NED(or inertial frame)
-    R_if_ = orientation_bf.matrix();
+    // Calculate rotation matrix from NED(or inertial frame) to body fixed frame
+    R_if_ = orientation_if.matrix();
 
     //Calculate errors
-    position_error_bf_ << desired_position_if_(0) - position_if(0),
+    position_error_if_ << desired_position_if_(0) - position_if(0),
             desired_position_if_(1) - position_if(1),
             desired_position_if_(2) - position_if(2);
 
-    velocity_error_bf_ << desired_velocity_if_(0) - velocity_if(0),
+    velocity_error_if_ << desired_velocity_if_(0) - velocity_if(0),
             desired_velocity_if_(1) - velocity_if(1),
             desired_velocity_if_(2) - velocity_if(2) ;
 
     // Convert errors frame
-    position_error_bf_ = R_if_.transpose()*position_error_bf_;
-    velocity_error_bf_ = R_if_.transpose()*velocity_error_bf_;
+    position_error_bf_ = R_if_.transpose()*position_error_if_;
+    velocity_error_bf_ = R_if_.transpose()*velocity_error_if_;
 
     // Calculate attitude control errors as per Lee paper.
     Eigen::Matrix3d angle_error_matrix = 0.5 * (R_des_if_.transpose() * R_if_ - R_if_.transpose() * R_des_if_);
@@ -133,9 +133,9 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
                  std::endl << std::endl;
 
 
-    //    std::cout << "R_:" << R_ << std::endl << std::endl;
+        std::cout << "R_if_:" << R_if_ << std::endl << std::endl;
 
-    //    std::cout << "R_des_:" << R_des_ << std::endl << std::endl;
+        std::cout << "R_des_if_:" << R_des_if_ << std::endl << std::endl;
     /******************** END DEBUG *************************/
 
 }
@@ -165,7 +165,7 @@ inline void SkyeGeometricController::SaturateVector(double a_threshold, Eigen::V
         if(std::signbit((*a_vector)(1))) (*a_vector)(1) = a_threshold*(-1);
         else (*a_vector)(1) = a_threshold;
     }
-    if(std::abs((*a_vector)(2)) > a_threshold){
+    if (std::abs((*a_vector)(2)) > a_threshold) {
         if(std::signbit((*a_vector)(2))) (*a_vector)(2) = a_threshold*(-1);
         else (*a_vector)(2) = a_threshold;
     }

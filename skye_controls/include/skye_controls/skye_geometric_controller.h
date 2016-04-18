@@ -117,7 +117,9 @@ private:
     desired_angular_acceleration_bf_;
 
     Eigen::Vector3d position_error_bf_,
+    position_error_if_,
     velocity_error_bf_,
+    velocity_error_if_,
     attitude_error_bf_,
     angular_velocity_error_bf_,
     integrator_force_,

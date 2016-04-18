@@ -185,7 +185,7 @@ public:
      * @brief CallService : utility wrapped function to call the service
      * @return : true if the service was called correctly
      */
-    bool CallService();
+    void CallService();
 
 
 };

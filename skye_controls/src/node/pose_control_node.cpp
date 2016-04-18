@@ -43,12 +43,13 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
                                nh.getParam("R_des_31", R_des_31) &&
                                nh.getParam("R_des_32", R_des_32) &&
                                nh.getParam("R_des_33", R_des_33);
+    // Check if Skye's parameters where imported
     if (! read_all_parameters){
         ROS_ERROR("Geometric Parameters not imported");
         return false;
     }
 
-    //Get the parameters
+    //Get the parameters for the waypoint
     read_all_parameters = nh.getParam("points_file_path_", points_file_path_);
 
     if (! read_all_parameters){
@@ -58,23 +59,24 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
 
 //    WaypointsParser parser(points_file_path_, waypoint_parameters_.waypoints_);
 
-
+    // Pack desired position
     skye_parameters_.input_desired_position_if<< desired_position_x,
             desired_position_y,
             desired_position_z;
 
+    // Pack Skye's inertia
     inertia_ << inertia_11, inertia_12, inertia_13,
             inertia_21, inertia_22, inertia_23,
             inertia_31, inertia_32, inertia_33;
+
+    // Pack desired rotation matrix
     R_des_if_ << R_des_11, R_des_12, R_des_13,
             R_des_21, R_des_22, R_des_23,
             R_des_31, R_des_32, R_des_33;
 
-
+    // Save matrices in SkyeParameters struct
     skye_parameters_.input_inertia = inertia_ ;
-    skye_parameters_.input_R_des_if << R_des_11, R_des_12, R_des_13,
-            R_des_21, R_des_22, R_des_23,
-            R_des_31, R_des_32, R_des_33;
+    skye_parameters_.input_R_des_if = R_des_if_;
 
     // Initialize node parameters from launch file or command line. Use a private node handle so that multiple instances
     // of the node can be run simultaneously while using different parameters.
@@ -86,7 +88,7 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     pnh.param("k_if_", k_if_, k_if_);
     pnh.param("k_im_", k_im_, k_im_);
 
-
+    // Initialize dynamic parameters into SkyeParameters struct
     skye_parameters_.input_k_x = k_x_;
     skye_parameters_.input_k_v = k_v_;
     skye_parameters_.input_k_omega = k_omega_;
@@ -94,6 +96,7 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     skye_parameters_.input_k_if = k_if_;
     skye_parameters_.input_k_im = k_im_;
 
+    // Initialize temporary stuff to zero
     Eigen::Vector3d zero_v;
     zero_v << 0,0,0;
     skye_parameters_.input_desired_acceleration_if = zero_v;
@@ -106,7 +109,11 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
 
 
 PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
+    // setting to zero the control outputs for initialization
+    control_force_bf_ << 0,0,0;
+    control_momentum_bf_ << 0,0,0;
 
+    // When the object is created, first parse the parameters
     this->ParseParameters(nh);
 
     // Configure callback for dynamic parameters
@@ -119,10 +126,10 @@ PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
     //Setup service for control input if the service is ready
     ros::service::waitForService(wrench_service_name_);
     wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
+
 }
 
 PoseControllerNode::~PoseControllerNode (){};
-
 
 
 void PoseControllerNode::ConfigCallback(const skye_controls::skye_paramsConfig &config, uint32_t level)
@@ -138,34 +145,44 @@ void PoseControllerNode::ConfigCallback(const skye_controls::skye_paramsConfig &
 
 
 void PoseControllerNode::AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg){
+    // Save angular velocity from IMU topic
+    // this is in the imu frame but since it is a rigid body they are the same in terms of angular velocity
     angular_velocity_bf_ << msg->angular_velocity.x,
             msg->angular_velocity.y,
             msg->angular_velocity.z;
 }
 
 void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr& msg){
-
-    position_if_ <<msg->pose.position.x,
+    // pack last known position in inertial frame
+    position_if_ << msg->pose.position.x,
             msg->pose.position.y,
             msg->pose.position.z;
 
+    // pack last known velocity in the inertial frame
     velocity_if_ << msg->twist.linear.x,
             msg->twist.linear.y,
             msg->twist.linear.z;
 
+    // pack last known quaternion in the inertial frame
     orientation_if_.x() = msg->pose.orientation.x;
     orientation_if_.y() = msg->pose.orientation.y;
     orientation_if_.z() = msg->pose.orientation.z;
     orientation_if_.w() = msg->pose.orientation.w;
 
+    // Update the gains with new dynamic parameters
     geometric_controller_.UpdateGains(k_x_ ,k_v_, k_if_, k_im_, k_R_, k_omega_);
+    // Update last known state
     geometric_controller_.UpdateParameters(position_if_, velocity_if_, orientation_if_, angular_velocity_bf_);
+    // Calculate control force
     geometric_controller_.ComputeForce(&control_force_bf_);
+    // Calculate control acceleration
     geometric_controller_.ComputeAcceleration(&control_acceleration_bf_);
+    // Calculate control momentum
     control_momentum_bf_ = inertia_*control_acceleration_bf_;
 
 
-    /******************** DEBUG *************************/
+    /********************* DEBUG *************************/
+
     std::cout << "force: " << control_force_bf_(0) <<
                  " | y: " << control_force_bf_(1) <<
                  " | z: " << control_force_bf_(2) <<
@@ -180,24 +197,22 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
                  " | y: " << control_momentum_bf_(1) <<
                  " | z: " << control_momentum_bf_(2) <<
                  std::endl;
-    /******************** END DEBUG *************************/
+   /********************* END DEBUG *************************/
 
 }
 
-bool PoseControllerNode::CallService(){
-    //std::cout << "a: " << a_ << " b: " << b_ <<std::endl;
+void PoseControllerNode::CallService(){
     srv_.request.start_time.nsec = 0;
     srv_.request.duration.sec =  -1;
 
     control_wrench_.force.x =  control_force_bf_(0);
-    control_wrench_.force.y =  control_force_bf_(1);
-    control_wrench_.force.z =  control_force_bf_(2);
+    control_wrench_.force.y = control_force_bf_(1);
+    control_wrench_.force.z = control_force_bf_(2);
     control_wrench_.torque.x = control_momentum_bf_(0);
     control_wrench_.torque.y = control_momentum_bf_(1);
     control_wrench_.torque.z = control_momentum_bf_(2);
 
     srv_.request.wrench = control_wrench_;
-
     if (!wrench_service_.call(srv_)){
         ROS_ERROR("Failed to contact service. Could not pass wrench");
     }
@@ -209,14 +224,11 @@ int main(int argc, char **argv){
     ros::NodeHandle nh;
 
     // Import ros parameter for service and topic names
-    std::string wrench_service_name, imu_topic, ground_truth_topic, points_file_path_;
-    bool read_all_parameters = nh.getParam("wrench_service_name", wrench_service_name) &&
-                               nh.getParam("ground_truth_topic", ground_truth_topic) &&
+    std::string imu_topic, ground_truth_topic;
+    bool read_all_parameters = nh.getParam("ground_truth_topic", ground_truth_topic) &&
                                nh.getParam("imu_topic", imu_topic);
     // Check if names have correctly been imported
     if (! read_all_parameters) ROS_ERROR("Parameters not imported");
-
-
 
     /******************* PARSING DEBUG ***********************/
 
@@ -230,7 +242,7 @@ int main(int argc, char **argv){
 //    waypoints_.at(100);
 //    return 0;
     /******************* END PARSING ***********************/
-
+\
 
     //Initialize node and subscribe to topics
     PoseControllerNode node_(nh);
