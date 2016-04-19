@@ -108,15 +108,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a86e1970fa9f94b0a1d09b7368ee19bf8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skye_geometric_controller.html#a86e1970fa9f94b0a1d09b7368ee19bf8">UpdateGains</a> (double k_x, double k_v, double k_if, double k_im, double k_R, double k_omega)</td></tr>
 <tr class="memdesc:a86e1970fa9f94b0a1d09b7368ee19bf8"><td class="mdescLeft">&#160;</td><td class="mdescRight">UpdateGains : Provides an interface to dynamically change control parameters.  <a href="#a86e1970fa9f94b0a1d09b7368ee19bf8">More...</a><br/></td></tr>
 <tr class="separator:a86e1970fa9f94b0a1d09b7368ee19bf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3dcbe7dd5bdb17ba15509efa22f19168"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skye_geometric_controller.html#a3dcbe7dd5bdb17ba15509efa22f19168">ComputeForce</a> (Eigen::Vector3d *output_force_bf_)</td></tr>
-<tr class="memdesc:a3dcbe7dd5bdb17ba15509efa22f19168"><td class="mdescLeft">&#160;</td><td class="mdescRight">ComputeForce : computes the force to control the position of <a class="el" href="class_skye.html">Skye</a>.  <a href="#a3dcbe7dd5bdb17ba15509efa22f19168">More...</a><br/></td></tr>
-<tr class="separator:a3dcbe7dd5bdb17ba15509efa22f19168"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7accd98eca41f18232aaea6dff03b93"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skye_geometric_controller.html#af7accd98eca41f18232aaea6dff03b93">ComputeAcceleration</a> (Eigen::Vector3d *output_acceleration_)</td></tr>
-<tr class="memdesc:af7accd98eca41f18232aaea6dff03b93"><td class="mdescLeft">&#160;</td><td class="mdescRight">ComputeAcceleration : computes the momentum to control the orientation of <a class="el" href="class_skye.html">Skye</a>.  <a href="#af7accd98eca41f18232aaea6dff03b93">More...</a><br/></td></tr>
-<tr class="separator:af7accd98eca41f18232aaea6dff03b93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe9b74936a7118f7185113db56954f73"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skye_geometric_controller.html#afe9b74936a7118f7185113db56954f73">ComputeForce</a> (Eigen::Vector3d *output_force_bf)</td></tr>
+<tr class="memdesc:afe9b74936a7118f7185113db56954f73"><td class="mdescLeft">&#160;</td><td class="mdescRight">ComputeForce : computes the force to control the position of Skye.  <a href="#afe9b74936a7118f7185113db56954f73">More...</a><br/></td></tr>
+<tr class="separator:afe9b74936a7118f7185113db56954f73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2676ca5ec54b90946bd2707abc39872"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skye_geometric_controller.html#ab2676ca5ec54b90946bd2707abc39872">ComputeAcceleration</a> (Eigen::Vector3d *output_acceleration_bf)</td></tr>
+<tr class="memdesc:ab2676ca5ec54b90946bd2707abc39872"><td class="mdescLeft">&#160;</td><td class="mdescRight">ComputeAcceleration : computes the momentum to control the orientation of Skye.  <a href="#ab2676ca5ec54b90946bd2707abc39872">More...</a><br/></td></tr>
+<tr class="separator:ab2676ca5ec54b90946bd2707abc39872"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a857ec9e8b22c2658514d0296c0dde1db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skye_geometric_controller.html#a857ec9e8b22c2658514d0296c0dde1db">UpdateDesiredPose</a> (const Eigen::Vector3d &amp;desired_position_if, const Eigen::Quaterniond &amp;desired_orientation_if)</td></tr>
+<tr class="memdesc:a857ec9e8b22c2658514d0296c0dde1db"><td class="mdescLeft">&#160;</td><td class="mdescRight">UpdateDesiredPose : updates the desired pose of Skye for new control iteration.  <a href="#a857ec9e8b22c2658514d0296c0dde1db">More...</a><br/></td></tr>
+<tr class="separator:a857ec9e8b22c2658514d0296c0dde1db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="af7accd98eca41f18232aaea6dff03b93"></a>
+<a class="anchor" id="ab2676ca5ec54b90946bd2707abc39872"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -124,13 +127,13 @@ Public Member Functions</h2></td></tr>
           <td class="memname">void SkyeGeometricController::ComputeAcceleration </td>
           <td>(</td>
           <td class="paramtype">Eigen::Vector3d *&#160;</td>
-          <td class="paramname"><em>output_acceleration_</em></td><td>)</td>
+          <td class="paramname"><em>output_acceleration_bf</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>ComputeAcceleration : computes the momentum to control the orientation of <a class="el" href="class_skye.html">Skye</a>. </p>
+<p>ComputeAcceleration : computes the momentum to control the orientation of Skye. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">output_acceleration_</td><td>: the output acceleration that is calculated </td></tr>
@@ -140,7 +143,7 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a3dcbe7dd5bdb17ba15509efa22f19168"></a>
+<a class="anchor" id="afe9b74936a7118f7185113db56954f73"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -148,13 +151,13 @@ Public Member Functions</h2></td></tr>
           <td class="memname">void SkyeGeometricController::ComputeForce </td>
           <td>(</td>
           <td class="paramtype">Eigen::Vector3d *&#160;</td>
-          <td class="paramname"><em>output_force_bf_</em></td><td>)</td>
+          <td class="paramname"><em>output_force_bf</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>ComputeForce : computes the force to control the position of <a class="el" href="class_skye.html">Skye</a>. </p>
+<p>ComputeForce : computes the force to control the position of Skye. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">output_force_bf_</td><td>: the output force that is calculated </td></tr>
@@ -182,6 +185,41 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">param</td><td>: a <a class="el" href="struct_skye_parameters.html" title="The SkyeParameters struct this structure is used to pass every parameter from the outside...">SkyeParameters</a> struct containing all the parameters </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a857ec9e8b22c2658514d0296c0dde1db"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SkyeGeometricController::UpdateDesiredPose </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::Vector3d &amp;&#160;</td>
+          <td class="paramname"><em>desired_position_if</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::Quaterniond &amp;&#160;</td>
+          <td class="paramname"><em>desired_orientation_if</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>UpdateDesiredPose : updates the desired pose of Skye for new control iteration. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">desired_position</td><td>: new desired position in inertial frame coordinates </td></tr>
+    <tr><td class="paramname">desired_orientation</td><td>: new desired orientation expressed as rotation of the inertial frame </td></tr>
   </table>
   </dd>
 </dl>
@@ -290,10 +328,10 @@ Public Member Functions</h2></td></tr>
 <p>UpdateParameters : updates the parameters for control errors. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">poisiton_if_</td><td>: last known position of <a class="el" href="class_skye.html">Skye</a> in the inertial frame </td></tr>
-    <tr><td class="paramname">velocity_if_</td><td>: last known linear velocity of <a class="el" href="class_skye.html">Skye</a> in the inertial frame </td></tr>
-    <tr><td class="paramname">orientation_bf_</td><td>: last known orientation of <a class="el" href="class_skye.html">Skye</a> in the body frame </td></tr>
-    <tr><td class="paramname">a_angular_velocity_bf_</td><td>: last known angular velocity of <a class="el" href="class_skye.html">Skye</a> in the body frame</td></tr>
+    <tr><td class="paramname">poisiton_if_</td><td>: last known position of Skye in the inertial frame </td></tr>
+    <tr><td class="paramname">velocity_if_</td><td>: last known linear velocity of Skye in the inertial frame </td></tr>
+    <tr><td class="paramname">orientation_bf_</td><td>: last known orientation of Skye in the body frame </td></tr>
+    <tr><td class="paramname">a_angular_velocity_bf_</td><td>: last known angular velocity of Skye in the body frame</td></tr>
   </table>
   </dd>
 </dl>
@@ -308,7 +346,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 17 2016 14:27:44 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 19 2016 10:12:20 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -3,6 +3,65 @@
 }
 
 
+The \hyperlink{class_waypoint_controller}{Waypoint\-Controller} class takes care of providing new goals whenever a certain threshold is passed.  
+
+
+
+
+{\ttfamily \#include $<$waypoint\-\_\-controller.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_waypoint_controller_a10f00d385c12c6ee03b3459d1fe552c1}{Init\-Parameters} (\hyperlink{struct_waypoint_controller_parameters}{Waypoint\-Controller\-Parameters} parameters)
+\begin{DoxyCompactList}\small\item\em Init\-Parameters \-: saves parameters in class members. \end{DoxyCompactList}\item 
+void \hyperlink{class_waypoint_controller_a99af680a2e0b31de954e96c4df44d26e}{Compute\-Goal} (const Eigen\-::\-Vector3d \&current\-\_\-position\-\_\-if, \hyperlink{struct_waypoint_pose}{Waypoint\-Pose} $\ast$new\-\_\-pose)
+\begin{DoxyCompactList}\small\item\em Compute\-Goal \-: computes a new goal given the actual position of skye. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{class_waypoint_controller}{Waypoint\-Controller} class takes care of providing new goals whenever a certain threshold is passed. 
+
+before computing a new goal the class instance shoud have the parameters initialized with Init\-Parameters 
+
+\subsection{Member Function Documentation}
+\hypertarget{class_waypoint_controller_a99af680a2e0b31de954e96c4df44d26e}{\index{Waypoint\-Controller@{Waypoint\-Controller}!Compute\-Goal@{Compute\-Goal}}
+\index{Compute\-Goal@{Compute\-Goal}!WaypointController@{Waypoint\-Controller}}
+\subsubsection[{Compute\-Goal}]{\setlength{\rightskip}{0pt plus 5cm}void Waypoint\-Controller\-::\-Compute\-Goal (
+\begin{DoxyParamCaption}
+\item[{const Eigen\-::\-Vector3d \&}]{current\-\_\-position\-\_\-if, }
+\item[{{\bf Waypoint\-Pose} $\ast$}]{new\-\_\-pose}
+\end{DoxyParamCaption}
+)}}\label{class_waypoint_controller_a99af680a2e0b31de954e96c4df44d26e}
+
+
+Compute\-Goal \-: computes a new goal given the actual position of skye. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\-\_\-position\-\_\-if} & \-: the current position vector expressed in the inertial frame \\
+\hline
+{\em new\-\_\-pose} & \-: the output vector passed as a new Waypose \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_waypoint_controller_a10f00d385c12c6ee03b3459d1fe552c1}{\index{Waypoint\-Controller@{Waypoint\-Controller}!Init\-Parameters@{Init\-Parameters}}
+\index{Init\-Parameters@{Init\-Parameters}!WaypointController@{Waypoint\-Controller}}
+\subsubsection[{Init\-Parameters}]{\setlength{\rightskip}{0pt plus 5cm}void Waypoint\-Controller\-::\-Init\-Parameters (
+\begin{DoxyParamCaption}
+\item[{{\bf Waypoint\-Controller\-Parameters}}]{parameters}
+\end{DoxyParamCaption}
+)}}\label{class_waypoint_controller_a10f00d385c12c6ee03b3459d1fe552c1}
+
+
+Init\-Parameters \-: saves parameters in class members. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameters} & \-: a \hyperlink{struct_waypoint_controller_parameters}{Waypoint\-Controller\-Parameters} struct with parameters in it. \\
+\hline
+\end{DoxyParams}
+
+
 The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
 \item 
 skye\-\_\-controls/include/skye\-\_\-controls/waypoint\-\_\-controller.\-h\item 

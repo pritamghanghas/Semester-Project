@@ -1,12 +1,48 @@
 \hypertarget{class_waypoints_parser}{\section{Waypoints\-Parser Class Reference}
 \label{class_waypoints_parser}\index{Waypoints\-Parser@{Waypoints\-Parser}}
 }
+
+
+The \hyperlink{class_waypoints_parser}{Waypoints\-Parser} class is used to provide a thin interface for parsing parameters. It returns a vector of Eigen\-::\-Vector3d representing the 3\-D inertial frame points to visit and a vector of Eigen\-::\-Quaterniond representing Skye's orientations expressed in quaternions.  
+
+
+
+
+{\ttfamily \#include $<$waypoints\-\_\-parser.\-h$>$}
+
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{class_waypoints_parser_a9092d254433ec849ab8d1e840ebf8946}{{\bfseries Waypoints\-Parser} (std\-::string input\-\_\-file\-\_\-path\-\_\-, std\-::vector$<$ Eigen\-::\-Vector3d $>$ \&waypoints\-\_\-)}\label{class_waypoints_parser_a9092d254433ec849ab8d1e840ebf8946}
+\hyperlink{class_waypoints_parser_a7dfcb50264cc966572e536acbb1cf2d6}{Waypoints\-Parser} (ros\-::\-Node\-Handle nh, std\-::vector$<$ Eigen\-::\-Vector3d $>$ $\ast$waypoints, std\-::vector$<$ Eigen\-::\-Quaterniond $>$ $\ast$orientations)
+\begin{DoxyCompactList}\small\item\em \hyperlink{class_waypoints_parser}{Waypoints\-Parser} \-: The constructor gets parameters from R\-O\-S and packs the vectors. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
-\end{DoxyCompactItemize}
+
+\subsection{Detailed Description}
+The \hyperlink{class_waypoints_parser}{Waypoints\-Parser} class is used to provide a thin interface for parsing parameters. It returns a vector of Eigen\-::\-Vector3d representing the 3\-D inertial frame points to visit and a vector of Eigen\-::\-Quaterniond representing Skye's orientations expressed in quaternions. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_waypoints_parser_a7dfcb50264cc966572e536acbb1cf2d6}{\index{Waypoints\-Parser@{Waypoints\-Parser}!Waypoints\-Parser@{Waypoints\-Parser}}
+\index{Waypoints\-Parser@{Waypoints\-Parser}!WaypointsParser@{Waypoints\-Parser}}
+\subsubsection[{Waypoints\-Parser}]{\setlength{\rightskip}{0pt plus 5cm}Waypoints\-Parser\-::\-Waypoints\-Parser (
+\begin{DoxyParamCaption}
+\item[{ros\-::\-Node\-Handle}]{nh, }
+\item[{std\-::vector$<$ Eigen\-::\-Vector3d $>$ $\ast$}]{waypoints, }
+\item[{std\-::vector$<$ Eigen\-::\-Quaterniond $>$ $\ast$}]{orientations}
+\end{DoxyParamCaption}
+)}}\label{class_waypoints_parser_a7dfcb50264cc966572e536acbb1cf2d6}
+
+
+\hyperlink{class_waypoints_parser}{Waypoints\-Parser} \-: The constructor gets parameters from R\-O\-S and packs the vectors. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em nh} & \-: R\-O\-S node where the parser is called from \\
+\hline
+{\em waypoints} & \-: output vector containing inertial frame coordinates \\
+\hline
+{\em orientations} & \-: output vector containing inertial frame orientations \\
+\hline
+\end{DoxyParams}
 
 
 The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}

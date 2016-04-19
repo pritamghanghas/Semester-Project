@@ -7,17 +7,18 @@
 #ifndef POSE_CONTROL_NODE_H
 #define POSE_CONTROL_NODE_H
 
-#include <stdio.h>
 #include <iostream>
 #include <Eigen/Eigen>
 #include <ros/ros.h>
-#include <skye_ros/ApplyWrenchCogBf.h>
-#include <skye_controls/skye_geometric_controller.h>
+#include <dynamic_reconfigure/server.h>
 #include <geometry_msgs/Wrench.h>
 #include <sensor_msgs/Imu.h>
 #include <gazebo_msgs/LinkState.h>
+
+#include <skye_ros/ApplyWrenchCogBf.h>
+#include <skye_controls/skye_geometric_controller.h>
+
 #include <skye_controls/skye_paramsConfig.h>
-#include <dynamic_reconfigure/server.h>
 #include <skye_controls/waypoint_controller.h>
 
 
@@ -53,11 +54,6 @@ private:
      * @brief wrench_service_name_ : name of the service to apply a wrench to the COG of skye in body frame
      */
     std::string wrench_service_name_;
-    /**
-     * @brief points_file_path_ : path to the file containing waypoints
-     * TODO: remove it and change it with yaml file
-     */
-    std::string points_file_path_;
 
     //ros stuff
     /**
@@ -185,7 +181,7 @@ public:
      * @brief CallService : utility wrapped function to call the service
      * @return : true if the service was called correctly
      */
-    void CallService();
+    bool CallService();
 
 
 };

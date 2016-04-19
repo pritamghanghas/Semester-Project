@@ -2,7 +2,7 @@
 #define SKYE_GEOMETRIC_CONTROLLER_H
 
 #include <Eigen/Eigen>
-#include <iostream>
+#include <iostream> // remove once debug is removed!!!
 
 /**
  * @brief The SkyeParameters struct this structure is used to pass every parameter from the outside,
@@ -198,15 +198,21 @@ public:
      * @brief ComputeForce : computes the force to control the position of Skye
      * @param[out] output_force_bf_ : the output force that is calculated
      */
-    void ComputeForce(Eigen::Vector3d *output_force_bf_);
+    void ComputeForce(Eigen::Vector3d *output_force_bf);
 
     /**
      * @brief ComputeAcceleration : computes the momentum to control the orientation of Skye
      * @param output_acceleration_ : the output acceleration that is calculated
      */
-    void ComputeAcceleration(Eigen::Vector3d *output_acceleration_);
+    void ComputeAcceleration(Eigen::Vector3d *output_acceleration_bf);
 
-    void UpdateDesiredPose(const Eigen::Vector3d &desired_position);
+    /**
+     * @brief UpdateDesiredPose : updates the desired pose of Skye for new control iteration
+     * @param desired_position : new desired position in inertial frame coordinates
+     * @param desired_orientation : new desired orientation expressed as rotation of the inertial frame
+     */
+    void UpdateDesiredPose(const Eigen::Vector3d &desired_position_if,
+                           const Eigen::Quaterniond &desired_orientation_if);
 };
 
 #endif // SKYE_GEOMETRIC_CONTROLLER_H

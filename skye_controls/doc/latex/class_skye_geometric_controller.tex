@@ -13,39 +13,41 @@ void \hyperlink{class_skye_geometric_controller_a59e2b48fa22a5910cf932cd8217ae06
 \begin{DoxyCompactList}\small\item\em Update\-Parameters \-: updates the parameters for control errors. \end{DoxyCompactList}\item 
 void \hyperlink{class_skye_geometric_controller_a86e1970fa9f94b0a1d09b7368ee19bf8}{Update\-Gains} (double k\-\_\-x, double k\-\_\-v, double k\-\_\-if, double k\-\_\-im, double k\-\_\-\-R, double k\-\_\-omega)
 \begin{DoxyCompactList}\small\item\em Update\-Gains \-: Provides an interface to dynamically change control parameters. \end{DoxyCompactList}\item 
-void \hyperlink{class_skye_geometric_controller_a3dcbe7dd5bdb17ba15509efa22f19168}{Compute\-Force} (Eigen\-::\-Vector3d $\ast$output\-\_\-force\-\_\-bf\-\_\-)
-\begin{DoxyCompactList}\small\item\em Compute\-Force \-: computes the force to control the position of \hyperlink{class_skye}{Skye}. \end{DoxyCompactList}\item 
-void \hyperlink{class_skye_geometric_controller_af7accd98eca41f18232aaea6dff03b93}{Compute\-Acceleration} (Eigen\-::\-Vector3d $\ast$output\-\_\-acceleration\-\_\-)
-\begin{DoxyCompactList}\small\item\em Compute\-Acceleration \-: computes the momentum to control the orientation of \hyperlink{class_skye}{Skye}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+void \hyperlink{class_skye_geometric_controller_afe9b74936a7118f7185113db56954f73}{Compute\-Force} (Eigen\-::\-Vector3d $\ast$output\-\_\-force\-\_\-bf)
+\begin{DoxyCompactList}\small\item\em Compute\-Force \-: computes the force to control the position of Skye. \end{DoxyCompactList}\item 
+void \hyperlink{class_skye_geometric_controller_ab2676ca5ec54b90946bd2707abc39872}{Compute\-Acceleration} (Eigen\-::\-Vector3d $\ast$output\-\_\-acceleration\-\_\-bf)
+\begin{DoxyCompactList}\small\item\em Compute\-Acceleration \-: computes the momentum to control the orientation of Skye. \end{DoxyCompactList}\item 
+void \hyperlink{class_skye_geometric_controller_a857ec9e8b22c2658514d0296c0dde1db}{Update\-Desired\-Pose} (const Eigen\-::\-Vector3d \&desired\-\_\-position\-\_\-if, const Eigen\-::\-Quaterniond \&desired\-\_\-orientation\-\_\-if)
+\begin{DoxyCompactList}\small\item\em Update\-Desired\-Pose \-: updates the desired pose of Skye for new control iteration. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \subsection{Member Function Documentation}
-\hypertarget{class_skye_geometric_controller_af7accd98eca41f18232aaea6dff03b93}{\index{Skye\-Geometric\-Controller@{Skye\-Geometric\-Controller}!Compute\-Acceleration@{Compute\-Acceleration}}
+\hypertarget{class_skye_geometric_controller_ab2676ca5ec54b90946bd2707abc39872}{\index{Skye\-Geometric\-Controller@{Skye\-Geometric\-Controller}!Compute\-Acceleration@{Compute\-Acceleration}}
 \index{Compute\-Acceleration@{Compute\-Acceleration}!SkyeGeometricController@{Skye\-Geometric\-Controller}}
 \subsubsection[{Compute\-Acceleration}]{\setlength{\rightskip}{0pt plus 5cm}void Skye\-Geometric\-Controller\-::\-Compute\-Acceleration (
 \begin{DoxyParamCaption}
-\item[{Eigen\-::\-Vector3d $\ast$}]{output\-\_\-acceleration\-\_\-}
+\item[{Eigen\-::\-Vector3d $\ast$}]{output\-\_\-acceleration\-\_\-bf}
 \end{DoxyParamCaption}
-)}}\label{class_skye_geometric_controller_af7accd98eca41f18232aaea6dff03b93}
+)}}\label{class_skye_geometric_controller_ab2676ca5ec54b90946bd2707abc39872}
 
 
-Compute\-Acceleration \-: computes the momentum to control the orientation of \hyperlink{class_skye}{Skye}. 
+Compute\-Acceleration \-: computes the momentum to control the orientation of Skye. 
 
 
 \begin{DoxyParams}{Parameters}
 {\em output\-\_\-acceleration\-\_\-} & \-: the output acceleration that is calculated \\
 \hline
 \end{DoxyParams}
-\hypertarget{class_skye_geometric_controller_a3dcbe7dd5bdb17ba15509efa22f19168}{\index{Skye\-Geometric\-Controller@{Skye\-Geometric\-Controller}!Compute\-Force@{Compute\-Force}}
+\hypertarget{class_skye_geometric_controller_afe9b74936a7118f7185113db56954f73}{\index{Skye\-Geometric\-Controller@{Skye\-Geometric\-Controller}!Compute\-Force@{Compute\-Force}}
 \index{Compute\-Force@{Compute\-Force}!SkyeGeometricController@{Skye\-Geometric\-Controller}}
 \subsubsection[{Compute\-Force}]{\setlength{\rightskip}{0pt plus 5cm}void Skye\-Geometric\-Controller\-::\-Compute\-Force (
 \begin{DoxyParamCaption}
-\item[{Eigen\-::\-Vector3d $\ast$}]{output\-\_\-force\-\_\-bf\-\_\-}
+\item[{Eigen\-::\-Vector3d $\ast$}]{output\-\_\-force\-\_\-bf}
 \end{DoxyParamCaption}
-)}}\label{class_skye_geometric_controller_a3dcbe7dd5bdb17ba15509efa22f19168}
+)}}\label{class_skye_geometric_controller_afe9b74936a7118f7185113db56954f73}
 
 
-Compute\-Force \-: computes the force to control the position of \hyperlink{class_skye}{Skye}. 
+Compute\-Force \-: computes the force to control the position of Skye. 
 
 
 \begin{DoxyParams}[1]{Parameters}
@@ -66,6 +68,25 @@ Initialize\-Params \-: function that initializes all the parameters needed by th
 
 \begin{DoxyParams}{Parameters}
 {\em param} & \-: a \hyperlink{struct_skye_parameters}{Skye\-Parameters} struct containing all the parameters \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_skye_geometric_controller_a857ec9e8b22c2658514d0296c0dde1db}{\index{Skye\-Geometric\-Controller@{Skye\-Geometric\-Controller}!Update\-Desired\-Pose@{Update\-Desired\-Pose}}
+\index{Update\-Desired\-Pose@{Update\-Desired\-Pose}!SkyeGeometricController@{Skye\-Geometric\-Controller}}
+\subsubsection[{Update\-Desired\-Pose}]{\setlength{\rightskip}{0pt plus 5cm}void Skye\-Geometric\-Controller\-::\-Update\-Desired\-Pose (
+\begin{DoxyParamCaption}
+\item[{const Eigen\-::\-Vector3d \&}]{desired\-\_\-position\-\_\-if, }
+\item[{const Eigen\-::\-Quaterniond \&}]{desired\-\_\-orientation\-\_\-if}
+\end{DoxyParamCaption}
+)}}\label{class_skye_geometric_controller_a857ec9e8b22c2658514d0296c0dde1db}
+
+
+Update\-Desired\-Pose \-: updates the desired pose of Skye for new control iteration. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em desired\-\_\-position} & \-: new desired position in inertial frame coordinates \\
+\hline
+{\em desired\-\_\-orientation} & \-: new desired orientation expressed as rotation of the inertial frame \\
 \hline
 \end{DoxyParams}
 \hypertarget{class_skye_geometric_controller_a86e1970fa9f94b0a1d09b7368ee19bf8}{\index{Skye\-Geometric\-Controller@{Skye\-Geometric\-Controller}!Update\-Gains@{Update\-Gains}}
@@ -115,13 +136,13 @@ Update\-Parameters \-: updates the parameters for control errors.
 
 
 \begin{DoxyParams}{Parameters}
-{\em poisiton\-\_\-if\-\_\-} & \-: last known position of \hyperlink{class_skye}{Skye} in the inertial frame \\
+{\em poisiton\-\_\-if\-\_\-} & \-: last known position of Skye in the inertial frame \\
 \hline
-{\em velocity\-\_\-if\-\_\-} & \-: last known linear velocity of \hyperlink{class_skye}{Skye} in the inertial frame \\
+{\em velocity\-\_\-if\-\_\-} & \-: last known linear velocity of Skye in the inertial frame \\
 \hline
-{\em orientation\-\_\-bf\-\_\-} & \-: last known orientation of \hyperlink{class_skye}{Skye} in the body frame \\
+{\em orientation\-\_\-bf\-\_\-} & \-: last known orientation of Skye in the body frame \\
 \hline
-{\em a\-\_\-angular\-\_\-velocity\-\_\-bf\-\_\-} & \-: last known angular velocity of \hyperlink{class_skye}{Skye} in the body frame\\
+{\em a\-\_\-angular\-\_\-velocity\-\_\-bf\-\_\-} & \-: last known angular velocity of Skye in the body frame\\
 \hline
 \end{DoxyParams}
 This must be called befor computing force and acceleration because it saves the updated parameters into the private variables 

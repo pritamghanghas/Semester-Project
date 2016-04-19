@@ -79,10 +79,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">Simulation Framework For <a class="el" href="class_skye.html">Skye</a> </div>  </div>
+<div class="title">Simulation Framework For Skye </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>This repository contains everything you need to simulate the airship <a class="el" href="class_skye.html">Skye</a> in <a href="http://gazebosim.org/">Gazebo</a> and interact with it by using the Robotic Operating System <a href="http://www.ros.org/">ROS</a>. The recommended OS is Ubuntu 14.04.</p>
+<div class="textblock"><p>This repository contains everything you need to simulate the airship Skye in <a href="http://gazebosim.org/">Gazebo</a> and interact with it by using the Robotic Operating System <a href="http://www.ros.org/">ROS</a>. The recommended OS is Ubuntu 14.04.</p>
 <h2>ROS Installation</h2>
 <p>These steps are taken from the main installation page of ROS. Configure your Ubuntu repositories to allow "restricted," "universe," and "multiverse." You can <a href="https://help.ubuntu.com/community/Repositories/Ubuntu">follow the Ubuntu guide</a> for instructions on doing this. Setup your computer to accept software from packages.ros.org. ROS Indigo ONLY supports Saucy (13.10) and Trusty (14.04) for debian packages. ```bash sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" &gt; /etc/apt/sources.list.d/ros-latest.list' ``` Set up your keys ```bash sudo apt-key adv &ndash;keyserver hkp://ha.pool.sks-keyservers.net &ndash;recv-key 0xB01FA116 ``` Installation: first, make sure your Debian package index is up-to-date. ```bash sudo apt-get update ``` Install the Desktop Install version, which provides you: ROS, rqt, rviz, and robot-generic libraries ```bash sudo apt-get install ros-indigo-desktop ``` Initialize ROS. ```bash sudo rosdep init rosdep update ``` It's convenient if the ROS environment variables are automatically added to your bash session every time a new shell is launched: ```bash echo "source /opt/ros/indigo/setup.bash" &gt;&gt; ~/.bashrc source ~/.bashrc ``` rosinstall is a frequently used command-line tool in ROS that is distributed separately. It enables you to easily download many source trees for ROS packages with one command. ```bash sudo apt-get install python-rosinstall ``` </p>
 <h2>Gazebo6 Installation</h2>
@@ -94,7 +94,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p><code></p>
 <h2>Create A Catkin Workspace And Compile Source Code</h2>
 <p></code></p>
-<p><code> Create a catkin workspace in your home folder where you are going to clone every package needed to simulate <a class="el" href="class_skye.html">Skye</a>. ```bash cd ~ mkdir -p catkin_ws/src cd ~/catkin_ws/src catkin_init_workspace ``` Clone the required reposotories in the src folder: ```bash cd ~/catkin_ws/src git clone <a href="https://github.com/skye-git/skye_gazebo_simulation">https://github.com/skye-git/skye_gazebo_simulation</a> -b indigo-devel git clone <a href="https://github.com/skye-git/hector_gazebo">https://github.com/skye-git/hector_gazebo</a> -b indigo-devel ``<code> Compile them. Suggestion: use the option **-j** to specify the number of jobs to run simultaneously; for example</code>catkin_make -j4<code> </code>``bash cd ~/catkin_ws catkin_make ``` It's convenient if the ROS environment variables are automatically added to your bash session every time a new shell is launched: ```bash echo "source ~/catkin_ws/devel/setup.bash" &gt;&gt; ~/.bashrc source ~/.bashrc ```</code></p>
+<p><code> Create a catkin workspace in your home folder where you are going to clone every package needed to simulate Skye. ```bash cd ~ mkdir -p catkin_ws/src cd ~/catkin_ws/src catkin_init_workspace ``` Clone the required reposotories in the src folder: ```bash cd ~/catkin_ws/src git clone <a href="https://github.com/skye-git/skye_gazebo_simulation">https://github.com/skye-git/skye_gazebo_simulation</a> -b indigo-devel git clone <a href="https://github.com/skye-git/hector_gazebo">https://github.com/skye-git/hector_gazebo</a> -b indigo-devel ``<code> Compile them. Suggestion: use the option **-j** to specify the number of jobs to run simultaneously; for example</code>catkin_make -j4<code> </code>``bash cd ~/catkin_ws catkin_make ``` It's convenient if the ROS environment variables are automatically added to your bash session every time a new shell is launched: ```bash echo "source ~/catkin_ws/devel/setup.bash" &gt;&gt; ~/.bashrc source ~/.bashrc ```</code></p>
 <p><code></p>
 <h2>Include Needed Plugins</h2>
 <p></code></p>
@@ -102,11 +102,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p><code></p>
 <h2>Launch A Simulation With Empty World</h2>
 <p></code></p>
-<p><code> To launch a first simulation of <a class="el" href="class_skye.html">Skye</a> in an empty world in Gazebo type ```bash roslaunch <a class="el" href="namespaceskye__ros.html">skye_ros</a> inflate_skye.launch ``` The launch file 'inflate_skye.launch' does several things for you: it starts roscore, launches Gazebo with an instance of <a class="el" href="class_skye.html">Skye</a> and starts the node interface called 'skye_ros_node'.</code></p>
+<p><code> To launch a first simulation of Skye in an empty world in Gazebo type ```bash roslaunch <a class="el" href="namespaceskye__ros.html">skye_ros</a> inflate_skye.launch ``` The launch file 'inflate_skye.launch' does several things for you: it starts roscore, launches Gazebo with an instance of Skye and starts the node interface called 'skye_ros_node'.</code></p>
 <p><code></p>
 <h2>Skye-ROS Interface</h2>
 <p></code></p>
-<p><code> The package "skye_ros" provides an easy interface to interact with a simulation of <a class="el" href="class_skye.html">Skye</a> in Gazebo.</code></p>
+<p><code> The package "skye_ros" provides an easy interface to interact with a simulation of Skye in Gazebo.</code></p>
 <p><code></p>
 <h3>Advertised Topics</h3>
 <p></code></p>
@@ -122,19 +122,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p></code></p>
 <p><code></p>
 <ul>
-<li>/skye_ros/apply_wrench_cog_bf service to apply a wrench (i.e. a force and a torque) in the center of gravity (CoG) of <a class="el" href="class_skye.html">Skye</a>. Wrench expressed in <a class="el" href="class_skye.html">Skye</a>'s body frame attached to the CoG of <a class="el" href="class_skye.html">Skye</a>. See below section <b>Frames Convetion</b> for further information.</li>
+<li>/skye_ros/apply_wrench_cog_bf service to apply a wrench (i.e. a force and a torque) in the center of gravity (CoG) of Skye. Wrench expressed in Skye's body frame attached to the CoG of Skye. See below section <b>Frames Convetion</b> for further information.</li>
 </ul>
 <p></code></p>
-<p><code>Example: apply a torque of 3 Nm around <a class="el" href="class_skye.html">Skye</a>'s X axes (in body frame). ```bash rosservice call /skye_ros/apply_wrench_cog_bf '{wrench: { force: { x: 0, y: 0, z: 0 }, torque: {x: 3, y: 0, z: 0} }, start_time: 0, duration: -1 }' ``` </p>
+<p><code>Example: apply a torque of 3 Nm around Skye's X axes (in body frame). ```bash rosservice call /skye_ros/apply_wrench_cog_bf '{wrench: { force: { x: 0, y: 0, z: 0 }, torque: {x: 3, y: 0, z: 0} }, start_time: 0, duration: -1 }' ``` </p>
 <h2>Repository Layout</h2>
 <p></code></p>
 <p><code> The following describes the directory structure and important files in the skye_gazebo_simulation repository</code></p>
 <p><code>Folders:</code></p>
 <p><code></p>
 <ul>
-<li>skye_description - <a class="el" href="class_skye.html">Skye</a>'s Gazebo model descritpion in SDF.</li>
-<li>skye_gazebo - Contains launch files to run Gazebo and spawn <a class="el" href="class_skye.html">Skye</a>.</li>
-<li><a class="el" href="namespaceskye__ros.html">skye_ros</a> - Containes a simple interface which converts data from Gazebo ENU frame to <a class="el" href="class_skye.html">Skye</a>'s NED frame.</li>
+<li>skye_description - Skye's Gazebo model descritpion in SDF.</li>
+<li>skye_gazebo - Contains launch files to run Gazebo and spawn Skye.</li>
+<li><a class="el" href="namespaceskye__ros.html">skye_ros</a> - Containes a simple interface which converts data from Gazebo ENU frame to Skye's NED frame.</li>
 </ul>
 <p></code></p>
 <p><code></p>
@@ -144,11 +144,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p><code></p>
 <ul>
 <li>World NED frame: X axis pointing to North, Y axis pointing to East and Z axis pointing to Down.</li>
-<li><a class="el" href="class_skye.html">Skye</a>'s body frame: frame attached to the Center of Gravity (CoG) of the hull. It has the X axis pointing geometrically forward W.R.T the eye, the Y axis pointing geometrically right W.R.T the hull and the Z axis pointing geometrically down W.R.T the hull.</li>
+<li>Skye's body frame: frame attached to the Center of Gravity (CoG) of the hull. It has the X axis pointing geometrically forward W.R.T the eye, the Y axis pointing geometrically right W.R.T the hull and the Z axis pointing geometrically down W.R.T the hull.</li>
 <li>IMU frame: frame attached to the center of the IMU (red box). It has the X axis pointing geometrically forward W.R.T the eye, the Y axis pointing geometrically right W.R.T the hull and the Z axis pointing geometrically down W.R.T the hull.</li>
 </ul>
 <p></code></p>
-<p><code>The picture below gives an overview of these three frames. Note that the initial default position of <a class="el" href="class_skye.html">Skye</a> is rotated of 90 degrees about the Z axis with respect to the world NED frame.</code></p>
+<p><code>The picture below gives an overview of these three frames. Note that the initial default position of Skye is rotated of 90 degrees about the Z axis with respect to the world NED frame.</code></p>
 <p><code></code></p>
 <p><code> </p>
 <div class="image">
@@ -159,7 +159,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 17 2016 14:27:44 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 19 2016 10:12:20 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

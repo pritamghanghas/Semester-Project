@@ -2,30 +2,57 @@
 #define WAYPOINT_CONTROLLER_H
 
 #include <Eigen/Eigen>
-#include <stdlib.h>
 #include <vector>
-#include <iostream>
+#include <iostream>// remove once debug is removed!!!
 
+/**
+ * @brief The WaypointControllerParameters struct provides a thin interface to pass parameters.
+ *
+ * It provides an easy way to pass waypoints, orientation and a threshold
+ */
 struct WaypointControllerParameters{
     std::vector<Eigen::Vector3d> input_waypoints;
+    std::vector<Eigen::Quaterniond> input_orientations;
     double input_goal_change_threshold;
 };
 
+/**
+ * @brief The WaypointPose struct is used to pack position and orientation together
+ * position is an Eigen::Vector3d and orientation is an Eigen::Quaterniond
+ */
+struct WaypointPose {
+    Eigen::Vector3d position;
+    Eigen::Quaterniond orientation;
+};
+
+/**
+ * @brief The WaypointController class takes care of providing new goals whenever a certain threshold is passed.
+ *
+ * before computing a new goal the class instance shoud have the parameters initialized with InitParameters
+ */
 class WaypointController
 {
 public:
     WaypointController();
     ~WaypointController();
-
-    void InitParameters(WaypointControllerParameters some_param);
-    void ComputeGoal(const Eigen::Vector3d &current_position,
-                     Eigen::Vector3d *new_goal);
+    /**
+     * @brief InitParameters : saves parameters in class members
+     * @param parameters : a WaypointControllerParameters struct with parameters in it.
+     */
+    void InitParameters(WaypointControllerParameters parameters);
+    /**
+     * @brief ComputeGoal : computes a new goal given the actual position of skye
+     * @param current_position_if : the current position vector expressed in the inertial frame
+     * @param new_pose : the output vector passed as a new Waypose
+     */
+    void ComputeGoal(const Eigen::Vector3d &current_position_if,
+                     WaypointPose *new_pose);
 private:
     double goal_change_threshold_;
 
     std::vector<Eigen::Vector3d> waypoints_;
+    std::vector<Eigen::Quaterniond>  orientations_;
     WaypointControllerParameters controller_parameters_;
-
 };
 
 #endif // WAYPOINT_CONTROLLER_H

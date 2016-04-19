@@ -47,7 +47,6 @@ void SkyeGeometricController::InitializeParams(const SkyeParameters param){
     desired_angular_acceleration_bf_ = param.input_desired_angular_acceleration_bf;
     desired_acceleration_if_ = param.input_desired_acceleration_if;
 
-
     //Compute normalized gains for the first time
     this->ComputeNormalizedGains();
 
@@ -86,6 +85,10 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
     angular_velocity_error_bf_ =  angular_velocity_ - R_if_.transpose() * R_des_if_ * desired_angular_velocity_bf_;
 
     /******************** DEBUG ************************
+     * WHEN REMOVING THIS CODE DO NOT FORGET TO REMOVE IOSTREAM INCLUSION
+     * IN THE HEADER FILE!!!!
+     *
+     *
     std::cout << "--------------------------------------------------" << std::endl <<
                  "position_: " << position_if(0) <<
                  " | y: " << position_if(1) <<
@@ -210,6 +213,8 @@ void SkyeGeometricController::ComputeAcceleration(Eigen::Vector3d *output_accele
 
 }
 
-void SkyeGeometricController::UpdateDesiredPose(const Eigen::Vector3d &desired_position){
-    desired_position_if_ = desired_position;
+void SkyeGeometricController::UpdateDesiredPose(const Eigen::Vector3d &desired_position_if,
+                                                const Eigen::Quaterniond &desired_orientation_if){
+    desired_position_if_ = desired_position_if;
+    R_des_if_ = desired_orientation_if.matrix();
 }

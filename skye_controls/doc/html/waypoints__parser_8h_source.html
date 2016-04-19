@@ -94,28 +94,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef WAYPOINTS_PARSER_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define WAYPOINTS_PARSER_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;Eigen/Eigen&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;ros/ros.h&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;Eigen/Eigen&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="class_waypoints_parser.html">   13</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_waypoints_parser.html">WaypointsParser</a></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <a class="code" href="class_waypoints_parser.html">WaypointsParser</a>(std::string input_file_path_, std::vector&lt;Eigen::Vector3d&gt; &amp; waypoints_);</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;};</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#endif // WAYPOINTS_PARSER_H</span></div>
-<div class="ttc" id="class_waypoints_parser_html"><div class="ttname"><a href="class_waypoints_parser.html">WaypointsParser</a></div><div class="ttdef"><b>Definition:</b> waypoints_parser.h:13</div></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="class_waypoints_parser.html">   14</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_waypoints_parser.html">WaypointsParser</a></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="class_waypoints_parser.html#a7dfcb50264cc966572e536acbb1cf2d6">WaypointsParser</a>(ros::NodeHandle nh,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                    std::vector&lt;Eigen::Vector3d&gt; *waypoints,</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                    std::vector&lt;Eigen::Quaterniond&gt; *orientations);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    ~<a class="code" href="class_waypoints_parser.html">WaypointsParser</a>();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;};</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#endif // WAYPOINTS_PARSER_H</span></div>
+<div class="ttc" id="class_waypoints_parser_html_a7dfcb50264cc966572e536acbb1cf2d6"><div class="ttname"><a href="class_waypoints_parser.html#a7dfcb50264cc966572e536acbb1cf2d6">WaypointsParser::WaypointsParser</a></div><div class="ttdeci">WaypointsParser(ros::NodeHandle nh, std::vector&lt; Eigen::Vector3d &gt; *waypoints, std::vector&lt; Eigen::Quaterniond &gt; *orientations)</div><div class="ttdoc">WaypointsParser : The constructor gets parameters from ROS and packs the vectors. ...</div><div class="ttdef"><b>Definition:</b> waypoints_parser.cpp:6</div></div>
+<div class="ttc" id="class_waypoints_parser_html"><div class="ttname"><a href="class_waypoints_parser.html">WaypointsParser</a></div><div class="ttdoc">The WaypointsParser class is used to provide a thin interface for parsing parameters. It returns a vector of Eigen::Vector3d representing the 3D inertial frame points to visit and a vector of Eigen::Quaterniond representing Skye&#39;s orientations expressed in quaternions. </div><div class="ttdef"><b>Definition:</b> waypoints_parser.h:14</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 17 2016 14:27:44 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 19 2016 10:12:20 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

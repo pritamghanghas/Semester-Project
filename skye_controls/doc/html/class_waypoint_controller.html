@@ -86,11 +86,90 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="class_waypoint_controller-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">WaypointController Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>The <a class="el" href="class_waypoint_controller.html" title="The WaypointController class takes care of providing new goals whenever a certain threshold is passed...">WaypointController</a> class takes care of providing new goals whenever a certain threshold is passed.  
+ <a href="class_waypoint_controller.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="waypoint__controller_8h_source.html">waypoint_controller.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a10f00d385c12c6ee03b3459d1fe552c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#a10f00d385c12c6ee03b3459d1fe552c1">InitParameters</a> (<a class="el" href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a> parameters)</td></tr>
+<tr class="memdesc:a10f00d385c12c6ee03b3459d1fe552c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">InitParameters : saves parameters in class members.  <a href="#a10f00d385c12c6ee03b3459d1fe552c1">More...</a><br/></td></tr>
+<tr class="separator:a10f00d385c12c6ee03b3459d1fe552c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99af680a2e0b31de954e96c4df44d26e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#a99af680a2e0b31de954e96c4df44d26e">ComputeGoal</a> (const Eigen::Vector3d &amp;current_position_if, <a class="el" href="struct_waypoint_pose.html">WaypointPose</a> *new_pose)</td></tr>
+<tr class="memdesc:a99af680a2e0b31de954e96c4df44d26e"><td class="mdescLeft">&#160;</td><td class="mdescRight">ComputeGoal : computes a new goal given the actual position of skye.  <a href="#a99af680a2e0b31de954e96c4df44d26e">More...</a><br/></td></tr>
+<tr class="separator:a99af680a2e0b31de954e96c4df44d26e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The <a class="el" href="class_waypoint_controller.html" title="The WaypointController class takes care of providing new goals whenever a certain threshold is passed...">WaypointController</a> class takes care of providing new goals whenever a certain threshold is passed. </p>
+<p>before computing a new goal the class instance shoud have the parameters initialized with InitParameters </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a99af680a2e0b31de954e96c4df44d26e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void WaypointController::ComputeGoal </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::Vector3d &amp;&#160;</td>
+          <td class="paramname"><em>current_position_if</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_waypoint_pose.html">WaypointPose</a> *&#160;</td>
+          <td class="paramname"><em>new_pose</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>ComputeGoal : computes a new goal given the actual position of skye. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">current_position_if</td><td>: the current position vector expressed in the inertial frame </td></tr>
+    <tr><td class="paramname">new_pose</td><td>: the output vector passed as a new Waypose </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a10f00d385c12c6ee03b3459d1fe552c1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void WaypointController::InitParameters </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a>&#160;</td>
+          <td class="paramname"><em>parameters</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>InitParameters : saves parameters in class members. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parameters</td><td>: a <a class="el" href="struct_waypoint_controller_parameters.html" title="The WaypointControllerParameters struct provides a thin interface to pass parameters. ">WaypointControllerParameters</a> struct with parameters in it. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>skye_controls/include/skye_controls/<a class="el" href="waypoint__controller_8h_source.html">waypoint_controller.h</a></li>
 <li>skye_controls/src/library/waypoint_controller.cpp</li>
@@ -98,7 +177,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 17 2016 14:27:44 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 19 2016 10:12:20 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

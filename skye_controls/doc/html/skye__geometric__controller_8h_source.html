@@ -95,7 +95,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SKYE_GEOMETRIC_CONTROLLER_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;Eigen/Eigen&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span> <span class="comment">// remove once debug is removed!!!</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
 <div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="struct_skye_parameters.html">   11</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_skye_parameters.html">SkyeParameters</a>{</div>
 <div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="struct_skye_parameters.html#a6629521e0b41c5f3729c6bd795c8f787">   15</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="struct_skye_parameters.html#a6629521e0b41c5f3729c6bd795c8f787">input_number_of_actuators</a>;</div>
@@ -143,50 +143,53 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    desired_angular_acceleration_bf_;</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    Eigen::Vector3d position_error_bf_,</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    velocity_error_bf_,</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    attitude_error_bf_,</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    angular_velocity_error_bf_,</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    integrator_force_,</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    integrator_acceleration_;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    Eigen::Matrix3d inertia_;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    Eigen::Matrix3d R_if_, R_des_if_;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    Eigen::Vector3d angular_velocity_;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    Eigen::Vector3d normalized_k_R_;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    Eigen::Vector3d normalized_k_omega_;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> VectorFromSkewMatrix(Eigen::Matrix3d &amp;skew_matrix, Eigen::Vector3d *vector);</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> ComputeNormalizedGains();</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> SaturateVector(<span class="keywordtype">double</span> a_threshold, Eigen::Vector3d *a_vector);</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <a class="code" href="class_skye_geometric_controller.html#a40739735f7c55b861647ecad873080ac">SkyeGeometricController</a>();</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#a78773edf4b0a80b1e26daec62b17a42a">InitializeParams</a>(<span class="keyword">const</span> <a class="code" href="struct_skye_parameters.html">SkyeParameters</a> param);</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#a59e2b48fa22a5910cf932cd8217ae062">UpdateParameters</a>(<span class="keyword">const</span> Eigen::Vector3d &amp;poisiton_if,</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                          <span class="keyword">const</span> Eigen::Vector3d &amp;velocity_if,</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                          <span class="keyword">const</span> Eigen::Quaterniond &amp;orientation_bf,</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                          <span class="keyword">const</span> Eigen::Vector3d &amp;a_angular_velocity_bf);</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#a86e1970fa9f94b0a1d09b7368ee19bf8">UpdateGains</a>(<span class="keywordtype">double</span> k_x,</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                     <span class="keywordtype">double</span> k_v,</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                     <span class="keywordtype">double</span> k_if,</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                     <span class="keywordtype">double</span> k_im,</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                     <span class="keywordtype">double</span> k_R,</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                     <span class="keywordtype">double</span> k_omega);</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#a3dcbe7dd5bdb17ba15509efa22f19168">ComputeForce</a>(Eigen::Vector3d *output_force_bf_);</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#af7accd98eca41f18232aaea6dff03b93">ComputeAcceleration</a>(Eigen::Vector3d *output_acceleration_);</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;};</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="preprocessor">#endif // SKYE_GEOMETRIC_CONTROLLER_H</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    position_error_if_,</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    velocity_error_bf_,</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    velocity_error_if_,</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    attitude_error_bf_,</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    angular_velocity_error_bf_,</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    integrator_force_,</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    integrator_acceleration_;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    Eigen::Matrix3d inertia_;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    Eigen::Matrix3d R_if_, R_des_if_;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    Eigen::Vector3d angular_velocity_;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    Eigen::Vector3d normalized_k_R_;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    Eigen::Vector3d normalized_k_omega_;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> VectorFromSkewMatrix(Eigen::Matrix3d &amp;skew_matrix, Eigen::Vector3d *vector);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> ComputeNormalizedGains();</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keyword">inline</span> <span class="keywordtype">void</span> SaturateVector(<span class="keywordtype">double</span> a_threshold, Eigen::Vector3d *a_vector);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    <a class="code" href="class_skye_geometric_controller.html#a40739735f7c55b861647ecad873080ac">SkyeGeometricController</a>();</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#a78773edf4b0a80b1e26daec62b17a42a">InitializeParams</a>(<span class="keyword">const</span> <a class="code" href="struct_skye_parameters.html">SkyeParameters</a> param);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#a59e2b48fa22a5910cf932cd8217ae062">UpdateParameters</a>(<span class="keyword">const</span> Eigen::Vector3d &amp;poisiton_if,</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                          <span class="keyword">const</span> Eigen::Vector3d &amp;velocity_if,</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                          <span class="keyword">const</span> Eigen::Quaterniond &amp;orientation_bf,</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                          <span class="keyword">const</span> Eigen::Vector3d &amp;a_angular_velocity_bf);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#a86e1970fa9f94b0a1d09b7368ee19bf8">UpdateGains</a>(<span class="keywordtype">double</span> k_x,</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                     <span class="keywordtype">double</span> k_v,</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                     <span class="keywordtype">double</span> k_if,</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                     <span class="keywordtype">double</span> k_im,</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                     <span class="keywordtype">double</span> k_R,</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                     <span class="keywordtype">double</span> k_omega);</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#afe9b74936a7118f7185113db56954f73">ComputeForce</a>(Eigen::Vector3d *output_force_bf);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#ab2676ca5ec54b90946bd2707abc39872">ComputeAcceleration</a>(Eigen::Vector3d *output_acceleration_bf);</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skye_geometric_controller.html#a857ec9e8b22c2658514d0296c0dde1db">UpdateDesiredPose</a>(<span class="keyword">const</span> Eigen::Vector3d &amp;desired_position_if,</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                           <span class="keyword">const</span> Eigen::Quaterniond &amp;desired_orientation_if);</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;};</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="preprocessor">#endif // SKYE_GEOMETRIC_CONTROLLER_H</span></div>
 <div class="ttc" id="struct_skye_parameters_html_a1ef90e774334e2760de74c2145560289"><div class="ttname"><a href="struct_skye_parameters.html#a1ef90e774334e2760de74c2145560289">SkyeParameters::input_k_im</a></div><div class="ttdeci">double input_k_im</div><div class="ttdoc">input_k_im : the momentum integrator control gain </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:31</div></div>
 <div class="ttc" id="struct_skye_parameters_html_af0ea0ec407eaef0ddec28e96ab098d1c"><div class="ttname"><a href="struct_skye_parameters.html#af0ea0ec407eaef0ddec28e96ab098d1c">SkyeParameters::input_desired_angular_acceleration_bf</a></div><div class="ttdeci">Eigen::Vector3d input_desired_angular_acceleration_bf</div><div class="ttdoc">input_desired_angular_acceleration_bf : desired angular acceleration expressed in the body frame ...</div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:87</div></div>
 <div class="ttc" id="struct_skye_parameters_html_a5c05c4be8f429eab4ec19e41130a0d39"><div class="ttname"><a href="struct_skye_parameters.html#a5c05c4be8f429eab4ec19e41130a0d39">SkyeParameters::input_maximum_momentum_integrator</a></div><div class="ttdeci">double input_maximum_momentum_integrator</div><div class="ttdoc">input_maximum_momentum_integrator : saturation value for the attitude control integrator ...</div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:67</div></div>
@@ -197,14 +200,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="struct_skye_parameters_html_a00f578515588e5d0ab40cc52febe08bf"><div class="ttname"><a href="struct_skye_parameters.html#a00f578515588e5d0ab40cc52febe08bf">SkyeParameters::input_distance_integrator_treshold</a></div><div class="ttdeci">double input_distance_integrator_treshold</div><div class="ttdoc">input_distance_integrator_treshold : threshold under which the position integrator is activated ...</div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:55</div></div>
 <div class="ttc" id="struct_skye_parameters_html_ade9a962c46f28bf506f39a46da67bb80"><div class="ttname"><a href="struct_skye_parameters.html#ade9a962c46f28bf506f39a46da67bb80">SkyeParameters::input_radius</a></div><div class="ttdeci">double input_radius</div><div class="ttdoc">input_radius : Skye&#39;s radius </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:47</div></div>
 <div class="ttc" id="struct_skye_parameters_html_acc2c9df1cdc2feb5695ae3dc49c7b838"><div class="ttname"><a href="struct_skye_parameters.html#acc2c9df1cdc2feb5695ae3dc49c7b838">SkyeParameters::input_R_des_if</a></div><div class="ttdeci">Eigen::Matrix3d input_R_des_if</div><div class="ttdoc">input_R_des : desired rotation matrix expressed in the inertial frame </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:95</div></div>
-<div class="ttc" id="class_skye_geometric_controller_html_a86e1970fa9f94b0a1d09b7368ee19bf8"><div class="ttname"><a href="class_skye_geometric_controller.html#a86e1970fa9f94b0a1d09b7368ee19bf8">SkyeGeometricController::UpdateGains</a></div><div class="ttdeci">void UpdateGains(double k_x, double k_v, double k_if, double k_im, double k_R, double k_omega)</div><div class="ttdoc">UpdateGains : Provides an interface to dynamically change control parameters. </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.cpp:143</div></div>
+<div class="ttc" id="class_skye_geometric_controller_html_a86e1970fa9f94b0a1d09b7368ee19bf8"><div class="ttname"><a href="class_skye_geometric_controller.html#a86e1970fa9f94b0a1d09b7368ee19bf8">SkyeGeometricController::UpdateGains</a></div><div class="ttdeci">void UpdateGains(double k_x, double k_v, double k_if, double k_im, double k_R, double k_omega)</div><div class="ttdoc">UpdateGains : Provides an interface to dynamically change control parameters. </div></div>
 <div class="ttc" id="struct_skye_parameters_html_a0eed3d70a979c9672c9d017178711b14"><div class="ttname"><a href="struct_skye_parameters.html#a0eed3d70a979c9672c9d017178711b14">SkyeParameters::input_maximum_force_cog</a></div><div class="ttdeci">double input_maximum_force_cog</div><div class="ttdoc">input_maximum_force_cog : unidirectional saturation value for the force </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:51</div></div>
 <div class="ttc" id="struct_skye_parameters_html_a2a7f81ce2ec7d633f02c77060da8139c"><div class="ttname"><a href="struct_skye_parameters.html#a2a7f81ce2ec7d633f02c77060da8139c">SkyeParameters::input_desired_position_if</a></div><div class="ttdeci">Eigen::Vector3d input_desired_position_if</div><div class="ttdoc">input_desired_position_if : desired position expressed in the inertial frame </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:71</div></div>
-<div class="ttc" id="class_skye_geometric_controller_html_af7accd98eca41f18232aaea6dff03b93"><div class="ttname"><a href="class_skye_geometric_controller.html#af7accd98eca41f18232aaea6dff03b93">SkyeGeometricController::ComputeAcceleration</a></div><div class="ttdeci">void ComputeAcceleration(Eigen::Vector3d *output_acceleration_)</div><div class="ttdoc">ComputeAcceleration : computes the momentum to control the orientation of Skye. </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.cpp:192</div></div>
-<div class="ttc" id="class_skye_geometric_controller_html_a3dcbe7dd5bdb17ba15509efa22f19168"><div class="ttname"><a href="class_skye_geometric_controller.html#a3dcbe7dd5bdb17ba15509efa22f19168">SkyeGeometricController::ComputeForce</a></div><div class="ttdeci">void ComputeForce(Eigen::Vector3d *output_force_bf_)</div><div class="ttdoc">ComputeForce : computes the force to control the position of Skye. </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.cpp:174</div></div>
+<div class="ttc" id="class_skye_geometric_controller_html_a857ec9e8b22c2658514d0296c0dde1db"><div class="ttname"><a href="class_skye_geometric_controller.html#a857ec9e8b22c2658514d0296c0dde1db">SkyeGeometricController::UpdateDesiredPose</a></div><div class="ttdeci">void UpdateDesiredPose(const Eigen::Vector3d &amp;desired_position_if, const Eigen::Quaterniond &amp;desired_orientation_if)</div><div class="ttdoc">UpdateDesiredPose : updates the desired pose of Skye for new control iteration. </div></div>
+<div class="ttc" id="class_skye_geometric_controller_html_ab2676ca5ec54b90946bd2707abc39872"><div class="ttname"><a href="class_skye_geometric_controller.html#ab2676ca5ec54b90946bd2707abc39872">SkyeGeometricController::ComputeAcceleration</a></div><div class="ttdeci">void ComputeAcceleration(Eigen::Vector3d *output_acceleration_bf)</div><div class="ttdoc">ComputeAcceleration : computes the momentum to control the orientation of Skye. </div></div>
 <div class="ttc" id="struct_skye_parameters_html_ad5566192a0f853462ba63e3ebcb0ba8d"><div class="ttname"><a href="struct_skye_parameters.html#ad5566192a0f853462ba63e3ebcb0ba8d">SkyeParameters::input_k_R</a></div><div class="ttdeci">double input_k_R</div><div class="ttdoc">input_k_R : the attitude control gain </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:39</div></div>
-<div class="ttc" id="class_skye_geometric_controller_html_a59e2b48fa22a5910cf932cd8217ae062"><div class="ttname"><a href="class_skye_geometric_controller.html#a59e2b48fa22a5910cf932cd8217ae062">SkyeGeometricController::UpdateParameters</a></div><div class="ttdeci">void UpdateParameters(const Eigen::Vector3d &amp;poisiton_if, const Eigen::Vector3d &amp;velocity_if, const Eigen::Quaterniond &amp;orientation_bf, const Eigen::Vector3d &amp;a_angular_velocity_bf)</div><div class="ttdoc">UpdateParameters : updates the parameters for control errors. </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.cpp:59</div></div>
+<div class="ttc" id="class_skye_geometric_controller_html_a59e2b48fa22a5910cf932cd8217ae062"><div class="ttname"><a href="class_skye_geometric_controller.html#a59e2b48fa22a5910cf932cd8217ae062">SkyeGeometricController::UpdateParameters</a></div><div class="ttdeci">void UpdateParameters(const Eigen::Vector3d &amp;poisiton_if, const Eigen::Vector3d &amp;velocity_if, const Eigen::Quaterniond &amp;orientation_bf, const Eigen::Vector3d &amp;a_angular_velocity_bf)</div><div class="ttdoc">UpdateParameters : updates the parameters for control errors. </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.cpp:58</div></div>
 <div class="ttc" id="struct_skye_parameters_html_a6629521e0b41c5f3729c6bd795c8f787"><div class="ttname"><a href="struct_skye_parameters.html#a6629521e0b41c5f3729c6bd795c8f787">SkyeParameters::input_number_of_actuators</a></div><div class="ttdeci">int input_number_of_actuators</div><div class="ttdoc">input_number_of_actuators : the number of actuators skye has. It is used to compute the momentum satu...</div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:15</div></div>
+<div class="ttc" id="class_skye_geometric_controller_html_afe9b74936a7118f7185113db56954f73"><div class="ttname"><a href="class_skye_geometric_controller.html#afe9b74936a7118f7185113db56954f73">SkyeGeometricController::ComputeForce</a></div><div class="ttdeci">void ComputeForce(Eigen::Vector3d *output_force_bf)</div><div class="ttdoc">ComputeForce : computes the force to control the position of Skye. </div></div>
 <div class="ttc" id="class_skye_geometric_controller_html"><div class="ttname"><a href="class_skye_geometric_controller.html">SkyeGeometricController</a></div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:99</div></div>
 <div class="ttc" id="struct_skye_parameters_html_a1bfdd5d7181eaa182e6925545e7b35b5"><div class="ttname"><a href="struct_skye_parameters.html#a1bfdd5d7181eaa182e6925545e7b35b5">SkyeParameters::input_maximum_force_integrator</a></div><div class="ttdeci">double input_maximum_force_integrator</div><div class="ttdoc">input_maximum_force_integrator : saturation value for the position control integrator ...</div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:63</div></div>
 <div class="ttc" id="struct_skye_parameters_html_ae95683393a970fb87018925875109c4a"><div class="ttname"><a href="struct_skye_parameters.html#ae95683393a970fb87018925875109c4a">SkyeParameters::input_k_x</a></div><div class="ttdeci">double input_k_x</div><div class="ttdoc">input_k_x : the position control gain </div><div class="ttdef"><b>Definition:</b> skye_geometric_controller.h:19</div></div>
@@ -219,7 +223,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 17 2016 14:27:44 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 19 2016 10:12:20 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

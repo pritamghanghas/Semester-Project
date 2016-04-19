@@ -2,6 +2,7 @@ var searchData=
 [
   ['imucallback',['imuCallback',['../classskye__ros_1_1_skye_ros.html#a7fce94bed2f513ee63aac089ccf40538',1,'skye_ros::SkyeRos']]],
   ['initializeparams',['InitializeParams',['../class_skye_geometric_controller.html#a78773edf4b0a80b1e26daec62b17a42a',1,'SkyeGeometricController']]],
+  ['initparameters',['InitParameters',['../class_waypoint_controller.html#a10f00d385c12c6ee03b3459d1fe552c1',1,'WaypointController']]],
   ['input_5fattitude_5fintegrator_5ftreshold',['input_attitude_integrator_treshold',['../struct_skye_parameters.html#af4cc7d48375ee12e4f0e1863e0f11b28',1,'SkyeParameters']]],
   ['input_5fdesired_5facceleration_5fif',['input_desired_acceleration_if',['../struct_skye_parameters.html#a931b644ebe7201095e350bf9a1ea1365',1,'SkyeParameters']]],
   ['input_5fdesired_5fangular_5facceleration_5fbf',['input_desired_angular_acceleration_bf',['../struct_skye_parameters.html#af0ea0ec407eaef0ddec28e96ab098d1c',1,'SkyeParameters']]],

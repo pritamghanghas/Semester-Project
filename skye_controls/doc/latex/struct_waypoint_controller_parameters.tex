@@ -1,13 +1,33 @@
 \hypertarget{struct_waypoint_controller_parameters}{\section{Waypoint\-Controller\-Parameters Struct Reference}
 \label{struct_waypoint_controller_parameters}\index{Waypoint\-Controller\-Parameters@{Waypoint\-Controller\-Parameters}}
 }
+
+
+The \hyperlink{struct_waypoint_controller_parameters}{Waypoint\-Controller\-Parameters} struct provides a thin interface to pass parameters.  
+
+
+
+
+{\ttfamily \#include $<$waypoint\-\_\-controller.\-h$>$}
+
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{struct_waypoint_controller_parameters_a231e6d7a6e9619bbfa6745460e4e132c}{std\-::vector$<$ Eigen\-::\-Vector3d $>$ {\bfseries input\-\_\-waypoints\-\_\-}}\label{struct_waypoint_controller_parameters_a231e6d7a6e9619bbfa6745460e4e132c}
+\hypertarget{struct_waypoint_controller_parameters_a0d82272b89f3d64dc3a157d448e7ab50}{std\-::vector$<$ Eigen\-::\-Vector3d $>$ {\bfseries input\-\_\-waypoints}}\label{struct_waypoint_controller_parameters_a0d82272b89f3d64dc3a157d448e7ab50}
+
+\item 
+\hypertarget{struct_waypoint_controller_parameters_a1d07718cf75a62d9e1e7d733620fe980}{std\-::vector$<$ Eigen\-::\-Quaterniond $>$ {\bfseries input\-\_\-orientations}}\label{struct_waypoint_controller_parameters_a1d07718cf75a62d9e1e7d733620fe980}
+
+\item 
+\hypertarget{struct_waypoint_controller_parameters_aeb594da1a72b35a2b75b38343c08c5e6}{double {\bfseries input\-\_\-goal\-\_\-change\-\_\-threshold}}\label{struct_waypoint_controller_parameters_aeb594da1a72b35a2b75b38343c08c5e6}
 
 \end{DoxyCompactItemize}
 
+
+\subsection{Detailed Description}
+The \hyperlink{struct_waypoint_controller_parameters}{Waypoint\-Controller\-Parameters} struct provides a thin interface to pass parameters. 
+
+It provides an easy way to pass waypoints, orientation and a threshold 
 
 The documentation for this struct was generated from the following file\-:\begin{DoxyCompactItemize}
 \item 

@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['skye',['Skye',['../class_skye.html',1,'']]],
-  ['skyegeometriccontroller',['SkyeGeometricController',['../class_skye_geometric_controller.html',1,'']]],
-  ['skyeparameters',['SkyeParameters',['../struct_skye_parameters.html',1,'']]],
-  ['skyeros',['SkyeRos',['../classskye__ros_1_1_skye_ros.html',1,'skye_ros']]]
+  ['waypointcontroller',['WaypointController',['../class_waypoint_controller.html',1,'']]],
+  ['waypointcontrollerparameters',['WaypointControllerParameters',['../struct_waypoint_controller_parameters.html',1,'']]],
+  ['waypointpose',['WaypointPose',['../struct_waypoint_pose.html',1,'']]],
+  ['waypointsparser',['WaypointsParser',['../class_waypoints_parser.html',1,'']]]
 ];

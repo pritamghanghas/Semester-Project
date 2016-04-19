@@ -92,20 +92,34 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">WaypointControllerParameters Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>The <a class="el" href="struct_waypoint_controller_parameters.html" title="The WaypointControllerParameters struct provides a thin interface to pass parameters. ">WaypointControllerParameters</a> struct provides a thin interface to pass parameters.  
+ <a href="struct_waypoint_controller_parameters.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="waypoint__controller_8h_source.html">waypoint_controller.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a231e6d7a6e9619bbfa6745460e4e132c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a231e6d7a6e9619bbfa6745460e4e132c"></a>
-std::vector&lt; Eigen::Vector3d &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>input_waypoints_</b></td></tr>
-<tr class="separator:a231e6d7a6e9619bbfa6745460e4e132c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d82272b89f3d64dc3a157d448e7ab50"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0d82272b89f3d64dc3a157d448e7ab50"></a>
+std::vector&lt; Eigen::Vector3d &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>input_waypoints</b></td></tr>
+<tr class="separator:a0d82272b89f3d64dc3a157d448e7ab50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d07718cf75a62d9e1e7d733620fe980"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d07718cf75a62d9e1e7d733620fe980"></a>
+std::vector&lt; Eigen::Quaterniond &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>input_orientations</b></td></tr>
+<tr class="separator:a1d07718cf75a62d9e1e7d733620fe980"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb594da1a72b35a2b75b38343c08c5e6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeb594da1a72b35a2b75b38343c08c5e6"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>input_goal_change_threshold</b></td></tr>
+<tr class="separator:aeb594da1a72b35a2b75b38343c08c5e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The <a class="el" href="struct_waypoint_controller_parameters.html" title="The WaypointControllerParameters struct provides a thin interface to pass parameters. ">WaypointControllerParameters</a> struct provides a thin interface to pass parameters. </p>
+<p>It provides an easy way to pass waypoints, orientation and a threshold </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>skye_controls/include/skye_controls/<a class="el" href="waypoint__controller_8h_source.html">waypoint_controller.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 17 2016 14:27:44 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 19 2016 10:12:20 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -1,4 +1,4 @@
-This repository contains everything you need to simulate the airship \hyperlink{class_skye}{Skye} in \href{http://gazebosim.org/}{\tt Gazebo} and interact with it by using the Robotic Operating System \href{http://www.ros.org/}{\tt R\-O\-S}. The recommended O\-S is Ubuntu 14.\-04.
+This repository contains everything you need to simulate the airship Skye in \href{http://gazebosim.org/}{\tt Gazebo} and interact with it by using the Robotic Operating System \href{http://www.ros.org/}{\tt R\-O\-S}. The recommended O\-S is Ubuntu 14.\-04.
 
 \subsection*{R\-O\-S Installation}
 
@@ -12,7 +12,7 @@ Since some of the required plugins are not available in Gazebo2 (the official su
 
 {\ttfamily \subsection*{Create A Catkin Workspace And Compile Source Code}}
 
-{\ttfamily  Create a catkin workspace in your home folder where you are going to clone every package needed to simulate \hyperlink{class_skye}{Skye}. ```bash cd $\sim$ mkdir -\/p catkin\-\_\-ws/src cd $\sim$/catkin\-\_\-ws/src catkin\-\_\-init\-\_\-workspace ``` Clone the required reposotories in the src folder\-: ```bash cd $\sim$/catkin\-\_\-ws/src git clone \href{https://github.com/skye-git/skye_gazebo_simulation}{\tt https\-://github.\-com/skye-\/git/skye\-\_\-gazebo\-\_\-simulation} -\/b indigo-\/devel git clone \href{https://github.com/skye-git/hector_gazebo}{\tt https\-://github.\-com/skye-\/git/hector\-\_\-gazebo} -\/b indigo-\/devel ``{\ttfamily  Compile them. Suggestion\-: use the option $\ast$$\ast$-\/j$\ast$$\ast$ to specify the number of jobs to run simultaneously; for example}catkin\-\_\-make -\/j4{\ttfamily  }``bash cd $\sim$/catkin\-\_\-ws catkin\-\_\-make ``` It's convenient if the R\-O\-S environment variables are automatically added to your bash session every time a new shell is launched\-: ```bash echo \char`\"{}source $\sim$/catkin\-\_\-ws/devel/setup.\-bash\char`\"{} $>$$>$ $\sim$/.bashrc source $\sim$/.bashrc ```}
+{\ttfamily  Create a catkin workspace in your home folder where you are going to clone every package needed to simulate Skye. ```bash cd $\sim$ mkdir -\/p catkin\-\_\-ws/src cd $\sim$/catkin\-\_\-ws/src catkin\-\_\-init\-\_\-workspace ``` Clone the required reposotories in the src folder\-: ```bash cd $\sim$/catkin\-\_\-ws/src git clone \href{https://github.com/skye-git/skye_gazebo_simulation}{\tt https\-://github.\-com/skye-\/git/skye\-\_\-gazebo\-\_\-simulation} -\/b indigo-\/devel git clone \href{https://github.com/skye-git/hector_gazebo}{\tt https\-://github.\-com/skye-\/git/hector\-\_\-gazebo} -\/b indigo-\/devel ``{\ttfamily  Compile them. Suggestion\-: use the option $\ast$$\ast$-\/j$\ast$$\ast$ to specify the number of jobs to run simultaneously; for example}catkin\-\_\-make -\/j4{\ttfamily  }``bash cd $\sim$/catkin\-\_\-ws catkin\-\_\-make ``` It's convenient if the R\-O\-S environment variables are automatically added to your bash session every time a new shell is launched\-: ```bash echo \char`\"{}source $\sim$/catkin\-\_\-ws/devel/setup.\-bash\char`\"{} $>$$>$ $\sim$/.bashrc source $\sim$/.bashrc ```}
 
 {\ttfamily \subsection*{Include Needed Plugins}}
 
@@ -20,11 +20,11 @@ Since some of the required plugins are not available in Gazebo2 (the official su
 
 {\ttfamily \subsection*{Launch A Simulation With Empty World}}
 
-{\ttfamily  To launch a first simulation of \hyperlink{class_skye}{Skye} in an empty world in Gazebo type ```bash roslaunch \hyperlink{namespaceskye__ros}{skye\-\_\-ros} inflate\-\_\-skye.\-launch ``` The launch file 'inflate\-\_\-skye.\-launch' does several things for you\-: it starts roscore, launches Gazebo with an instance of \hyperlink{class_skye}{Skye} and starts the node interface called 'skye\-\_\-ros\-\_\-node'.}
+{\ttfamily  To launch a first simulation of Skye in an empty world in Gazebo type ```bash roslaunch \hyperlink{namespaceskye__ros}{skye\-\_\-ros} inflate\-\_\-skye.\-launch ``` The launch file 'inflate\-\_\-skye.\-launch' does several things for you\-: it starts roscore, launches Gazebo with an instance of Skye and starts the node interface called 'skye\-\_\-ros\-\_\-node'.}
 
 {\ttfamily \subsection*{Skye-\/\-R\-O\-S Interface}}
 
-{\ttfamily  The package \char`\"{}skye\-\_\-ros\char`\"{} provides an easy interface to interact with a simulation of \hyperlink{class_skye}{Skye} in Gazebo.}
+{\ttfamily  The package \char`\"{}skye\-\_\-ros\char`\"{} provides an easy interface to interact with a simulation of Skye in Gazebo.}
 
 {\ttfamily \subsubsection*{Advertised Topics}}
 
@@ -40,10 +40,10 @@ Since some of the required plugins are not available in Gazebo2 (the official su
 
 {\ttfamily 
 \begin{DoxyItemize}
-\item /skye\-\_\-ros/apply\-\_\-wrench\-\_\-cog\-\_\-bf service to apply a wrench (i.\-e. a force and a torque) in the center of gravity (Co\-G) of \hyperlink{class_skye}{Skye}. Wrench expressed in \hyperlink{class_skye}{Skye}'s body frame attached to the Co\-G of \hyperlink{class_skye}{Skye}. See below section {\bfseries Frames Convetion} for further information.
+\item /skye\-\_\-ros/apply\-\_\-wrench\-\_\-cog\-\_\-bf service to apply a wrench (i.\-e. a force and a torque) in the center of gravity (Co\-G) of Skye. Wrench expressed in Skye's body frame attached to the Co\-G of Skye. See below section {\bfseries Frames Convetion} for further information.
 \end{DoxyItemize}}
 
-{\ttfamily Example\-: apply a torque of 3 Nm around \hyperlink{class_skye}{Skye}'s X axes (in body frame). ```bash rosservice call /skye\-\_\-ros/apply\-\_\-wrench\-\_\-cog\-\_\-bf '\{wrench\-: \{ force\-: \{ x\-: 0, y\-: 0, z\-: 0 \}, torque\-: \{x\-: 3, y\-: 0, z\-: 0\} \}, start\-\_\-time\-: 0, duration\-: -\/1 \}' ``` \subsection*{Repository Layout}}
+{\ttfamily Example\-: apply a torque of 3 Nm around Skye's X axes (in body frame). ```bash rosservice call /skye\-\_\-ros/apply\-\_\-wrench\-\_\-cog\-\_\-bf '\{wrench\-: \{ force\-: \{ x\-: 0, y\-: 0, z\-: 0 \}, torque\-: \{x\-: 3, y\-: 0, z\-: 0\} \}, start\-\_\-time\-: 0, duration\-: -\/1 \}' ``` \subsection*{Repository Layout}}
 
 {\ttfamily  The following describes the directory structure and important files in the skye\-\_\-gazebo\-\_\-simulation repository}
 
@@ -51,9 +51,9 @@ Since some of the required plugins are not available in Gazebo2 (the official su
 
 {\ttfamily 
 \begin{DoxyItemize}
-\item skye\-\_\-description -\/ \hyperlink{class_skye}{Skye}'s Gazebo model descritpion in S\-D\-F.
-\item skye\-\_\-gazebo -\/ Contains launch files to run Gazebo and spawn \hyperlink{class_skye}{Skye}.
-\item \hyperlink{namespaceskye__ros}{skye\-\_\-ros} -\/ Containes a simple interface which converts data from Gazebo E\-N\-U frame to \hyperlink{class_skye}{Skye}'s N\-E\-D frame.
+\item skye\-\_\-description -\/ Skye's Gazebo model descritpion in S\-D\-F.
+\item skye\-\_\-gazebo -\/ Contains launch files to run Gazebo and spawn Skye.
+\item \hyperlink{namespaceskye__ros}{skye\-\_\-ros} -\/ Containes a simple interface which converts data from Gazebo E\-N\-U frame to Skye's N\-E\-D frame.
 \end{DoxyItemize}}
 
 {\ttfamily \subsection*{Frames Convention}}
@@ -63,11 +63,11 @@ Since some of the required plugins are not available in Gazebo2 (the official su
 {\ttfamily 
 \begin{DoxyItemize}
 \item World N\-E\-D frame\-: X axis pointing to North, Y axis pointing to East and Z axis pointing to Down.
-\item \hyperlink{class_skye}{Skye}'s body frame\-: frame attached to the Center of Gravity (Co\-G) of the hull. It has the X axis pointing geometrically forward W.\-R.\-T the eye, the Y axis pointing geometrically right W.\-R.\-T the hull and the Z axis pointing geometrically down W.\-R.\-T the hull.
+\item Skye's body frame\-: frame attached to the Center of Gravity (Co\-G) of the hull. It has the X axis pointing geometrically forward W.\-R.\-T the eye, the Y axis pointing geometrically right W.\-R.\-T the hull and the Z axis pointing geometrically down W.\-R.\-T the hull.
 \item I\-M\-U frame\-: frame attached to the center of the I\-M\-U (red box). It has the X axis pointing geometrically forward W.\-R.\-T the eye, the Y axis pointing geometrically right W.\-R.\-T the hull and the Z axis pointing geometrically down W.\-R.\-T the hull.
 \end{DoxyItemize}}
 
-{\ttfamily The picture below gives an overview of these three frames. Note that the initial default position of \hyperlink{class_skye}{Skye} is rotated of 90 degrees about the Z axis with respect to the world N\-E\-D frame.}
+{\ttfamily The picture below gives an overview of these three frames. Note that the initial default position of Skye is rotated of 90 degrees about the Z axis with respect to the world N\-E\-D frame.}
 
 {\ttfamily }
 

@@ -1,62 +1,53 @@
 #include "waypoints_parser.h"
 
-WaypointsParser::WaypointsParser(std::string input_file_path_, std::vector<Eigen::Vector3d> & waypoints_){
-    std::cout << "path file: " << input_file_path_ << std::endl;
-
-    // load all the files
-
-    std::ifstream in(input_file_path_.c_str());
-    std::cout << "STREAM OPENED" << std::endl;
-
-    for(std::string line; std::getline(in, line);){
-//        std::cout << "Parsed line: " << line << std::endl;
-
-        std::size_t found_point = line.find("Point");
-//        std::cout << "Found point: " << found_point << std::endl;
+WaypointsParser::~WaypointsParser(){}
 
 
-        //If there is no point skip the line
-        if (found_point == std::string::npos) continue;
-        // Here I have a good line
-        std::size_t found_column = line.find(":");
-        if (found_column == std::string::npos) continue; //if true the format is wrong
-//        std::cout << "found_column: " << found_column<< std::endl;
+WaypointsParser::WaypointsParser(ros::NodeHandle nh,
+                                 std::vector<Eigen::Vector3d> *waypoints,
+                                 std::vector<Eigen::Quaterniond> *orientations){
 
-        char single_character = line[found_column];
-//        std::cout << "single_character: " << single_character << std::endl;
-        int i = found_column;
+    // Sum a list of doubles from the parameter server
+    std::vector<double> waypoints_x, waypoints_y, waypoints_z,
+                        quaternions_x, quaternions_y, quaternions_z, quaternions_w;
+    bool read_all_parameters = nh.getParam("waypoints_x", waypoints_x) &&
+                               nh.getParam("waypoints_y", waypoints_y) &&
+                               nh.getParam("waypoints_z", waypoints_z) &&
+                               nh.getParam("quaternions_x", quaternions_x) &&
+                               nh.getParam("quaternions_y", quaternions_y) &&
+                               nh.getParam("quaternions_z", quaternions_z) &&
+                               nh.getParam("quaternions_w", quaternions_w);
 
-        std::vector<double> single_waypoint;
-        for (int j = 0; j<3; ++j){
-            char vector_element[10] = {'\0'};
-            int chars_found_ = 0;
-
-            while(line[i] != ',' && i<line.size()) {
-
-                char single_character = line[i];
-
-
-                bool is_meaningful_ = std::isdigit(single_character) || single_character == '-' || single_character == '.';
-
-                if (is_meaningful_) {
-                    vector_element[chars_found_] = single_character;
-//                    std::cout << "meaningful_character: " << single_character << std::endl;
-                    chars_found_++;
-                }
-                i++;
-//                std::cout << "line size: " << line.size() << " | i: " << i << std::endl;
-
-            }
-//            std::cout << "vector_element: " << vector_element << std::endl;
-            single_waypoint.push_back( std::atof(vector_element) );
-            i++;
-        }
-        Eigen::Vector3d final_vec_;
-        final_vec_ << single_waypoint.at(0), single_waypoint.at(1), single_waypoint.at(2);
-        waypoints_.push_back(final_vec_);
-//        std::cout << "final_vec_: " << final_vec_ << std::endl;
-
-
+    // Check if Skye's parameters where imported
+    if (! read_all_parameters){
+        ROS_ERROR("Waypoints not imported");
+        return;
     }
 
+    // Check that waypoints were set up correctly
+    if (waypoints_x.size() != waypoints_y.size() ||
+            waypoints_y.size() != waypoints_z.size() ||
+            waypoints_z.size() != quaternions_x.size() ||
+            quaternions_x.size() != quaternions_y.size() ||
+            quaternions_y.size() != quaternions_z.size() ||
+            quaternions_z.size() != quaternions_w.size() ) {
+        ROS_ERROR("Waypoints not correctly set up, please set them up correctly");
+        return;
+    }
+
+    // Pack every waypoint in position and orientation
+    for (int i = 0; i < waypoints_x.size(); ++i) {
+        Eigen::Vector3d single_waypoint;
+        single_waypoint << waypoints_x.at(i),
+                            waypoints_y.at(i),
+                            waypoints_z.at(i);
+        waypoints->push_back(single_waypoint);
+
+        Eigen::Quaterniond single_quaternion;
+        single_quaternion.x() = quaternions_x.at(i);
+        single_quaternion.y() = quaternions_y.at(i);
+        single_quaternion.z() = quaternions_z.at(i);
+        single_quaternion.w() = quaternions_w.at(i);
+        orientations->push_back(single_quaternion);
+    }
 }
