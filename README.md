@@ -175,3 +175,28 @@ The picture below gives an overview of these three frames. Note that the initial
 <p align="center">
   <img src="skye_ros/doc/frames.png" width="650"/>
 </p>
+
+## Skye-Controls node
+The package "skye_controls" provides a pose control (aiming for a trajectory control) of Skye. 
+
+### Input and parameters
+The controls node can be tuned in two ways:
+  * by editing the parameters in the yaml file ./inputs/skye_controls.yaml
+  * by tuning the control parameters with RQT dynamic parameters: this opens automatically when skye_controls package is run.
+
+The node accepts waypoints in a 6DOF format providing 3 coordinates in the NED frame (see Frames Convention section above) and and a quaternion for rotation of the body frame with respect to NED frame.
+
+### How to run it
+Running the controller is really easy: after following the guide above and having tested the simulation environment (see Launch A Simulation With Empty World section) follow these steps.
+  1) Open a terminal window and type:
+  ```bash
+  roslaunch skye_ros inflate_skye.launch
+  ```
+  2) Open another terminal window and type:
+  ```bash
+  roslaunch skye_controls skye_controls.launch
+  ```
+
+###Example
+skye_controls package comes equipped with this configuration:
+6 waypoints in the 3D space at which Skye's IMU (the red box) faces the starting point (0,0,-3) in NED frame. Whenever Skye approaches the waypoint, the next one is selected and both position and attitude tend to it.
