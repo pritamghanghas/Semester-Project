@@ -35,7 +35,7 @@ void WaypointController::ComputeGoal(const Eigen::Vector3d &current_position_if,
     /******************** DEBUG *******************************************
      * WHEN REMOVING THIS CODE DO NOT FORGET TO REMOVE IOSTREAM INCLUSION
      * IN THE HEADER FILE!!!!
-     */
+     *
     std::cout << "--------------------------------------------------" << std::endl <<
                  "position_: " << current_position_if(0) <<
                  " | y: " << current_position_if(1) <<
@@ -65,6 +65,6 @@ void WaypointController::ComputeGoal(const Eigen::Vector3d &current_position_if,
     std::cout << "goal_change_threshold_: " << goal_change_threshold_ <<
                  std::endl << std::endl;
 
-
+    /****/
 
 }

@@ -88,7 +88,7 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
      * WHEN REMOVING THIS CODE DO NOT FORGET TO REMOVE IOSTREAM INCLUSION
      * IN THE HEADER FILE!!!!
      *
-     *
+     */
     std::cout << "--------------------------------------------------" << std::endl <<
                  "position_: " << position_if(0) <<
                  " | y: " << position_if(1) <<
