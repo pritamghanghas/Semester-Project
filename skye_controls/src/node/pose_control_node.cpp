@@ -17,6 +17,8 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
             nh.getParam("attitude_integrator_treshold_", skye_parameters_.input_attitude_integrator_treshold) &&
             nh.getParam("maximum_force_integrator_", skye_parameters_.input_maximum_force_integrator) &&
             nh.getParam("maximum_momentum_integrator_", skye_parameters_.input_maximum_momentum_integrator) &&
+            nh.getParam("windup_force_threshold", skye_parameters_.input_windup_force_threshold) &&
+            nh.getParam("windup_acceleration_threshold", skye_parameters_.input_windup_acceleration_threshold) &&
             nh.getParam("inertia_11", inertia_11) &&
             nh.getParam("inertia_12", inertia_12) &&
             nh.getParam("inertia_13", inertia_13) &&

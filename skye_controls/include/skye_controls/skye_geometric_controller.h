@@ -66,6 +66,14 @@ struct SkyeParameters{
      */
     double input_maximum_momentum_integrator;
     /**
+     * @brief input_windup_force_threshold : threshold close to the setpoint when to perform the windup
+     */
+    double input_windup_force_threshold;
+    /**
+     * @brief input_windup_acceleration_threshold : threshold close to the setpoint when to perform the windup
+     */
+    double input_windup_acceleration_threshold;
+    /**
      * @brief input_desired_position_if : desired position expressed in the inertial frame
      */
     Eigen::Vector3d input_desired_position_if;
@@ -103,7 +111,8 @@ private:
     double  k_x_, k_v_, k_if_, k_im_, k_R_, k_omega_;
     double maximum_force_cog_bf_, maximum_acceleration_cog_bf_,
            distance_integrator_treshold_, attitude_integrator_treshold_,
-           maximum_force_integrator_, maximum_momentum_integrator_;
+           maximum_force_integrator_, maximum_momentum_integrator_,
+           windup_force_threshold_, windup_acceleration_threshold_;
     int number_of_actuators_ ;
 
     //Skye's mass and radius

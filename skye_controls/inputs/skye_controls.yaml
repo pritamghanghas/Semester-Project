@@ -5,9 +5,11 @@ mass: 12
 radius_: 1.42
 number_of_actuators_: 4
 maximum_force_cog_: 15
-distance_integrator_treshold_: 0.05
-attitude_integrator_treshold_: 0.05
-maximum_force_integrator_: 1
+distance_integrator_treshold_: 0.5
+attitude_integrator_treshold_: 0.5
+windup_force_threshold: 0.0001
+windup_acceleration_threshold: 0.0001
+maximum_force_integrator_: 10
 maximum_momentum_integrator_: 1
 goal_change_threshold: 1.5
 
@@ -21,11 +23,27 @@ inertia_31: -0.0843
 inertia_32: 0.0243
 inertia_33: 10.1823
 
-waypoints_x: [ 10.0,   0.0, -10.0,  0.0, 0.0, 0.0 ]
-waypoints_y: [ 0.0,  -10.0,  0.0,  10.0, 0.0, 0.0 ]
-waypoints_z: [ -3.0, -3.0, -3.0, -3.0, -13.0, -3.0 ]
-quaternions_y: [ 0.0,  0.0, 0.0,  0.0, -0.5, 0.0]
-quaternions_x: [ 0.0,  0.0, 0.0,  0.0, -0.5, 0.0]
-quaternions_z: [ 1.0,  0.7071067811865475, 0.0,  -0.7071067811865475, -0.5, 0.7071067811865475 ]
-quaternions_w: [ 0.0,  0.7071067811865475, 1.0,  0.7071067811865475, 0.5, 0.7071067811865475 ]
+# waypoints_x: [ 0.0]
+# waypoints_y: [ 0.0]
+# waypoints_z: [ -3.0]
+# quaternions_y: [ 0.0]
+# quaternions_x: [ 0.0]
+# quaternions_z: [ 1.0]
+# quaternions_w: [ 0.0]
+
+waypoints_x: [ 10.0,   -10.0, 10.0,  -10.0, 10.0, 0.0 ]
+waypoints_y: [ 0.0,  0.0,  0.0,  0.0, 0.0, 0.0 ]
+waypoints_z: [ -3.0, -3.0, -3.0, -3.0, -3.0, -3.0 ]
+quaternions_y: [ 0.0,  0.0, 0.0,  0.0, 0.0, 0.0]
+quaternions_x: [ 0.0,  0.0, 0.0,  0.0, 0.0, 0.0]
+quaternions_z: [ 1.0,  0.0, 1.0,  0.0, 1.0, 0.0 ]
+quaternions_w: [ 0.0,  1.0, 0.0,  1.0, 0.0, 1.0 ]
+ 
+# waypoints_x: [ 10.0,   0.0, -10.0,  0.0, 0.0, 0.0 ]
+# waypoints_y: [ 0.0,  -10.0,  0.0,  10.0, 0.0, 0.0 ]
+# waypoints_z: [ -3.0, -3.0, -3.0, -3.0, -13.0, -3.0 ]
+# quaternions_y: [ 0.0,  0.0, 0.0,  0.0, -0.5, 0.0]
+# quaternions_x: [ 0.0,  0.0, 0.0,  0.0, -0.5, 0.0]
+# quaternions_z: [ 1.0,  0.7071067811865475, 0.0,  -0.7071067811865475, -0.5, 0.7071067811865475 ]
+# quaternions_w: [ 0.0,  0.7071067811865475, 1.0,  0.7071067811865475, 0.5, 0.7071067811865475 ]
  

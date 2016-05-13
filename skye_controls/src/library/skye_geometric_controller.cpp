@@ -182,8 +182,17 @@ void SkyeGeometricController::ComputeForce(Eigen::Vector3d *output_force_bf){
     if (position_error_bf_.norm() < distance_integrator_treshold_ ) {
 
         *output_force_bf = *output_force_bf + k_if_ * integrator_force_;
-        integrator_force_ = *output_force_bf;
+        integrator_force_ += position_error_bf_;
         SaturateVector(maximum_force_integrator_, &integrator_force_);
+        if (position_error_bf_(0) < windup_force_threshold_) {
+            integrator_force_(0) = 0;
+        }
+        if (position_error_bf_(1) < windup_force_threshold_) {
+            integrator_force_(1) = 0;
+        }
+        if (position_error_bf_(2) < windup_force_threshold_) {
+            integrator_force_(2) = 0;
+        }
     } else {
         integrator_force_ << 0,0,0;
     }
@@ -201,8 +210,17 @@ void SkyeGeometricController::ComputeAcceleration(Eigen::Vector3d *output_accele
     // Integrator with antiwindup
     if (attitude_error_bf_.norm() < attitude_integrator_treshold_ ) {
         *output_acceleration_bf = *output_acceleration_bf + k_im_ * integrator_acceleration_;
-        integrator_acceleration_ = *output_acceleration_bf;
+        integrator_acceleration_ -= attitude_error_bf_;
         SaturateVector(maximum_momentum_integrator_, &integrator_acceleration_);
+        if (position_error_bf_(0) < windup_acceleration_threshold_) {
+            integrator_acceleration_(0) = 0;
+        }
+        if (position_error_bf_(1) < windup_force_threshold_) {
+            integrator_acceleration_(1) = 0;
+        }
+        if (position_error_bf_(2) < windup_force_threshold_) {
+            integrator_acceleration_(2) = 0;
+        }
 
     } else {
         integrator_acceleration_ << 0,0,0;
