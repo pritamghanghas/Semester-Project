@@ -1,6 +1,6 @@
-wrench_service_name: skye_ros/apply_wrench_cog_bf
+wrench_service_name: /skye_gz/hull/apply_wrench
 ground_truth_topic: skye_ros/ground_truth/hull
-imu_topic: skye_ros/sensor_msgs/imu_sk
+imu_topic: /skye_gz/sensor_msgs/imu_sk
 mass: 12
 radius_: 1.42
 number_of_actuators_: 4
@@ -31,19 +31,19 @@ inertia_33: 10.1823
 # quaternions_z: [ 1.0]
 # quaternions_w: [ 0.0]
 
-waypoints_x: [ 10.0,   -10.0, 10.0,  -10.0, 10.0, 0.0 ]
-waypoints_y: [ 0.0,  0.0,  0.0,  0.0, 0.0, 0.0 ]
-waypoints_z: [ -3.0, -3.0, -3.0, -3.0, -3.0, -3.0 ]
-quaternions_y: [ 0.0,  0.0, 0.0,  0.0, 0.0, 0.0]
-quaternions_x: [ 0.0,  0.0, 0.0,  0.0, 0.0, 0.0]
-quaternions_z: [ 1.0,  0.0, 1.0,  0.0, 1.0, 0.0 ]
-quaternions_w: [ 0.0,  1.0, 0.0,  1.0, 0.0, 1.0 ]
+#waypoints_x: [ 10.0,   -10.0, 10.0,  -10.0, 10.0, 0.0 ]
+#waypoints_y: [ 0.0,  0.0,  0.0,  0.0, 0.0, 0.0 ]
+#waypoints_z: [ -3.0, -3.0, -3.0, -3.0, -3.0, -3.0 ]
+#quaternions_y: [ 0.0,  0.0, 0.0,  0.0, 0.0, 0.0]
+#quaternions_x: [ 0.0,  0.0, 0.0,  0.0, 0.0, 0.0]
+#quaternions_z: [ 1.0,  0.0, 1.0,  0.0, 1.0, 0.0 ]
+#quaternions_w: [ 0.0,  1.0, 0.0,  1.0, 0.0, 1.0 ]
  
-# waypoints_x: [ 10.0,   0.0, -10.0,  0.0, 0.0, 0.0 ]
-# waypoints_y: [ 0.0,  -10.0,  0.0,  10.0, 0.0, 0.0 ]
-# waypoints_z: [ -3.0, -3.0, -3.0, -3.0, -13.0, -3.0 ]
-# quaternions_y: [ 0.0,  0.0, 0.0,  0.0, -0.5, 0.0]
-# quaternions_x: [ 0.0,  0.0, 0.0,  0.0, -0.5, 0.0]
-# quaternions_z: [ 1.0,  0.7071067811865475, 0.0,  -0.7071067811865475, -0.5, 0.7071067811865475 ]
-# quaternions_w: [ 0.0,  0.7071067811865475, 1.0,  0.7071067811865475, 0.5, 0.7071067811865475 ]
+waypoints_x: [ 10.0,   0.0, -10.0,  0.0, 0.0, 0.0 ]
+waypoints_y: [ 0.0,  -10.0,  0.0,  10.0, 0.0, 0.0 ]
+waypoints_z: [ -3.0, -3.0, -3.0, -3.0, -13.0, -3.0 ]
+quaternions_y: [ 0.0,  0.0, 0.0,  0.0, -0.5, 0.0]
+quaternions_x: [ 0.0,  0.0, 0.0,  0.0, -0.5, 0.0]
+quaternions_z: [ 1.0,  0.7071067811865475, 0.0,  -0.7071067811865475, -0.5, 0.7071067811865475 ]
+quaternions_w: [ 0.0,  0.7071067811865475, 1.0,  0.7071067811865475, 0.5, 0.7071067811865475 ]
  
