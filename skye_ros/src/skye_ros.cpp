@@ -1,4 +1,5 @@
 #include <skye_ros/skye_ros.h>
+#include <math.h>
 
 
 namespace skye_ros {
@@ -6,28 +7,24 @@ namespace skye_ros {
 
 SkyeRos::SkyeRos()
 {
+  /* Get parameters. */
+  getConfiguraionParams();
+
   /* Subscribe to topics. */
-  imu_gz_sk_subscriber_ = nh_.subscribe<sensor_msgs::Imu>("sensor_msgs/imu_gz",
+  imu_gz_sk_subscriber_ = nh_.subscribe<sensor_msgs::Imu>(param_.topic_imu_gazebo,
                                                           1,
                                                           boost::bind(&SkyeRos::imuCallback, this, _1));
   /* Advertise topics. */
-  imu_sk_publisher_  = nh_.advertise<sensor_msgs::Imu>("skye_ros/sensor_msgs/imu_sk", 10);
-  hull_ground_truth_publisher_ = nh_.advertise<gazebo_msgs::LinkState>("skye_ros/ground_truth/hull", 10);
+  imu_sk_publisher_  = nh_.advertise<sensor_msgs::Imu>(param_.topic_imu_skye, 10);
+  hull_ground_truth_publisher_ = nh_.advertise<gazebo_msgs::LinkState>(param_.topic_ground_truth_hull, 10);
 
   /* Services. */
-  client_gz_apply_body_wrench_ = nh_.serviceClient<gazebo_msgs::ApplyBodyWrench>("gazebo/apply_body_wrench");
-  client_gz_get_link_state_ = nh_.serviceClient<gazebo_msgs::GetLinkState>("gazebo/get_link_state");
-  server_apply_wrench_cog_ = nh_.advertiseService("skye_ros/apply_wrench_cog_bf",
-                                                  &SkyeRos::applyWrenchCog,
-                                                  this);
+  client_gz_get_link_state_ = nh_.serviceClient<gazebo_msgs::GetLinkState>(param_.service_get_link_state);
 
   /* Quaternions. */
   q_ned_enu_ = Eigen::AngleAxisd(-M_PI, Eigen::Vector3d::UnitX()) * 
                Eigen::AngleAxisd(-M_PI / 2.0, Eigen::Vector3d::UnitZ()); 
   q_enu_ned_ = q_ned_enu_.inverse();
-
-  q_gz_sk_ = Eigen::AngleAxisd(-M_PI, Eigen::Vector3d::UnitX());
-  q_sk_gz_ = q_gz_sk_.inverse();
 
 }
 
@@ -37,131 +34,35 @@ void SkyeRos::imuCallback(const sensor_msgs::ImuConstPtr &imu_gz_sk_p)
   sensor_msgs::Imu                          imu_sk;
   Eigen::Quaterniond                        q_orientation_ned;
 
-  Eigen::Matrix<double,3,3,Eigen::RowMajor> orientation_cov_bf;
-  Eigen::Matrix<double,3,3,Eigen::RowMajor> angular_vel_cov_bf;
-  Eigen::Matrix<double,3,3,Eigen::RowMajor> linear_acc_cov_bf;
   Eigen::Quaterniond                        eig_quat;
-  Eigen::Matrix<double,3,3>                 eig_matrix3;
 
   /* Orientation: msg_sensor/imu to tf::quaternion to eigen::quaternion. */
   quaternionMsgToEigen(imu_gz_sk_p->orientation, eig_quat);
-  /* Rotation from Skye's IMU frame to Gazebo's IMU frame (q_gz_sk_). 
-   * Then rotation from Gazebo's IMU frame to Gazebo's world ENU (eig_quat). 
+  /* Rotation from Gazebo's IMU frame to Gazebo's world ENU (eig_quat).
    * Finally rotation from Gazebo's world ENU to world NED frame (q_ned_enu_).
    */
-  q_orientation_ned = q_ned_enu_ * eig_quat * q_gz_sk_;
 
-  /* orientation_covariance: msg_sensor/imu to eigen::matrix. */
-  /** @todo find a better solution to this workaround: &(array[0]). */
-  eig_matrix3 = Eigen::Map<const Eigen::Matrix<double,3,3,Eigen::RowMajor> >(&(imu_gz_sk_p->orientation_covariance[0]));                                  
-  orientation_cov_bf = q_sk_gz_.matrix() * eig_matrix3 * q_sk_gz_.matrix().transpose();
+  q_orientation_ned = q_ned_enu_ * eig_quat;
 
-  /* angular velocity: invert Y and Z axis. */
-  imu_sk.angular_velocity.x =   imu_gz_sk_p->angular_velocity.x;
-  imu_sk.angular_velocity.y = -(imu_gz_sk_p->angular_velocity.y);
-  imu_sk.angular_velocity.z = -(imu_gz_sk_p->angular_velocity.z);
+  //TODO delete me
+  /*Eigen::Vector3d ea = eig_quat.matrix().eulerAngles(2, 1, 0);
+  printf("EA_GzEnu_SkNed: yaw %f, pitch %f, roll %f \n", (double)ea.x() * 180.0/ M_PI,
+                                             (double)ea.y() * 180.0/ M_PI,
+                                             (double)ea.z() * 180.0/ M_PI);
 
-  /* angular_velocity_covariance. */
-  /** @todo find a better solution to this workaround: &(array[0]). */
-  eig_matrix3 = Eigen::Map<const Eigen::Matrix<double,3,3,Eigen::RowMajor> >(&(imu_gz_sk_p->angular_velocity_covariance[0]));                                  
-  angular_vel_cov_bf = q_sk_gz_.matrix() * eig_matrix3 * q_sk_gz_.matrix().transpose();
+  ea = q_orientation_ned.matrix().eulerAngles(2, 1, 0);
+  printf("EA_GzNed_SkNed: yaw %f, pitch %f, roll %f \n", (double)ea.x() * 180.0/ M_PI,
+                                             (double)ea.y() * 180.0/ M_PI,
+                                             (double)ea.z() * 180.0/ M_PI);*/
 
-  /* linear acceleration: invert Y and Z axis. */
-  imu_sk.linear_acceleration.x =   imu_gz_sk_p->linear_acceleration.x;
-  imu_sk.linear_acceleration.y = -(imu_gz_sk_p->linear_acceleration.y);
-  imu_sk.linear_acceleration.z = -(imu_gz_sk_p->linear_acceleration.z);
-
-  /* linear_acceleration_covariance. */
-  /** @todo find a better solution to this workaround: &(array[0]). */
-  eig_matrix3 = Eigen::Map<const Eigen::Matrix<double,3,3,Eigen::RowMajor> >(&(imu_gz_sk_p->linear_acceleration_covariance[0]));                                  
-  linear_acc_cov_bf = q_sk_gz_.matrix() * eig_matrix3 * q_sk_gz_.matrix().transpose();
+  //TODO end delete me
 
   /* fill the imu_sk message and publish it. */
-  imu_sk.header = imu_gz_sk_p->header;
+  imu_sk = *imu_gz_sk_p;
 
   tf::quaternionEigenToMsg(q_orientation_ned, imu_sk.orientation);
-
-  memcpy(&(imu_sk.orientation_covariance[0]),
-         orientation_cov_bf.data(), 
-         sizeof(double) * orientation_cov_bf.rows() * orientation_cov_bf.cols());
-
-  /* angular velocity already filled. */
-
-  memcpy(&(imu_sk.angular_velocity_covariance[0]),
-         angular_vel_cov_bf.data(), 
-         sizeof(double) * angular_vel_cov_bf.rows() * angular_vel_cov_bf.cols());
-
-  /* linear acceleration already filled. */
-
-  memcpy(&(imu_sk.linear_acceleration_covariance[0]),
-         linear_acc_cov_bf.data(), 
-         sizeof(double) * linear_acc_cov_bf.rows() * linear_acc_cov_bf.cols());
-
   imu_sk_publisher_.publish(imu_sk); 
 }
-
-bool SkyeRos::applyWrenchCog(skye_ros::ApplyWrenchCogBf::Request   &req,
-                             skye_ros::ApplyWrenchCogBf::Response  &rep)
-{
-  /* Get skye::hull true orientation in Gazebo world frame and use it
-   * to rotate the received wrench from skye's body frame frame to Gazebo
-   * world frame.
-  */
-  gazebo_msgs::LinkState      hull_state;
-  Eigen::Quaterniond          q_world_skye_gzbf; /* Orientation of Skye's body frame in Gazebo ENU wolrd frame. */    
-  Eigen::Matrix<double,3,3>   r_world_skye_bf;   /* Rotation matrix from Skye's body frame to Gazebo ENU wolrd frame. */
-  Eigen::Matrix<double,6,6>   rotation_matrix_wrench; 
-  bool                        success;
-  std::string                 status_message;
-
-  /* Get skye::hull state information from Gazebo. This is the state of the Gazebo's local frame
-   * attached to Skye, expressed in Gazebo ENU world frame.
-   */
-  if(!getLinkState("hull", hull_state, success, status_message)){ /**@todo remove hardcoded string "hull" */
-    ROS_ERROR("[skye_ros] Error in getting link state. Msg: %s", status_message.c_str());
-    return false;
-  }
-     
-  quaternionMsgToEigen(hull_state.pose.orientation, q_world_skye_gzbf);
-
-  /* Rotation matrix for the wrench. */
-  r_world_skye_bf = q_world_skye_gzbf.matrix() * q_gz_sk_.matrix();
-  rotation_matrix_wrench.topLeftCorner(r_world_skye_bf.rows(), r_world_skye_bf.cols()) = r_world_skye_bf;
-  rotation_matrix_wrench.bottomRightCorner(r_world_skye_bf.rows(), r_world_skye_bf.cols()) = r_world_skye_bf;
-
-  /* Convert the requested wrench from Skye's body frame to Gazebo ENU world frame. */
-  Eigen::Matrix<double,6,1>   wrench_cog_skye_bf;
-  Eigen::Matrix<double,6,1>   wrench_cog_wolrd;
-  tf::wrenchMsgToEigen(req.wrench, wrench_cog_skye_bf);
-  wrench_cog_wolrd = rotation_matrix_wrench * wrench_cog_skye_bf;
-
-  /* Send the converted wrench to Gazebo. */
-  gazebo_msgs::ApplyBodyWrench  srv;
-
-  srv.request.body_name = "skye::hull"; /** @todo parametrize body_name */
-  srv.request.reference_frame = "";     /**< currently to leave "", otherwise get error. */
-  srv.request.reference_point.x = 0.0;
-  srv.request.reference_point.y = 0.0;
-  srv.request.reference_point.z = 0.0;
-  tf::wrenchEigenToMsg(wrench_cog_wolrd, srv.request.wrench);
-  srv.request.start_time = req.start_time;
-  srv.request.duration = req.duration;
-
-  if (client_gz_apply_body_wrench_.call(srv))
-  {
-    //ROS_INFO("wrench applied!");
-  }
-  else
-  {
-    ROS_ERROR("[skye_ros] Failed to call service apply_body_wrench from gazebo_ros pkg");
-  }
-
-  rep.success = srv.response.success;
-  rep.status_message = srv.response.status_message;
-
-  return true;
-}
-
 
 bool SkyeRos::getLinkStateNed(const std::string                    link_name,
                               skye_ros::GetLinkStateNed::Response  &rep)
@@ -195,11 +96,14 @@ bool SkyeRos::getLinkStateNed(const std::string                    link_name,
 
 
   p_link_ned = q_ned_enu_.matrix() * p_link_enu;
-  q_world_link_ned = q_ned_enu_ * q_world_link_enu * q_gz_sk_; //orientation of link's NED frame in Gazebo's NED f.
+  q_world_link_ned = q_ned_enu_ * q_world_link_enu; //orientation of link's frame in Gazebo's NED f.
   v_link_ned = q_ned_enu_.matrix() * v_link_enu;
-  //w_link_ned = q_ned_enu_.matrix() * w_link_enu;/** @todo see how to properly feel this. */
+  //w_link_ned = q_ned_enu_.matrix() * w_link_enu; // Right way to publish
   //w_link_ned = w_link_enu; //only for test
-  w_link_ned = Eigen::Matrix<double,3,1>::Zero();/** @todo delt this and replace with right values. */
+  w_link_ned = Eigen::Matrix<double,3,1>::Zero();
+  /*There is a problem with gazebo's service gazebo/get_link_state: it replaces z values by x values.
+  --> the topic gazebo/link_states works however. Therefore: need to change the service call to topic subscription.
+  In the meanwhile, send 0.*/
 
   /* Debug */
   /*Eigen::Vector3d euler_angles = q_world_link_ned.matrix().eulerAngles(2, 1, 0);
@@ -273,7 +177,7 @@ void SkyeRos::pubHullGroundTruth()
 {
   /* Get Hull's ground truth information from Gazebo. */
   skye_ros::GetLinkStateNed::Response  res;
-  getLinkStateNed("hull", res);
+  getLinkStateNed(param_.hull_name, res);
 
   /* Publish the obtained information. */
   gazebo_msgs::LinkState hull_ground_truth;
@@ -285,6 +189,37 @@ void SkyeRos::pubHullGroundTruth()
   hull_ground_truth_publisher_.publish(hull_ground_truth);
 }
 
+void SkyeRos::getConfiguraionParams()
+{
+  bool complete_list_params = true;
+
+  complete_list_params &= nh_.getParam("topic_imu_gazebo", param_.topic_imu_gazebo);
+  complete_list_params &= nh_.getParam("topic_imu_skye", param_.topic_imu_skye);
+  complete_list_params &= nh_.getParam("topic_ground_truth_hull", param_.topic_ground_truth_hull);
+  complete_list_params &= nh_.getParam("service_get_link_state", param_.service_get_link_state);
+  complete_list_params &= nh_.getParam("hull_ground_truth_update_frequency", param_.hull_ground_truth_update_frequency);
+  complete_list_params &= nh_.getParam("blimp_name", param_.blimp_name);
+  complete_list_params &= nh_.getParam("hull_name", param_.hull_name);
+
+  if(!complete_list_params)
+    ROS_DEBUG("Parameter(s) missing in yaml file.");
+
+}
+
+double SkyeRos::getGroundTruthFrequency(){
+  return param_.hull_ground_truth_update_frequency;
+}
+
+bool SkyeRos::checkVector3(const geometry_msgs::Vector3   &v){
+  bool ret = true;
+
+  ret = !isnan(v.x) & !isinf(v.x) &
+        !isnan(v.y) & !isinf(v.y) &
+        !isnan(v.z) & !isinf(v.z);
+
+  return ret;
+}
+
 } // namespace skye_ros
 
 
@@ -294,9 +229,9 @@ int main(int argc, char **argv)
 
   skye_ros::SkyeRos skye_ros_interface;
 
-  ros::Rate loop_rate(HULL_GROUND_TRUTH_HZ);
+  ros::Rate loop_rate(skye_ros_interface.getGroundTruthFrequency());
 
-  /* Sleep fo half a second before entering the main loop. */
+  /* Sleep half a second before entering the main loop. */
   ros::Duration(0.5).sleep();
 
   while (ros::ok())

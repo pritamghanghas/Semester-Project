@@ -20,4 +20,7 @@
   <node name="skye_ros_node" pkg="skye_ros" type="skye_ros_node"
         respawn="false" output="screen"/>
 
+  <!-- Load paramters from file -->
+  <rosparam command="load" file="$(find skye_ros)/skye_ros.yaml"/>
+
 </launch>

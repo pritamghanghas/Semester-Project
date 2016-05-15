@@ -15,11 +15,14 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
 find_package(Eigen REQUIRED)
 include_directories(${EIGEN_INCLUDE_DIRS})
+find_package(gazebo REQUIRED)
+include_directories(${GAZEBO_INCLUDE_DIRS})
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -52,17 +55,19 @@ include_directories(${EIGEN_INCLUDE_DIRS})
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+   FILES
+   AllocatorOutput.msg
+)
 
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
    ApplyWrenchCogBf.srv
    GetLinkStateNed.srv 
+   ApplyForce2DCogBf.srv
+   ApplyForceBf.srv
+   ApplyTorqueBf.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -113,7 +118,7 @@ catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES skye_ros
   CATKIN_DEPENDS message_runtime std_msgs geometry_msgs gazebo_msgs
-#  DEPENDS system_lib
+  DEPENDS gazebo
 )
 
 ###########
@@ -131,6 +136,18 @@ include_directories(include
 # add_library(skye_ros
 #   src/${PROJECT_NAME}/skye_ros.cpp
 # )
+
+add_library(skye_gazebo_wrench_plugin src/gazebo_blimp_wrench_plugin.cpp src/gazebo_body_wrench.cpp src/common.cpp)
+target_link_libraries(skye_gazebo_wrench_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+add_dependencies(skye_gazebo_wrench_plugin ${catkin_EXPORTED_TARGETS} skye_ros_generate_messages_cpp)
+
+add_library(skye_gazebo_au_plugin src/gazebo_blimp_au_plugin.cpp src/gazebo_body_wrench.cpp src/common.cpp)
+target_link_libraries(skye_gazebo_au_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+add_dependencies(skye_gazebo_au_plugin ${catkin_EXPORTED_TARGETS} skye_ros_generate_messages_cpp)
+
+add_library(skye_gazebo_blimp_dynamics_plugin src/gazebo_blimp_dynamics_plugin.cpp)
+target_link_libraries(skye_gazebo_blimp_dynamics_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+add_dependencies(skye_gazebo_blimp_dynamics_plugin ${catkin_EXPORTED_TARGETS})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -169,6 +186,15 @@ target_link_libraries(skye_ros_node ${catkin_LIBRARIES})
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
+
+install(
+  TARGETS
+    skye_gazebo_wrench_plugin
+    skye_gazebo_au_plugin
+    skye_gazebo_blimp_dynamics_plugin
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+)
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/

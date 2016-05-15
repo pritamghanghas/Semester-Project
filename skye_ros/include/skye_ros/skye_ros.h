@@ -18,16 +18,26 @@
 
 #include <sensor_msgs/Imu.h>
 #include <geometry_msgs/Quaternion.h>
-#include <gazebo_msgs/ApplyBodyWrench.h>
 #include <gazebo_msgs/GetLinkState.h>
 #include <gazebo_msgs/LinkState.h>
+#include <geometry_msgs/Vector3.h>
 
-#include "skye_ros/ApplyWrenchCogBf.h"
 #include "skye_ros/GetLinkStateNed.h"
 
 namespace skye_ros {
 
-#define HULL_GROUND_TRUTH_HZ 50 //publishing frequency of ground truth inf of the hull
+//#define HULL_GROUND_TRUTH_HZ 50 //publishing frequency of ground truth inf of the hull
+
+struct skye_ros_parameters{
+    /* Topics and services. */
+    std::string topic_imu_gazebo; 
+    std::string topic_imu_skye;
+    std::string topic_ground_truth_hull;
+    std::string service_get_link_state;
+    double hull_ground_truth_update_frequency;
+    std::string blimp_name; // name of the whole model in Gazebo
+    std::string hull_name;  // name of the hull link in Gazebo
+};                         
 
 class SkyeRos
 {
@@ -41,26 +51,11 @@ public:
      * @brief      Callback function when a new imu msg has been received from
      *             Gazebo.
      *
-     *             Converts Imu data from local Gazebo IMU frame (X forward, Y left, Z up), 
-     *             attached to the Imu box in Gazebo, to Skye's IMU frame (X forward, Y right, Z down)
-     *             and publish this new data.
+     *             Converts Imu orientation and expresses it with respect a NED world frame.
      *
      * @param[in]  imu_gz_sk_p  imu data in Gazebo IMU frame.
      */
     void imuCallback(const sensor_msgs::ImuConstPtr  &imu_gz_sk_p);
-
-    /**
-     * @brief      Callback function when apply_wrench_cog service is called.
-     * 
-     * Converts the requested wrench, expressed in Skye's body frame, to
-     * a wrench expressed in Gazebo's ENU world frame and apply it in Gazebo.
-     *
-     * @param[in]  req   Service request.
-     * @param[out] rep   Service response.
-     *
-     */
-    bool applyWrenchCog(skye_ros::ApplyWrenchCogBf::Request   &req,
-                        skye_ros::ApplyWrenchCogBf::Response  &rep);
 
     /**
      * @brief      Callback function when get_link_state_ned service is called.
@@ -80,18 +75,22 @@ public:
      */
     void pubHullGroundTruth();
 
+    /**
+     * @brief      Get ground truth frequency update set from yaml file.
+     *
+     * @return     Frequency update of ground truth topic.
+     */
+    double getGroundTruthFrequency();
+
 private:
     ros::NodeHandle     nh_;                          /**< Main access point to communicate with ROS. */
     ros::Subscriber     imu_gz_sk_subscriber_;        /**< Sub. to gazebo IMU frame data. */
     ros::Publisher      imu_sk_publisher_;            /**< Pub. of Skye Imu frame data. */
     ros::Publisher      hull_ground_truth_publisher_; /**< Pub. of the true ground state of the hull. */
-    ros::ServiceClient  client_gz_apply_body_wrench_; /**< Client to apply a body wrench in Gazebo. */
     ros::ServiceClient  client_gz_get_link_state_;    /**< Client to get link state in Gazebo. */
-    ros::ServiceServer  server_apply_wrench_cog_;     /**< Server to apply wrench in cog of Skye. */
-    Eigen::Quaterniond  q_gz_sk_;                     /**< Quaternion from Skye's IMU frame to Gazebo IMU frame. */
     Eigen::Quaterniond  q_ned_enu_;                   /**< Quaternion from ENU world frame to NED world frame. */
-    Eigen::Quaterniond  q_sk_gz_;                     /**< Quaternion from Gazebo IMU frame to Skye's IMU frame. */
     Eigen::Quaterniond  q_enu_ned_;                   /**< Quaternion from NED world frame to ENU world frame. */
+    skye_ros_parameters param_;                       /**< Parameters loaded from yaml file. */
 
     /**
      * @brief      Get link state from Gazebo.
@@ -115,6 +114,22 @@ private:
      */
     void quaternionMsgToEigen(const geometry_msgs::Quaternion   &quat_in,
                               Eigen::Quaterniond                &quat_out);
+
+    /**
+     * @brief      Load configuration parameters from yaml file.
+     */
+    void getConfiguraionParams();
+
+    /**
+     * @brief      Check if a vector is composed by valid numbers
+     *
+     * @param[in]  v     input vactor3
+     *
+     * @return     true on success
+     */
+    bool checkVector3(const geometry_msgs::Vector3   &v);
+
+    
 
 };
 

@@ -1,7 +1,8 @@
-# Apply Wrench to the center of gravity of a link.
+# Apply A 2D force to the center of gravity of a link.
 # via the callback mechanism
 # wrench expressed in link's body frame frame.
-geometry_msgs/Wrench wrench               # wrench applied to the origin of the body frame in the Cog
+float64 Fx                                # X component of 2D force applied to the origin of the body frame in the Cog
+float64 Fy                                # Y component of 2D force applied to the origin of the body frame in the Cog
 time start_time                           # (optional) wrench application start time (seconds)
                                           # if start_time is not specified, or
                                           # start_time < current time, start as soon as possible

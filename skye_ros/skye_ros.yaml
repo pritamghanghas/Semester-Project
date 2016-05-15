@@ -1,0 +1,7 @@
+topic_imu_gazebo: /skye_gz/sensor_msgs/imu_sk #IMU data from Gazebo (hector plugin)
+topic_imu_skye: /skye_ros/sensor_msgs/imu_sk #IMU data published in Skye's IMU frame
+topic_ground_truth_hull: /skye_ros/ground_truth/hull #advertised topic to publish ground truth info of the hull
+service_get_link_state: /gazebo/get_link_state #Gazebo service to get a state of a link
+hull_ground_truth_update_frequency: 50.0 #update frequency of topic_ground_truth_hull
+blimp_name: skye #model name in Gazebo
+hull_name: hull #name of the hull (main sphere) within the model in Gazebo
