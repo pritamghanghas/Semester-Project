@@ -194,7 +194,7 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
 
 bool PoseControllerNode::CallService(){
     srv_.request.start_time.nsec = 0;
-    srv_.request.duration.sec =  -1;
+    srv_.request.duration.sec =  1;
 
     control_wrench_.force.x =  control_force_bf_(0);
     control_wrench_.force.y = control_force_bf_(1);

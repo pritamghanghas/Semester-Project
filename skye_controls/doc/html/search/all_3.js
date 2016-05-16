@@ -23,5 +23,7 @@ var searchData=
   ['input_5fmaximum_5fmomentum_5fintegrator',['input_maximum_momentum_integrator',['../struct_skye_parameters.html#a5c05c4be8f429eab4ec19e41130a0d39',1,'SkyeParameters']]],
   ['input_5fnumber_5fof_5factuators',['input_number_of_actuators',['../struct_skye_parameters.html#a6629521e0b41c5f3729c6bd795c8f787',1,'SkyeParameters']]],
   ['input_5fr_5fdes_5fif',['input_R_des_if',['../struct_skye_parameters.html#acc2c9df1cdc2feb5695ae3dc49c7b838',1,'SkyeParameters']]],
-  ['input_5fradius',['input_radius',['../struct_skye_parameters.html#ade9a962c46f28bf506f39a46da67bb80',1,'SkyeParameters']]]
+  ['input_5fradius',['input_radius',['../struct_skye_parameters.html#ade9a962c46f28bf506f39a46da67bb80',1,'SkyeParameters']]],
+  ['input_5fwindup_5facceleration_5fthreshold',['input_windup_acceleration_threshold',['../struct_skye_parameters.html#aea5e5b0e3fe3a67d3e60c3e65fb00546',1,'SkyeParameters']]],
+  ['input_5fwindup_5fforce_5fthreshold',['input_windup_force_threshold',['../struct_skye_parameters.html#ad76ba1c9a3ddebf92412c7b606873ac5',1,'SkyeParameters']]]
 ];

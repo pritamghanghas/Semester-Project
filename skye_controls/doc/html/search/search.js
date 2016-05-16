@@ -8,11 +8,11 @@
 var indexSectionsWithContent =
 {
   0: "acgipstuw",
-  1: "psw",
+  1: "gpstw",
   2: "s",
-  3: "acgipsuw",
+  3: "acgipstuw",
   4: "i",
-  5: "st"
+  5: "s"
 };
 
 var indexSectionNames =

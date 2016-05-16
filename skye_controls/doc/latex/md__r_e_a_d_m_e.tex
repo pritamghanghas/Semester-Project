@@ -73,4 +73,26 @@ Since some of the required plugins are not available in Gazebo2 (the official su
 
 {\ttfamily   }
 
-{\ttfamily  }
+{\ttfamily }
+
+{\ttfamily \subsection*{Skye-\/\-Controls node}}
+
+{\ttfamily  The package \char`\"{}skye\-\_\-controls\char`\"{} provides a pose control (aiming for a trajectory control) of Skye.}
+
+{\ttfamily \subsubsection*{Input and parameters}}
+
+{\ttfamily  The controls node can be tuned in two ways\-:
+\begin{DoxyItemize}
+\item by editing the parameters in the yaml file ./inputs/skye\-\_\-controls.yaml
+\item by tuning the control parameters with R\-Q\-T dynamic parameters\-: this opens automatically when skye\-\_\-controls package is run.
+\end{DoxyItemize}}
+
+{\ttfamily The node accepts waypoints in a 6\-D\-O\-F format providing 3 coordinates in the N\-E\-D frame (see Frames Convention section above) and and a quaternion for rotation of the body frame with respect to N\-E\-D frame.}
+
+{\ttfamily \subsubsection*{How to run it}}
+
+{\ttfamily  Running the controller is really easy\-: after following the guide above and having tested the simulation environment (see Launch A Simulation With Empty World section) follow these steps. 1) Open a terminal window and type\-: ```bash roslaunch \hyperlink{namespaceskye__ros}{skye\-\_\-ros} inflate\-\_\-skye.\-launch ``` 2) Open another terminal window and type\-: ```bash roslaunch skye\-\_\-controls skye\-\_\-controls.\-launch ```}
+
+{\ttfamily \subsubsection*{Example}}
+
+{\ttfamily  skye\-\_\-controls package comes equipped with this configuration\-: 6 waypoints in the 3\-D space at which Skye's I\-M\-U (the red box) faces the starting point (0,0,-\/3) in N\-E\-D frame. Whenever Skye approaches the waypoint, the next one is selected and both position and attitude tend to it. }

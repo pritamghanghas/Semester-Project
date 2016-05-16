@@ -2,6 +2,7 @@
 #define SKYE_GEOMETRIC_CONTROLLER_H
 
 #include <Eigen/Eigen>
+#include <Eigen/Geometry>
 #include <iostream> // remove once debug is removed!!!
 
 /**
@@ -101,12 +102,12 @@ struct SkyeParameters{
      * @brief input_R_des : desired rotation matrix expressed in the inertial frame
      */
     Eigen::Matrix3d input_R_des_if;
-
 };
 
 class SkyeGeometricController
 {
 private:
+    bool singularity_detected_;
     //Control coefficients
     double  k_x_, k_v_, k_if_, k_im_, k_R_, k_omega_;
     double maximum_force_cog_bf_, maximum_acceleration_cog_bf_,
@@ -135,7 +136,7 @@ private:
     integrator_acceleration_;
 
     Eigen::Matrix3d inertia_;
-    Eigen::Matrix3d R_if_, R_des_if_;
+    Eigen::Matrix3d R_if_, R_des_if_, R_temp_if_;
     Eigen::Vector3d angular_velocity_;
 
     Eigen::Vector3d normalized_k_R_;

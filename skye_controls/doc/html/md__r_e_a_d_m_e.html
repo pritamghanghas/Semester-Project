@@ -155,11 +155,33 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <img src="skye_ros/doc/frames.png"  width="650"/>
 </div>
 <p> </code></p>
-<p><code> </code></p>
+<p><code></code></p>
+<p><code></p>
+<h2>Skye-Controls node</h2>
+<p></code></p>
+<p><code> The package "skye_controls" provides a pose control (aiming for a trajectory control) of Skye.</code></p>
+<p><code></p>
+<h3>Input and parameters</h3>
+<p></code></p>
+<p><code> The controls node can be tuned in two ways:</p>
+<ul>
+<li>by editing the parameters in the yaml file ./inputs/skye_controls.yaml</li>
+<li>by tuning the control parameters with RQT dynamic parameters: this opens automatically when skye_controls package is run.</li>
+</ul>
+<p></code></p>
+<p><code>The node accepts waypoints in a 6DOF format providing 3 coordinates in the NED frame (see Frames Convention section above) and and a quaternion for rotation of the body frame with respect to NED frame.</code></p>
+<p><code></p>
+<h3>How to run it</h3>
+<p></code></p>
+<p><code> Running the controller is really easy: after following the guide above and having tested the simulation environment (see Launch A Simulation With Empty World section) follow these steps. 1) Open a terminal window and type: ```bash roslaunch <a class="el" href="namespaceskye__ros.html">skye_ros</a> inflate_skye.launch ``` 2) Open another terminal window and type: ```bash roslaunch skye_controls skye_controls.launch ```</code></p>
+<p><code></p>
+<h3>Example</h3>
+<p></code></p>
+<p><code> skye_controls package comes equipped with this configuration: 6 waypoints in the 3D space at which Skye's IMU (the red box) faces the starting point (0,0,-3) in NED frame. Whenever Skye approaches the waypoint, the next one is selected and both position and attitude tend to it. </code></p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 19 2016 10:12:20 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 16 2016 15:54:02 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

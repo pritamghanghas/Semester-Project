@@ -5,8 +5,79 @@
 
 #include <skye_controls/skye_geometric_controller.h>
 
-SkyeGeometricController::SkyeGeometricController(){
+void test(){
+    Eigen::Matrix3f R1, R2, R_90, R_temp;
+    R1 << 1,0,0,
+            0,1,0,
+            0,0,1;
+    R2 << -1,0,0,
+            0,1,0,
+            0,0,-1;
+
+    Eigen::AngleAxisf angle_R1, angle_R2, target;
+
+    angle_R1 = R1;
+    angle_R2 = R2;
+
+
+
+    std::cout << "R1:" << std::endl << R1 << std::endl << std::endl;
+
+    std::cout << "R2:" << std::endl << R2 << std::endl << std::endl;
+
+    std::cout << "angle_R1 angle: " << angle_R1.angle() <<
+                 " | axis: " << std::endl << angle_R1.axis() << std::endl;
+
+    std::cout << "angle_R2 angle: " << angle_R2.angle() <<
+                 " | axis: " << std::endl << angle_R2.axis() << std::endl;
+
+    float diff = std::abs(angle_R1.angle() - angle_R2.angle());
+    if ( diff >= M_PI_2) {
+        std::cout << "Singularity detected!" << std::endl;
+        std::cout << "diff is:" << diff << std::endl;
+        R_temp = R2;
+
+        if (diff <= M_PI) { // in this case I am on the left side
+            std::cout << "diff is less than M_PI" << std::endl;
+
+            target.axis() = angle_R2.axis();
+            target.angle() = angle_R1.angle() + M_PI_2;
+            R2 = target;
+            std::cout << "New R2:" << std::endl << R2 << std::endl << std::endl;
+            std::cout << "R_temp:" << std::endl << R_temp << std::endl << std::endl;
+
+            std::cout << "target angle: " << target.angle() <<
+                         " | axis: " << std::endl << target.axis() << std::endl;
+        } else {
+            std::cout << "diff is GREATER than M_PI" << std::endl;
+
+            target.axis() = angle_R2.axis();
+            target.angle() = angle_R1.angle() - M_PI_2;
+            R2 = target;
+            std::cout << "New R2:" << std::endl << R2 << std::endl << std::endl;
+            std::cout << "R_temp:" << std::endl << R_temp << std::endl << std::endl;
+
+            std::cout << "target angle: " << target.angle() <<
+                         " | axis: " << std::endl << target.axis() << std::endl;
+        }
+
+    } else {
+        std::cout << "Dio Porco" << std::endl;
+    }
+
+
+
+
+
+    R1(10);
+
 }
+
+SkyeGeometricController::SkyeGeometricController(){
+    singularity_detected_ = false;
+    //    test();
+}
+
 
 inline void SkyeGeometricController::VectorFromSkewMatrix(Eigen::Matrix3d &skew_matrix, Eigen::Vector3d *vector) {
     *vector << skew_matrix(2, 1), skew_matrix(0,2), skew_matrix(1, 0);
@@ -76,6 +147,78 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
     position_error_bf_ = R_if_.transpose()*position_error_if_;
     velocity_error_bf_ = R_if_.transpose()*velocity_error_if_;
 
+
+    Eigen::AngleAxisd current_rotation, desired_rotation, temporary_rotation;
+    current_rotation = R_if_;
+    desired_rotation = R_des_if_;
+
+    float diff = std::abs(current_rotation.angle() - desired_rotation.angle());
+
+    if (diff >= M_PI_2 && !singularity_detected_) {
+        singularity_detected_ = true;
+        R_temp_if_ = R_des_if_;
+
+        if (diff <= M_PI) { // in this case I am on the left side
+            temporary_rotation.axis() = current_rotation.axis();
+            temporary_rotation.angle() = current_rotation.angle() + M_PI_2;
+            R_des_if_ = temporary_rotation;
+        } else {
+            temporary_rotation.axis() = current_rotation.axis();
+            temporary_rotation.angle() = current_rotation.angle()  - 3*M_PI_2;
+            R_des_if_ = temporary_rotation;
+        }
+        /*
+        std::cout << "Found critical point, switching to temporal goal" << std::endl;
+
+        std::cout << "R_if_:" << std::endl << R_if_ << std::endl << std::endl;
+
+        std::cout << "R_des_if_:" << std::endl << R_des_if_ << std::endl << std::endl;
+
+        std::cout << "R_temp_if_:" << std::endl << R_temp_if_ << std::endl << std::endl;
+
+        std::cout << "current_rotation angle: " << current_rotation.angle() <<
+                     " | axis: " << std::endl << current_rotation.axis() << std::endl;
+
+        std::cout << "temporary_rotation angle: " << temporary_rotation.angle() <<
+                     " | axis: " << std::endl << temporary_rotation.axis() << std::endl;
+
+        std::cout << "desired_rotation angle: " << desired_rotation.angle() <<
+                     " | axis: " << std::endl << desired_rotation.axis() << std::endl;
+
+        std::cout << "diff : " << diff <<
+                     std::endl << "--------------------------------------------------" <<
+                     std::endl;
+*/
+    }
+
+    if (diff <= M_PI_2 && singularity_detected_) {
+        singularity_detected_ = false;
+        R_des_if_ = R_temp_if_;
+        R_temp_if_ << 0,0,0,
+                0,0,0,
+                0,0,0;
+        temporary_rotation = R_temp_if_;
+        /*
+        std::cout << "Restoring original rotation matrix" << std::endl;
+
+        std::cout << "R_if_:" << std::endl << R_if_ << std::endl << std::endl;
+
+        std::cout << "R_des_if_:" << std::endl << R_des_if_ << std::endl << std::endl;
+
+        std::cout << "current_rotation angle: " << current_rotation.angle() <<
+                     " | axis: " << std::endl << current_rotation.axis() << std::endl;
+
+        std::cout << "desired_rotation angle: " << desired_rotation.angle() <<
+                     " | axis: " << std::endl << desired_rotation.axis() << std::endl;
+
+        std::cout << "diff : " << diff <<
+                     std::endl << "--------------------------------------------------" <<
+                     std::endl;
+
+*/
+    }
+
+
     // Calculate attitude control errors as per Lee paper.
     Eigen::Matrix3d angle_error_matrix = 0.5 * (R_des_if_.transpose() * R_if_ - R_if_.transpose() * R_des_if_);
     VectorFromSkewMatrix(angle_error_matrix, &attitude_error_bf_);
@@ -88,7 +231,7 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
      * WHEN REMOVING THIS CODE DO NOT FORGET TO REMOVE IOSTREAM INCLUSION
      * IN THE HEADER FILE!!!!
      *
-     */
+
     std::cout << "--------------------------------------------------" << std::endl <<
                  "position_: " << position_if(0) <<
                  " | y: " << position_if(1) <<
@@ -136,9 +279,29 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
                  std::endl << std::endl;
 
 
-        std::cout << "R_if_:" << R_if_ << std::endl << std::endl;
+    std::cout << "R_if_:" << std::endl << R_if_ << std::endl << std::endl;
 
-        std::cout << "R_des_if_:" << R_des_if_ << std::endl << std::endl;
+    std::cout << "R_des_if_:" << std::endl << R_des_if_ << std::endl << std::endl;
+
+    std::cout << "R_temp_if_:" << std::endl << R_temp_if_ << std::endl << std::endl;
+
+    std::cout << "current_rotation angle: " << current_rotation.angle() <<
+                 " | axis: " << std::endl << current_rotation.axis() << std::endl;
+
+    std::cout << "desired_rotation angle: " << desired_rotation.angle() <<
+                 " | axis: " << std::endl << desired_rotation.axis() << std::endl;
+
+    std::cout << "temporary_rotation angle: " << temporary_rotation.angle() <<
+                 " | axis: " << std::endl << temporary_rotation.axis() << std::endl;
+
+    std::cout << "diff : " << diff <<
+                 std::endl << "--------------------------------------------------" <<
+                 std::endl;
+
+ */
+    //    if (singularity_detected_) {
+    //        position_if(4);
+    //    }
     /******************** END DEBUG *************************/
 
 }
