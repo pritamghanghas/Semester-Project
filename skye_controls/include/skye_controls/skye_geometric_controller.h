@@ -132,8 +132,12 @@ private:
     velocity_error_if_,
     attitude_error_bf_,
     angular_velocity_error_bf_,
-    integrator_force_,
-    integrator_acceleration_;
+    integrated_position_error_,
+    resulting_force_,
+    windup_force_,
+    integrated_attitude_error_,
+    resulting_acceleration_,
+    windup_acceleration_;
 
     Eigen::Matrix3d inertia_;
     Eigen::Matrix3d R_if_, R_des_if_, R_temp_if_;

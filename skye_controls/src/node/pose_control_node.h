@@ -8,6 +8,7 @@
 #define POSE_CONTROL_NODE_H
 
 #include <iostream>
+#include <random>
 #include <Eigen/Eigen>
 #include <ros/ros.h>
 #include <dynamic_reconfigure/server.h>
@@ -20,6 +21,7 @@
 
 #include <skye_controls/skye_paramsConfig.h>
 #include <skye_controls/waypoint_controller.h>
+
 
 
 class PoseControllerNode {
@@ -50,6 +52,18 @@ private:
      * @brief k_R_ : the attitude control gain
      */
     double k_R_;
+
+    double wind_x_;
+    double wind_y_;
+    double wind_z_;
+    double wind_x_var_;
+    double wind_y_var_;
+    double wind_z_var_;
+    std::default_random_engine generator_;
+    std::normal_distribution<double> *x_dist_;
+    std::normal_distribution<double> *y_dist_;
+    std::normal_distribution<double> *z_dist_;
+
     /**
      * @brief wrench_service_name_ : name of the service to apply a wrench to the COG of skye in body frame
      */

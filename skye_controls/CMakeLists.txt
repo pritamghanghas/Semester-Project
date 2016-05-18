@@ -38,6 +38,7 @@ add_executable(skye_controls_node
                     src/library/skye_geometric_controller.cpp
                     src/library/waypoint_controller.cpp)
 
+target_compile_features(skye_controls_node PRIVATE cxx_range_for)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(skye_controls_node

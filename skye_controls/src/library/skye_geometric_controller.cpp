@@ -227,11 +227,11 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
     angular_velocity_ = a_angular_velocity_bf;
     angular_velocity_error_bf_ =  angular_velocity_ - R_if_.transpose() * R_des_if_ * desired_angular_velocity_bf_;
 
-    /******************** DEBUG ************************
+    /******************** DEBUG ***********************
      * WHEN REMOVING THIS CODE DO NOT FORGET TO REMOVE IOSTREAM INCLUSION
      * IN THE HEADER FILE!!!!
      *
-
+*/
     std::cout << "--------------------------------------------------" << std::endl <<
                  "position_: " << position_if(0) <<
                  " | y: " << position_if(1) <<
@@ -252,9 +252,9 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
     std::cout << "pos_err_norm: " << position_error_bf_.norm() <<
                  std::endl << std::endl;
 
-    std::cout << "integrator_force_error_: " << integrator_force_(0) <<
-                 " | y: " << integrator_force_(1) <<
-                 " | z: " << integrator_force_(2) <<
+    std::cout << "integrated_position_error_: " << integrated_position_error_(0) <<
+                 " | y: " << integrated_position_error_(1) <<
+                 " | z: " << integrated_position_error_(2) <<
                  std::endl << std::endl;
 
     // ATTITUDE
@@ -273,9 +273,9 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
     std::cout << "atti_err_norm: " << attitude_error_bf_.norm() <<
                  std::endl << std::endl;
 
-    std::cout << "integrator_acceleration_error_: " << integrator_acceleration_(0) <<
-                 " | y: " << integrator_acceleration_(1) <<
-                 " | z: " << integrator_acceleration_(2) <<
+    std::cout << "integrator_acceleration_error_: " << integrated_attitude_error_(0) <<
+                 " | y: " << integrated_attitude_error_(1) <<
+                 " | z: " << integrated_attitude_error_(2) <<
                  std::endl << std::endl;
 
 
@@ -298,7 +298,7 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
                  std::endl << "--------------------------------------------------" <<
                  std::endl;
 
- */
+
     //    if (singularity_detected_) {
     //        position_if(4);
     //    }
@@ -339,58 +339,72 @@ inline void SkyeGeometricController::SaturateVector(double a_threshold, Eigen::V
 
 void SkyeGeometricController::ComputeForce(Eigen::Vector3d *output_force_bf){
 
-    *output_force_bf = (k_x_*(position_error_bf_) + k_v_*(velocity_error_bf_) - mass_*desired_acceleration_if_ );
+    Eigen::Vector3d proportional_term, derivative_term, integral_term;
+
+    proportional_term = k_x_*position_error_bf_;
+    derivative_term = k_v_*(velocity_error_bf_); // - mass_*desired_acceleration_if_ ;
 
     // Integrator with antiwindup
     if (position_error_bf_.norm() < distance_integrator_treshold_ ) {
-
-        *output_force_bf = *output_force_bf + k_if_ * integrator_force_;
-        integrator_force_ += position_error_bf_;
-        SaturateVector(maximum_force_integrator_, &integrator_force_);
-        if (position_error_bf_(0) < windup_force_threshold_) {
-            integrator_force_(0) = 0;
-        }
-        if (position_error_bf_(1) < windup_force_threshold_) {
-            integrator_force_(1) = 0;
-        }
-        if (position_error_bf_(2) < windup_force_threshold_) {
-            integrator_force_(2) = 0;
-        }
+        integrated_position_error_ += position_error_bf_ + windup_force_;
+        integral_term = k_if_*integrated_position_error_;
+        SaturateVector(maximum_force_integrator_, &integral_term);
     } else {
-        integrator_force_ << 0,0,0;
+        integrated_position_error_ << 0,0,0;
     }
 
+    resulting_force_ = proportional_term + derivative_term + integral_term;
+    *output_force_bf = resulting_force_ ;
     // Force saturation
     this->SaturateVector(maximum_force_cog_bf_, output_force_bf);
+    windup_force_ = *output_force_bf - resulting_force_ ;
+
 }
 
 void SkyeGeometricController::ComputeAcceleration(Eigen::Vector3d *output_acceleration_bf){
 
-    *output_acceleration_bf = -normalized_k_R_.cwiseProduct(attitude_error_bf_)
-                              - normalized_k_omega_.cwiseProduct(angular_velocity_error_bf_)
-                              + angular_velocity_.cross(angular_velocity_);
+    Eigen::Vector3d proportional_term, derivative_term, integral_term;
+    proportional_term = -normalized_k_R_.cwiseProduct(attitude_error_bf_);
+    derivative_term = - normalized_k_omega_.cwiseProduct(angular_velocity_error_bf_)
+                      + angular_velocity_.cross(angular_velocity_);
 
     // Integrator with antiwindup
     if (attitude_error_bf_.norm() < attitude_integrator_treshold_ ) {
-        *output_acceleration_bf = *output_acceleration_bf + k_im_ * integrator_acceleration_;
-        integrator_acceleration_ -= attitude_error_bf_;
-        SaturateVector(maximum_momentum_integrator_, &integrator_acceleration_);
-        if (position_error_bf_(0) < windup_acceleration_threshold_) {
-            integrator_acceleration_(0) = 0;
-        }
-        if (position_error_bf_(1) < windup_force_threshold_) {
-            integrator_acceleration_(1) = 0;
-        }
-        if (position_error_bf_(2) < windup_force_threshold_) {
-            integrator_acceleration_(2) = 0;
-        }
-
+        integrated_attitude_error_ += attitude_error_bf_ + windup_acceleration_;
+        integral_term = k_im_*integrated_attitude_error_ ;
+        SaturateVector(maximum_momentum_integrator_, &integral_term);
     } else {
-        integrator_acceleration_ << 0,0,0;
+        integrated_attitude_error_ << 0,0,0;
     }
 
-    // Acceleration saturation
+    resulting_acceleration_ = proportional_term + derivative_term + integral_term;
+    *output_acceleration_bf = resulting_acceleration_ ;
+    //acceleration saturation
     this->SaturateVector(maximum_acceleration_cog_bf_, output_acceleration_bf);
+    windup_acceleration_ = *output_acceleration_bf - resulting_acceleration_ ;
+
+
+//    // Integrator with antiwindup
+//    if (attitude_error_bf_.norm() < attitude_integrator_treshold_ ) {
+//        *output_acceleration_bf = *output_acceleration_bf + k_im_ * integrated_attitude_error_;
+//        integrated_attitude_error_ -= attitude_error_bf_;
+//        SaturateVector(maximum_momentum_integrator_, &integrated_attitude_error_);
+//        if (position_error_bf_(0) < windup_acceleration_threshold_) {
+//            integrated_attitude_error_(0) = 0;
+//        }
+//        if (position_error_bf_(1) < windup_force_threshold_) {
+//            integrated_attitude_error_(1) = 0;
+//        }
+//        if (position_error_bf_(2) < windup_force_threshold_) {
+//            integrated_attitude_error_(2) = 0;
+//        }
+
+//    } else {
+//        integrated_attitude_error_ << 0,0,0;
+//    }
+
+//    // Acceleration saturation
+//    this->SaturateVector(maximum_acceleration_cog_bf_, output_acceleration_bf);
 
 }
 

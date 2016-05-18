@@ -19,6 +19,12 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
             nh.getParam("maximum_momentum_integrator_", skye_parameters_.input_maximum_momentum_integrator) &&
             nh.getParam("windup_force_threshold", skye_parameters_.input_windup_force_threshold) &&
             nh.getParam("windup_acceleration_threshold", skye_parameters_.input_windup_acceleration_threshold) &&
+            nh.getParam("wind_x", wind_x_) &&
+            nh.getParam("wind_y", wind_y_) &&
+            nh.getParam("wind_z", wind_z_) &&
+            nh.getParam("wind_x_var", wind_x_var_) &&
+            nh.getParam("wind_y_var", wind_y_var_) &&
+            nh.getParam("wind_z_var", wind_z_var_) &&
             nh.getParam("inertia_11", inertia_11) &&
             nh.getParam("inertia_12", inertia_12) &&
             nh.getParam("inertia_13", inertia_13) &&
@@ -88,6 +94,10 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     skye_parameters_.input_desired_angular_acceleration_bf = zero_v;
     skye_parameters_.input_desired_angular_velocity_bf = zero_v;
     skye_parameters_.input_desired_velocity_if = zero_v;
+
+    x_dist_ = new std::normal_distribution<double>(wind_x_,wind_x_var_);
+    y_dist_ = new std::normal_distribution<double>(wind_y_,wind_y_var_);
+    z_dist_ = new std::normal_distribution<double>(wind_z_,wind_z_var_);
 
     return true;
 }
@@ -196,9 +206,11 @@ bool PoseControllerNode::CallService(){
     srv_.request.start_time.nsec = 0;
     srv_.request.duration.sec =  1;
 
-    control_wrench_.force.x =  control_force_bf_(0);
-    control_wrench_.force.y = control_force_bf_(1);
-    control_wrench_.force.z = control_force_bf_(2);
+
+    srand (time(NULL));
+    control_wrench_.force.x =  control_force_bf_(0) + (*x_dist_)(generator_);
+    control_wrench_.force.y = control_force_bf_(1) + (*y_dist_)(generator_);
+    control_wrench_.force.z = control_force_bf_(2) + (*z_dist_)(generator_);
     control_wrench_.torque.x = control_momentum_bf_(0);
     control_wrench_.torque.y = control_momentum_bf_(1);
     control_wrench_.torque.z = control_momentum_bf_(2);
