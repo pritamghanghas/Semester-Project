@@ -28,6 +28,7 @@ void SkyeTeachAndRepeatNode::TeachPhase(const Eigen::Vector3d& position_if,
             a_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
             a_waypoint.waypoint_orientation_if = orientation_if;
 
+
         }
 
 
