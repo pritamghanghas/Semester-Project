@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<launch>
+  <!-- Start "skye_controls" to control Skye in Gazebo. -->
+  <node name="skye_teach_and_repeat_node" pkg="skye_teach_and_repeat" type="skye_teach_and_repeat_node"
+        respawn="false" output="screen"/>
+
+  <rosparam command="load" file="$(find skye_teach_and_repeat)/inputs/skye_teach_and_repeat.yaml"/>
+
+</launch>

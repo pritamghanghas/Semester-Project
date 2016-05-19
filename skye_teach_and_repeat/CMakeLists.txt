@@ -7,6 +7,7 @@ project(skye_teach_and_repeat)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   skye_ros
+  eigen_conversions
 std_msgs
 )
 
