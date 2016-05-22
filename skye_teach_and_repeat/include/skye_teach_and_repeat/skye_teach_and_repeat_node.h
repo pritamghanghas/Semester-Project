@@ -11,7 +11,9 @@
 #include <skye_ros/ApplyWrenchCogBf.h>
 #include <std_msgs/Int16.h>
 
-//#include <skye_controls/waypoint_controller.h>
+#include <skye_controls/skye_geometric_controller.h>
+#include <skye_controls/skye_paramsConfig.h>
+#include <skye_controls/waypoint_controller.h>
 
 struct SkyeWaypoint{
   //TODO: add time
@@ -105,8 +107,8 @@ private:
 
 
   //Geometric Controller
-//  WaypointControllerParameters waypoints_parameters_;
-//  WaypointController waiponts_controller_;
+  WaypointControllerParameters waypoints_parameters_;
+  WaypointController waiponts_controller_;
 
 };
 

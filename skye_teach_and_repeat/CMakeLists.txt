@@ -40,6 +40,6 @@ target_link_libraries(skye_teach_and_repeat_node
                           ${roslib_LIBRARIES}
                           ${skye_ros_LIBRARIES}
                           ${skye_controls_LIBRARIES}
-
  )
+target_link_libraries(skye_teach_and_repeat_node waypoint_ctrl)
 

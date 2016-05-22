@@ -32,6 +32,8 @@ include_directories(
   src/node
 )
 
+add_library(waypoint_ctrl src/library/waypoint_controller.cpp)
+
 ## Declare a C++ executable
 add_executable(skye_controls_node
                     src/node/pose_control_node.cpp

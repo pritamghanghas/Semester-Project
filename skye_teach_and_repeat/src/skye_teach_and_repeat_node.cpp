@@ -22,7 +22,7 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
 SkyeTeachAndRepeatNode::~SkyeTeachAndRepeatNode(){
 }
 void SkyeTeachAndRepeatNode::PackParameters(){
-//    waypoints_parameters_.input_goal_change_threshold = 0.5;
+    waypoints_parameters_.input_goal_change_threshold = 0.5;
     for (int i = 0; i < saved_data_.at(action_selected_).action_trajectory.size(); ++i) {
 
     }
@@ -111,7 +111,7 @@ void SkyeTeachAndRepeatNode::RepeatPhase(){
 //call waypoint controller and give it the waypoints, set some parameters
 
     this->PackParameters();
-//waypoints_parameters_.input_goal_change_threshold = 0.5;
+waypoints_parameters_.input_goal_change_threshold = 0.5;
 
 
 
