@@ -34,6 +34,10 @@ rosinstall is a frequently used command-line tool in ROS that is distributed sep
  ```bash
 sudo apt-get install python-rosinstall
 ```
+You will be using the ROS python tools wstool, rosinstall,and catkin_tools for this installation. While they may have been installed during your installation of ROS you can also install them with:
+```bash 
+sudo apt-get install python-wstool python-rosinstall-generator python-catkin-tools
+```
 ## Gazebo6 Installation
 Since some of the required plugins are not available in Gazebo2 (the official supported version of Gazebo in ROS Indigo) it is necessary to manually install Gazebo6 and its integration with ROS. To do so setup your computer to accept software from packages.osrfoundation.org.
  ```bash
@@ -86,19 +90,20 @@ Create a catkin workspace in your home folder where you are going to clone every
  ```bash
 cd ~
 mkdir -p catkin_ws/src
-cd ~/catkin_ws/src
-catkin_init_workspace
+cd ~/catkin_ws
+catkin init
 ```
-Clone the required reposotories in the src folder:
+Clone the required reposotories in the src folder (execute each line by pressing enter, do not copy and paste the whole code section):
+
  ```bash
 cd ~/catkin_ws/src
 git clone https://github.com/skye-git/skye_gazebo_simulation -b indigo-devel
 git clone https://github.com/skye-git/hector_gazebo -b indigo-devel
 ```
-Compile them. Suggestion: use the option **-j** to specify the number of jobs to run simultaneously; for example `catkin_make -j4`
+Compile them. Suggestion: use the option **-j** to specify the number of jobs to run simultaneously; for example `catkin build -j4`
 ```bash
 cd ~/catkin_ws
-catkin_make
+catkin build -j4
 ```
 It's convenient if the ROS environment variables are automatically added to your bash session every time a new shell is launched:
  ```bash
@@ -119,7 +124,7 @@ Now you can modify the path where Gazebo searchs for the plugin shared libraries
 The Imu plugin from "hector_gazebo" package is located, by default, in '~/catkin_ws/devel/lib/'.
 ```bash
 echo "source <install_path>/share/gazebo/setup.sh" >> ~/.bashrc
-echo "export GAZEBO_PLUGIN_PATH=~/catkin_ws/devel/lib:${GAZEBO_PLUGIN_PATH}" >> ~/.bashrc
+echo "export GAZEBO_PLUGIN_PATH=~/catkin_ws/devel/lib:\${GAZEBO_PLUGIN_PATH}" >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -135,23 +140,28 @@ The package "skye_ros" provides an easy interface to interact with a simulation 
 
 ### Advertised Topics
   * /skye_ros/sensor_msgs/imu_sk IMU data expressed in a local frame attached to the IMU box, called IMU frame. See section *Frame Convetions* for further information.
-  * /skye_ros/ground_truth/hull ground truth infomration of the hull. Contains the position, orientation and 
-  linear velocity of the hull, expressed in the world NED frame (see below section **Frames Convetion** for further information). **Warning**: angular velocity field into this topic is filled with zeros as long as 
-  a problem in Gazebo is not resolved. 
+  * /skye_ros/ground_truth/hull ground truth information of the hull. Contains the position, orientation,
+  and linear velocity of the hull, expressed in the world NED frame (see below section **Frames Convention** for further information). **WARNING** The angular velocity is filled with zeros for now, until a problem in Gazebo is solved.
 
 Example: echo imu_sk message. 
 ```bash
 rostopic echo /skye_ros/sensor_msgs/imu_sk
 ```
+Example: use of the orientation quaternion from /skye_ros/ground_truth/hull. This quaternion indicates the orientation of Skye's body frame with respect to the NED frame. To rotate a vector *v_b*, expressed in body frame, to a vector *v_i*, expressed in intertial frame, use:
+```C++
+v_i = R(q) * v_b;
+```
+where *R(q)* is a rotation matrix obtained from the published quaternion.
 
 ### Advertised Services
-  * /skye_ros/apply_wrench_cog_bf service to apply a wrench (i.e. a force and a torque) in the center of gravity (CoG) of  Skye. Wrench expressed in Skye's body frame attached to the CoG of Skye. See below section **Frames Convetion** for further information.
-
+  * /skye_gz/hull/apply_wrench service to apply a wrench (i.e. a force and a torque) in the center of gravity (CoG) of  Skye. Wrench expressed in Skye's body frame attached to the CoG of Skye. See below section **Frames Convetion** for further information.
+  *  /skye_gz/hull/apply_force service to apply (only) a force in the center of gravity (CoG) of  Skye. Force expressed in Skye's body frame attached to the CoG of Skye. The torque present of the body is not affected. See below section **Frames Convetion** for further information.
+  *  /skye_gz/hull/apply_torque service to apply (only) a torque in the center of gravity (CoG) of  Skye. Force expressed in Skye's body frame attached to the CoG of Skye. The force present of the body is not affected.See below section **Frames Convetion** for further information.
 
 
 Example: apply a torque of 3 Nm around Skye's X axes (in body frame).
 ```bash
-rosservice call /skye_ros/apply_wrench_cog_bf '{wrench: { force: { x: 0, y: 0, z: 0 }, torque: {x: 3, y: 0, z: 0} }, start_time: 0, duration: -1 }'
+rosservice call /skye_gz/hull/apply_wrench '{wrench: { force: { x: 0, y: 0, z: 0 }, torque: {x: 3, y: 0, z: 0} }, start_time: 0, duration: -1 }'
 ```
 ## Repository Layout
 The following describes the directory structure and important files in the skye_gazebo_simulation repository
@@ -160,7 +170,7 @@ Folders:
 
   * skye_description   - Skye's Gazebo model descritpion in SDF.
   * skye_gazebo        - Contains launch files to run Gazebo and spawn Skye.
-  * skye_ros           - Containes a simple interface which converts data from Gazebo ENU frame to Skye's NED frame.
+  * skye_ros           - Containes a simple interface and some gazebo plugins which convert data from Gazebo ENU frame to Skye's NED frame.
 
 ## Frames Convention
 Gazebo and ROS use ENU frame convention, i.e. X axis points to East, Y axis to North and Z axis up. We use
@@ -175,28 +185,3 @@ The picture below gives an overview of these three frames. Note that the initial
 <p align="center">
   <img src="skye_ros/doc/frames.png" width="650"/>
 </p>
-
-## Skye-Controls node
-The package "skye_controls" provides a pose control (aiming for a trajectory control) of Skye. 
-
-### Input and parameters
-The controls node can be tuned in two ways:
-  * by editing the parameters in the yaml file ./inputs/skye_controls.yaml
-  * by tuning the control parameters with RQT dynamic parameters: this opens automatically when skye_controls package is run.
-
-The node accepts waypoints in a 6DOF format providing 3 coordinates in the NED frame (see Frames Convention section above) and and a quaternion for rotation of the body frame with respect to NED frame.
-
-### How to run it
-Running the controller is really easy: after following the guide above and having tested the simulation environment (see Launch A Simulation With Empty World section) follow these steps.
-  1) Open a terminal window and type:
-  ```bash
-  roslaunch skye_ros inflate_skye.launch
-  ```
-  2) Open another terminal window and type:
-  ```bash
-  roslaunch skye_controls skye_controls.launch
-  ```
-
-###Example
-skye_controls package comes equipped with this configuration:
-6 waypoints in the 3D space at which Skye's IMU (the red box) faces the starting point (0,0,-3) in NED frame. Whenever Skye approaches the waypoint, the next one is selected and both position and attitude tend to it.
