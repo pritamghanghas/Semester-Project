@@ -179,7 +179,7 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
         // Calculate control acceleration
         geometric_controller_.ComputeAcceleration(&control_acceleration_bf_);
         // Calculate control momentum
-        control_momentum_bf_ = inertia_*control_acceleration_bf_;
+//        control_momentum_bf_ = inertia_*control_acceleration_bf_;
 
     }
 

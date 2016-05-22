@@ -7,6 +7,7 @@ project(skye_controls)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   skye_ros
+  cmake_modules
   eigen_conversions
   dynamic_reconfigure
 )
@@ -35,8 +36,8 @@ include_directories(
 add_executable(skye_controls_node
                     src/node/pose_control_node.cpp
                     src/node/waypoints_parser.cpp
-                    src/library/skye_geometric_controller.cpp
-                    src/library/waypoint_controller.cpp)
+		    src/library/waypoint_controller.cpp 
+		    src/library/skye_geometric_controller.cpp)
 
 target_compile_features(skye_controls_node PRIVATE cxx_range_for)
 
@@ -46,3 +47,5 @@ target_link_libraries(skye_controls_node
                           ${roslib_LIBRARIES}
                           ${skye_ros_LIBRARIES}
  )
+
+

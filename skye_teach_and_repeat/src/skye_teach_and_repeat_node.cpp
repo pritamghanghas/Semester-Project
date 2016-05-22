@@ -3,41 +3,92 @@
 SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
     node_mode_ = 0;
     teaching_done_ = false;
+    has_teaching_just_started_ = true;
+    //    saved_data_ = new std::vector<SkyeAction>;
     //Get the parameters
     bool read_all_parameters = nh.getParam("wrench_service_name", wrench_service_name_) &&
-                               nh.getParam("teaching_mode", teaching_mode_);
+                               nh.getParam("teaching_mode", teaching_mode_) &&
+                               nh.getParam("waypoints_distance_threshold", waypoints_distance_threshold_);
     // Check if Skye's parameters where imported
     if (! read_all_parameters){
         ROS_ERROR("Geometric Parameters not imported");
     }
+
+    //Setup service for control input if the service is ready
+    ros::service::waitForService(wrench_service_name_);
+    wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
 }
 
 SkyeTeachAndRepeatNode::~SkyeTeachAndRepeatNode(){
+}
+void SkyeTeachAndRepeatNode::PackParameters(){
+//    waypoints_parameters_.input_goal_change_threshold = 0.5;
+    for (int i = 0; i < saved_data_.at(action_selected_).action_trajectory.size(); ++i) {
+
+    }
 }
 
 void SkyeTeachAndRepeatNode::TeachPhase(const Eigen::Vector3d& position_if,
                                         const Eigen::Vector3d& velocity_if,
                                         const Eigen::Vector3d& angular_velocity_bf,
                                         const Eigen::Quaterniond& orientation_if){
+//    std::cout << "teachphase" << std::endl;
     if (teaching_mode_ == 1) { //space teaching mode
-        //if just started save the first waypoint
-        if (saved_data_.size() == 0) {
-            SkyeWaypoint a_waypoint;
-            a_waypoint.waypoint_position_if = position_if;
-            a_waypoint.waypoint_velocity_if = velocity_if;
-            a_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
-            a_waypoint.waypoint_orientation_if = orientation_if;
-
-
+        // if new action, add it
+        if (has_teaching_just_started_) {
+            has_teaching_just_started_ = false;
+            SkyeAction new_action;
+            if (saved_data_.size() == 0) {
+                new_action.action_id = 1;
+            } else {
+                new_action.action_id = saved_data_.back().action_id + 1;
+            }
+            saved_data_.push_back(new_action);
+            std::cout << "Saved new action - number of actions: "
+                      << saved_data_.size()
+                      << std::endl;
         }
-
-
-        // check norm distance from last SkyeWaypoint
-        // Save new waypoint into SkyeAction vector
-
-
-    } else if (teaching_mode_ == 2) { //time teaching mode
+        int last_element = saved_data_.size() - 1;
+        SkyeAction *last_action = &(saved_data_.at(last_element));
+//        std::cout << "last elem: " << last_element
+//                  << " | with id: " << last_action->action_id
+//                  << " | last_action.action_trajectory.size(): " << last_action->action_trajectory.size()
+//                  << std::endl;
         //if just started save the first waypoint
+       if (last_action->action_trajectory.size() == 0) {
+            SkyeWaypoint new_waypoint;
+            new_waypoint.waypoint_position_if = position_if;
+            new_waypoint.waypoint_velocity_if = velocity_if;
+            new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
+            new_waypoint.waypoint_orientation_if = orientation_if;
+            last_action->action_trajectory.push_back(new_waypoint);
+            std::cout << "Saved FIRST waypoint in action: "
+                      << last_action->action_id
+                      << " with #waypoints: "
+                      << last_action->action_trajectory.size()
+                      << " | number of actions: " << saved_data_.size()
+                      << std::endl;
+        }
+         // check norm distance from last SkyeWaypoint
+        Eigen::Vector3d distance;
+        std::vector<SkyeWaypoint> *current_trajectory = &(last_action->action_trajectory);
+        distance = current_trajectory->at(current_trajectory->size() -1 ).waypoint_position_if - position_if;
+        if (distance.norm() > waypoints_distance_threshold_) {
+            // Save new waypoint into SkyeAction vector
+            SkyeWaypoint new_waypoint;
+            new_waypoint.waypoint_position_if = position_if;
+            new_waypoint.waypoint_velocity_if = velocity_if;
+            new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
+            new_waypoint.waypoint_orientation_if = orientation_if;
+            last_action->action_trajectory.push_back(new_waypoint);
+            std::cout << "New W traj size: " << last_action->action_trajectory.size()
+                      << " | dist.norm: " << distance.norm()
+                      << " | number of actions: " << saved_data_.size()
+                      << std::endl;
+        }
+     /*   */
+    } else if (teaching_mode_ == 2) { //time teaching mode
+        //if just started save the first waypointforce: 8.25136e-05 |
         // check time passed from last SkyeWaypoint
         // Save new waypoint into SkyeAction vector
     } else {
@@ -47,6 +98,22 @@ void SkyeTeachAndRepeatNode::TeachPhase(const Eigen::Vector3d& position_if,
 }
 
 void SkyeTeachAndRepeatNode::RepeatPhase(){
+
+//    std::cout << "------------------------------------------------------" << std::endl
+//              << " | number of actions: " << saved_data_.size() << std::endl;
+//    for (int i = 0; i < saved_data_.size(); ++i) {
+//        std::cout << "Action: [" << i
+//                  << "]  with ID: [" << saved_data_.at(i).action_id
+//                  <<"] has this amount of wayp: " << saved_data_.at(i).action_trajectory.size()
+//                 << std::endl;
+//    }
+
+//call waypoint controller and give it the waypoints, set some parameters
+
+    this->PackParameters();
+//waypoints_parameters_.input_goal_change_threshold = 0.5;
+
+
 
 }
 
@@ -91,7 +158,12 @@ void SkyeTeachAndRepeatNode::ExecuteActionCallback(const std_msgs::Int16::ConstP
 }
 
 void SkyeTeachAndRepeatNode::ModeSelectionCallback(const std_msgs::Int16::ConstPtr& msg){
-    node_mode_ = msg->data;
+    int new_mode = msg->data;
+    if (node_mode_ != new_mode) {
+        node_mode_ = new_mode;
+        std::cout << "New mode found is: " << new_mode << std::endl;
+        has_teaching_just_started_ = true;
+    }
 }
 
 bool SkyeTeachAndRepeatNode::CallService(){
@@ -125,7 +197,6 @@ int main(int argc, char **argv){
     //Init ros and create node handle
     ros::init(argc, argv, "skye_position_controller_node");
     ros::NodeHandle nh;
-
     // Import ros parameter for service and topic names
     std::string mode_topic, choice_topic, imu_topic, ground_truth_topic;
     bool read_all_parameters = nh.getParam("ground_truth_topic", ground_truth_topic) &&
@@ -143,6 +214,7 @@ int main(int argc, char **argv){
     mode_sel_pub.publish(zero);
     repeat_choice_pub.publish(zero);
 
+
     //Initialize node and subscribe to topics
     SkyeTeachAndRepeatNode node(nh);
     ros::Subscriber pos_sub_ground_truth = nh.subscribe (ground_truth_topic, 1, &SkyeTeachAndRepeatNode::StateCallback, &node);
@@ -154,7 +226,7 @@ int main(int argc, char **argv){
     while (nh.ok())
     {
         if (node.node_mode() == 2) {
-            if (!node.CallService()) return -1;
+            //            if (!node.CallService()) return -1;
         }
 
         ros::spinOnce();

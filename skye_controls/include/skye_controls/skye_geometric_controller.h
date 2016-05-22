@@ -133,11 +133,16 @@ private:
     attitude_error_bf_,
     angular_velocity_error_bf_,
     integrated_position_error_,
+    integrated_acceleration_error_,
     resulting_force_,
-    windup_force_,
-    integrated_attitude_error_,
     resulting_acceleration_,
-    windup_acceleration_;
+    windup_force_,
+    windup_acceleration_,
+    windup_integrator_force_,
+    windup_integrator_acceleration_,
+    integral_term_force_,
+    unbounded_force_integrator_,
+    unbounded_acceleration_integrator_;
 
     Eigen::Matrix3d inertia_;
     Eigen::Matrix3d R_if_, R_des_if_, R_temp_if_;

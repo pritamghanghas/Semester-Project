@@ -4,14 +4,17 @@
 #include <ros/ros.h>
 #include <Eigen/Eigen>
 #include <vector>
+#include <iostream>
 #include <geometry_msgs/Wrench.h>
 #include <sensor_msgs/Imu.h>
 #include <gazebo_msgs/LinkState.h>
 #include <skye_ros/ApplyWrenchCogBf.h>
 #include <std_msgs/Int16.h>
 
-struct SkyeWaypoint{
+//#include <skye_controls/waypoint_controller.h>
 
+struct SkyeWaypoint{
+  //TODO: add time
   Eigen::Vector3d waypoint_position_if;
   Eigen::Vector3d waypoint_velocity_if;
   Eigen::Vector3d waypoint_angular_velocity_bf;
@@ -37,6 +40,7 @@ public:
   void StateCallback(const gazebo_msgs::LinkState::ConstPtr& msg);
   void ModeSelectionCallback(const std_msgs::Int16::ConstPtr& msg);
   void ExecuteActionCallback(const std_msgs::Int16::ConstPtr& msg);
+  void PackParameters();
   bool CallService();
   int node_mode();
   bool teaching_done();
@@ -44,6 +48,9 @@ private:
   int node_mode_;
   int teaching_mode_; //1 for space, 2 for time
   bool teaching_done_;
+  bool has_teaching_just_started_;
+  double waypoints_distance_threshold_;
+  int action_selected_;
 
   std::vector<SkyeAction> saved_data_;
 
@@ -95,6 +102,12 @@ private:
    * @brief srv_ : skye_ros service file to apply the wrench
    */
   skye_ros::ApplyWrenchCogBf srv_;
+
+
+  //Geometric Controller
+//  WaypointControllerParameters waypoints_parameters_;
+//  WaypointController waiponts_controller_;
+
 };
 
 #endif // SKYE_TEACH_AND_REPEAT_NODE_H
