@@ -47,9 +47,8 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
                                nh.getParam("inertia_33", inertia_33);
 
     // Check if parameters where imported succesfully
-    if (! read_all_parameters){
-        ROS_ERROR("Geometric Parameters not imported");
-    }
+    if (! read_all_parameters) ROS_ERROR("Teach and repeate Parameters not imported");
+
 
     // Pack Skye's inertia
     inertia_ << inertia_11, inertia_12, inertia_13,
@@ -87,6 +86,8 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
     //Setup service for control input if the service is ready
     ros::service::waitForService(wrench_service_name_);
     wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
+
+    ROS_INFO("Teach and Repeat node initialized correctly, waiting for mode selection");
 }
 //---------------------------------------------------------------------------------------------------------
 SkyeTeachAndRepeatNode::~SkyeTeachAndRepeatNode(){
@@ -189,7 +190,7 @@ int main(int argc, char **argv){
                                nh.getParam("choice_topic", choice_topic) &&
                                nh.getParam("mode_topic", mode_topic);
     // Check if names have correctly been imported
-    if (! read_all_parameters) ROS_ERROR("Parameters not imported");
+    if (! read_all_parameters) ROS_ERROR("Main Parameters not imported");
 
     //Advertise topics that need the callback afterwards
     std_msgs::Int16 zero; //(new std_msgs::Int16);

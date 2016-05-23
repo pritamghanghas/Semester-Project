@@ -1,7 +1,36 @@
 #include <pose_control_node.h>
 #include <waypoints_parser.h>
 
+PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
+    // setting to zero the control outputs for initialization
+    control_force_bf_ << 0,0,0;
+    control_momentum_bf_ << 0,0,0;
+
+    // When the object is created, first parse the parameters
+    this->ParseParameters(nh);
+
+    // Configure callback for dynamic parameters
+    cb = boost::bind(&PoseControllerNode::ConfigCallback, this, _1, _2);
+    dr_srv_.setCallback(cb);
+
+    //Initialize the controller passing all the parameters
+    geometric_controller_.InitializeParams(skye_parameters_);
+
+    //Setup service for control input if the service is ready
+    ros::service::waitForService(wrench_service_name_);
+    wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
+
+}
+
+PoseControllerNode::~PoseControllerNode (){
+};
+
+
+
 bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
+    Eigen::Vector3d zero_v;
+    zero_v << 0,0,0;
+
     //Declare parameters to be imported
     double inertia_11, inertia_12, inertia_13,
             inertia_21, inertia_22, inertia_23,
@@ -49,7 +78,13 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     }
 
     // Parse the waypoints
-    WaypointsParser parser(nh, &waypoint_parameters_.input_positions, &waypoint_parameters_.input_orientations );
+    WaypointsParser parser(nh, &waypoint_parameters_.input_positions,
+                           &waypoint_parameters_.input_orientations );
+    for (int i = 0; i < waypoint_parameters_.input_orientations.size(); ++i) {
+        waypoint_parameters_.input_velocities.push_back(zero_v);
+        waypoint_parameters_.input_angular_velocities.push_back(zero_v);
+    }
+
     waypoint_controller_.InitParameters(waypoint_parameters_);
 
     // Pack desired position
@@ -88,8 +123,6 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     skye_parameters_.input_k_im = k_im_;
 
     // Initialize temporary stuff to zero
-    Eigen::Vector3d zero_v;
-    zero_v << 0,0,0;
     skye_parameters_.input_desired_acceleration_if = zero_v;
     skye_parameters_.input_desired_angular_acceleration_bf = zero_v;
     skye_parameters_.input_desired_angular_velocity_bf = zero_v;
@@ -102,29 +135,6 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     return true;
 }
 
-
-PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
-    // setting to zero the control outputs for initialization
-    control_force_bf_ << 0,0,0;
-    control_momentum_bf_ << 0,0,0;
-
-    // When the object is created, first parse the parameters
-    this->ParseParameters(nh);
-
-    // Configure callback for dynamic parameters
-    cb = boost::bind(&PoseControllerNode::ConfigCallback, this, _1, _2);
-    dr_srv_.setCallback(cb);
-
-    //Initialize the controller passing all the parameters
-    geometric_controller_.InitializeParams(skye_parameters_);
-
-    //Setup service for control input if the service is ready
-    ros::service::waitForService(wrench_service_name_);
-    wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
-
-}
-
-PoseControllerNode::~PoseControllerNode (){};
 
 
 void PoseControllerNode::ConfigCallback(const skye_controls::skye_paramsConfig &config, uint32_t level)
@@ -164,12 +174,18 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
     orientation_if_.z() = msg->pose.orientation.z;
     orientation_if_.w() = msg->pose.orientation.w;
 
+    std::cout << "Got state and saved" << std::endl;
+
     if (waypoint_parameters_.input_positions.size() > 0) {
         WaypointPose new_pose;
         waypoint_controller_.ComputeGoalPosition(position_if_, &new_pose);
 
+        std::cout << "Computed goal position" << std::endl;
+
         geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.velocity,
                                                 new_pose.angular_velocity, new_pose.orientation);
+
+        std::cout << "Updated poses" << std::endl;
 
         // Update the gains with new dynamic parameters
         geometric_controller_.UpdateGains(k_x_ ,k_v_, k_if_, k_im_, k_R_, k_omega_);

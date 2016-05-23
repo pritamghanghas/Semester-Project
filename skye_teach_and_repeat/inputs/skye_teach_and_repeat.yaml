@@ -6,12 +6,32 @@ choice_topic: /skye_teach_and_repeat/std_msgs/action_choice
 
 teaching_mode: 1 #1 is space, 2 is time
 waypoints_distance_threshold: 1
+
+mass: 12
+radius_: 1.42
+number_of_actuators_: 4
+maximum_force_cog_: 15
+distance_integrator_treshold_: 2.5
+attitude_integrator_treshold_: 0.5
+windup_force_threshold: 0.000
+windup_acceleration_threshold: 0.0001
+maximum_force_integrator_: 13
+maximum_momentum_integrator_: 1
 k_x: 5
 k_v: 40
 k_R: 10
 k_omega: 15
 k_if: 0.02
 k_im: 0.0
+inertia_11: 8.9927
+inertia_12: 0.1046
+inertia_13: -0.0843
+inertia_21: 0.1046
+inertia_22: 10.1374
+inertia_23: 0.0243
+inertia_31: -0.0843
+inertia_32: 0.0243
+inertia_33: 10.1823
 
 ### POSITION HOLD
 #waypoints_x: [ 0.0]

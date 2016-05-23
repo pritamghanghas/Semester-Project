@@ -10,6 +10,8 @@ WaypointController::~WaypointController(){
 
 void WaypointController::InitParameters(WaypointControllerParameters parameters){
     positions_ = parameters.input_positions;
+    velocities_ = parameters.input_velocities;
+    angular_velocities_ = parameters.input_angular_velocities;
     orientations_ = parameters.input_orientations;
     goal_change_threshold_ = parameters.input_goal_change_threshold;
 }
