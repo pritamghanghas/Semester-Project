@@ -4,7 +4,8 @@
 //----------------------------------------------------------------------------------------
 SkyeTeachAndRepeat::SkyeTeachAndRepeat() {
     node_mode_ = 0;
-    teaching_done_ = false;
+    action_selected_ = 0;
+    are_parameters_initialized_ = false;
     has_teaching_just_started_ = true;
 
 }
@@ -19,10 +20,6 @@ int SkyeTeachAndRepeat::node_mode(){
     return node_mode_;
 }
 
-bool SkyeTeachAndRepeat::teaching_done(){
-    return teaching_done_;
-}
-
 //----------------------------------------------------------------------------------------
 // Setters
 //----------------------------------------------------------------------------------------
@@ -30,21 +27,49 @@ bool SkyeTeachAndRepeat::CheckModeChange(int new_mode){
     if (node_mode_ != new_mode) {
         node_mode_ = new_mode;
         has_teaching_just_started_ = true;
+        if (new_mode == REPEAT_MODE && action_selected_ >0 && !are_parameters_initialized_) {
+            std::cout << "saved_data size: " << saved_data_.size()
+                      << " | action_selected_: " << action_selected_
+                      << "Packing parameters....";
+            this->PackParameters();
+            waypoints_parameters_.input_goal_change_threshold = waypoints_distance_threshold_;
+            waypoints_controller_.InitParameters(waypoints_parameters_);
+            are_parameters_initialized_ = true;
+            std::cout << " ... Done!" << std::endl;
+
+        } else {
+            are_parameters_initialized_ = false;
+        }
         return true;
     }
     return false;
 }
 
 bool SkyeTeachAndRepeat::AssignNewActionToRepeat(int action_to_repeat){
-    if (action_to_repeat == 0) {
+    if (action_to_repeat < 1) {
+        ROS_ERROR("Warning: action < 1, invalid, try again");
         return false;
     } else if (action_to_repeat > saved_data_.size()) {
+        ROS_ERROR("Warning: action not set, action # > action saved");
         return false;
     } else {
         action_selected_ = action_to_repeat;
-        this->PackParameters();
-        waypoints_parameters_.input_goal_change_threshold = waypoints_distance_threshold_;
-        waypoints_controller_.InitParameters(waypoints_parameters_);
+        if (node_mode_ == REPEAT_MODE && !are_parameters_initialized_) {
+            std::cout << "saved_data size: " << saved_data_.size()
+                      << " | action_selected_: " << action_selected_
+                      << " | Packing parameters....";
+            this->PackParameters();
+            waypoints_parameters_.input_goal_change_threshold = waypoints_distance_threshold_;
+            waypoints_controller_.InitParameters(waypoints_parameters_);
+            std::cout << " ... Done!" << std::endl;
+            are_parameters_initialized_ = true;
+
+
+        } else {
+            are_parameters_initialized_ = false;
+        }
+
+
         return true;
     }
 }
@@ -61,11 +86,11 @@ void SkyeTeachAndRepeat::InitializeParameters(double waypoints_threshold,
 }
 
 void SkyeTeachAndRepeat::UpdateControllerParameters(double k_x,
-                                double k_v,
-                                double k_if,
-                                double k_im,
-                                double k_R,
-                                double k_omega){
+                                                    double k_v,
+                                                    double k_if,
+                                                    double k_im,
+                                                    double k_R,
+                                                    double k_omega){
     // Update the gains with new dynamic parameters
     geometric_controller_.UpdateGains(k_x ,k_v, k_if, k_im, k_R, k_omega);
 
@@ -77,26 +102,38 @@ void SkyeTeachAndRepeat::UpdateControllerParameters(double k_x,
 // Manipulation
 //----------------------------------------------------------------------------------------
 void SkyeTeachAndRepeat::PackParameters(){
-    waypoints_parameters_.input_goal_change_threshold = 0.5;
-    SkyeAction *action_to_repeat;
-    *action_to_repeat =  saved_data_.at(action_selected_);
-    std::vector<Eigen::Vector3d> waypoints;
-    std::vector<Eigen::Quaterniond> orientations;
-    for (int i = 0; i < action_to_repeat->action_trajectory.size(); ++i) {
+        std::cout << "got request to pack parameters" << std::endl;
+    SkyeAction action_to_repeat;
+
+        std::cout << "Found the action to repeat, it is #: " << action_selected_ - 1 << std::endl;
+        std::cout << "saved_data_.size(): " << saved_data_.size()<< std::endl;
+    action_to_repeat =  saved_data_.at(action_selected_ - 1);
+        std::cout << "Found the action to repeat, it is #: " << action_selected_ - 1 << std::endl;
+        std::cout << "action_to_repeat->action_trajectory.size(): " << action_to_repeat.action_trajectory.size() << std::endl;
+    // Go through all the waypoints
+    for (int i = 0; i < action_to_repeat.action_trajectory.size(); i++) {
+        std::cout << "DIOPORCO i: " << i << std::endl;
+        //Get current waypoint
+        SkyeWaypoint current_waypoint;
+        current_waypoint = action_to_repeat.action_trajectory.at(i);
+
+        // Get current waypoint data
         Eigen::Vector3d position, velocity, angular_velocity;
         Eigen::Quaterniond orientation;
-        SkyeWaypoint *current_waypoint;
-        *current_waypoint = action_to_repeat->action_trajectory.at(i);
-        position = current_waypoint->waypoint_position_if;
-        orientation = current_waypoint->waypoint_orientation_if;
-        velocity = current_waypoint->waypoint_velocity_if;
-        angular_velocity= current_waypoint->waypoint_angular_velocity_bf;
+        position = current_waypoint.waypoint_position_if;
+        orientation = current_waypoint.waypoint_orientation_if;
+        velocity = current_waypoint.waypoint_velocity_if;
+        angular_velocity= current_waypoint.waypoint_angular_velocity_bf;
+
+        //Save stuff into waypoints_parameters struct
         waypoints_parameters_.input_positions.push_back(position);
         waypoints_parameters_.input_velocities.push_back(velocity);
         waypoints_parameters_.input_angular_velocities.push_back(angular_velocity);
         waypoints_parameters_.input_orientations.push_back(orientation);
         //TODO implement interaces in geometric controller and other controller
     }
+    std::cout << "Finished packing parameters, leaving." << std::endl;
+
 }
 
 //----------------------------------------------------------------------------------------
@@ -109,15 +146,57 @@ void SkyeTeachAndRepeat::ExecuteTeachAndRepeat(const Eigen::Vector3d& position_i
                                                Eigen::Vector3d* control_force_bf,
                                                Eigen::Vector3d* control_acceleration_bf){
 
-    if (node_mode_ == 1) {
+    if (node_mode_ == TEACH_MODE) {
         // teach phase
+
         this->TeachPhase(position_if, velocity_if, angular_velocity_bf, orientation_if);
-        if (!teaching_done_) teaching_done_ = true;
     }
-    else if (node_mode_ == 2) {
-        //repeat phase
-        this->RepeatPhase(position_if, velocity_if, angular_velocity_bf,
-                          orientation_if, control_force_bf, control_acceleration_bf);
+    else if (node_mode_ == REPEAT_MODE) {
+        if (saved_data_.size() > 0 && action_selected_ > 0) {
+
+            //repeat phase
+            if (are_parameters_initialized_) {
+                this->RepeatPhase(position_if, velocity_if, angular_velocity_bf,
+                                  orientation_if, control_force_bf, control_acceleration_bf);
+            }
+        } else if (node_mode_ == 3){
+            std::cout << "------------------------------------------------------" << std::endl
+                         << " | number of actions: " << saved_data_.size() << std::endl;
+               for (int i = 0; i < saved_data_.size(); ++i) {
+                   std::cout << "Action: [" << i
+                             << "]  with ID: [" << saved_data_.at(i).action_id
+                             <<"] has this amount of wayp: " << saved_data_.at(i).action_trajectory.size()
+                            << std::endl;
+               }
+               std::vector<SkyeWaypoint> temp = saved_data_.at(action_selected_-1).action_trajectory;
+               for (int i = 0; i < temp.size(); ++i) {
+                   std::cout << "P[" << i
+                             << "]  position: "
+                             << temp.at(i).waypoint_position_if(0) << ", "
+                             << temp.at(i).waypoint_position_if(1) << ", "
+                             << temp.at(i).waypoint_position_if(2) << std::endl
+                             << "]  velocity: "
+                             << temp.at(i).waypoint_velocity_if(0) << ", "
+                             << temp.at(i).waypoint_velocity_if(1) << ", "
+                             << temp.at(i).waypoint_velocity_if(2) << std::endl
+                             << "]  ang_velo: "
+                             << temp.at(i).waypoint_angular_velocity_bf(0) << ", "
+                             << temp.at(i).waypoint_angular_velocity_bf(1) << ", "
+                             << temp.at(i).waypoint_angular_velocity_bf(2) << std::endl
+                             << "]  orientat: "
+                             << temp.at(i).waypoint_orientation_if.x() << ", "
+                             << temp.at(i).waypoint_orientation_if.y() << ", "
+                             << temp.at(i).waypoint_orientation_if.z() << ", "
+                             << temp.at(i).waypoint_orientation_if.w() << std::endl
+                            << std::endl;
+               }
+
+        } else {
+            ROS_INFO("Please perform teaching phase first using the appropriate topic and select an action to repeat using the appropriate topic");
+        }
+
+    } else {
+        ROS_INFO("Wrong mode chosen");
     }
 }
 
@@ -175,6 +254,10 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
             std::cout << "New W traj size: " << last_action->action_trajectory.size()
                       << " | dist.norm: " << distance.norm()
                       << " | number of actions: " << saved_data_.size()
+                      << " | pos: "
+                      <<  position_if(0) << ", "
+                      <<  position_if(1) << ", "
+                      <<  position_if(2)
                       << std::endl;
         }
         /*   */
@@ -195,14 +278,6 @@ void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
                                      Eigen::Vector3d* control_force_bf,
                                      Eigen::Vector3d* control_momentum_bf){
 
-    //    std::cout << "------------------------------------------------------" << std::endl
-    //              << " | number of actions: " << saved_data_.size() << std::endl;
-    //    for (int i = 0; i < saved_data_.size(); ++i) {
-    //        std::cout << "Action: [" << i
-    //                  << "]  with ID: [" << saved_data_.at(i).action_id
-    //                  <<"] has this amount of wayp: " << saved_data_.at(i).action_trajectory.size()
-    //                 << std::endl;
-    //    }
 
     //call waypoint controller and give it the waypoints, set some parameters
     WaypointPose new_pose;
@@ -210,21 +285,67 @@ void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
     new_pose.velocity = velocity_if;
     new_pose.angular_velocity = angular_velocity_bf;
     new_pose.orientation = orientation_if;
+
     waypoints_controller_.ComputeGoalPosition(position_if, &new_pose);
+
 
     geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.velocity,
                                             new_pose.angular_velocity, new_pose.orientation);
 
     // Update last known state
     geometric_controller_.UpdateParameters(position_if, velocity_if, orientation_if, angular_velocity_bf);
+
     // Calculate control force
     geometric_controller_.ComputeForce(control_force_bf);
+
     // Calculate control acceleration
     Eigen::Vector3d control_acceleration_bf;
     geometric_controller_.ComputeAcceleration(&control_acceleration_bf);
+
     // Calculate control momentum
     (*control_momentum_bf) = inertia_*(control_acceleration_bf);
 
+    /********************* DEBUG *************************/
+    std::cout << "*************** GOAL DATA ***************" <<  std::endl <<
+                 "POSITION: " << new_pose.position(0) <<
+                 " | y: " << new_pose.position(1) <<
+                 " | z: " << new_pose.position(2) <<
+                 std::endl << std::endl;
+
+
+    std::cout << "new_pose.velocity: " << new_pose.velocity(0) <<
+                 " | y: " << new_pose.velocity(1) <<
+                 " | z: " << new_pose.velocity(2) <<
+                 std::endl <<  std::endl;
+
+    std::cout << "new_pose.angular_velocity: " << new_pose.angular_velocity(0) <<
+                 " | y: " << new_pose.angular_velocity(1) <<
+                 " | z: " << new_pose.angular_velocity(2) <<
+                 std::endl <<  std::endl;
+
+    std::cout << "orientation_if: " << new_pose.orientation.x() <<
+                 " | y: " << new_pose.orientation.y() <<
+                 " | z: " << new_pose.orientation.z() <<
+                 " | w: " << new_pose.orientation.w() <<
+                 std::endl << std::endl;
+
+    std::cout << "force: " << (*control_force_bf)(0) <<
+                 " | y: " << (*control_force_bf)(1) <<
+                 " | z: " << (*control_force_bf)(2) <<
+                 std::endl;
+
+    std::cout << "acceleration: " << control_acceleration_bf(0) <<
+                 " | y: " << control_acceleration_bf(1) <<
+                 " | z: " << control_acceleration_bf(2) <<
+                 std::endl;
+
+    std::cout << "momentum: " << (*control_momentum_bf)(0) <<
+                 " | y: " << (*control_momentum_bf)(1) <<
+                 " | z: " << (*control_momentum_bf)(2) <<
+                 std::endl;
+
+
+    /********************* END DEBUG *************************/
 
 }
 

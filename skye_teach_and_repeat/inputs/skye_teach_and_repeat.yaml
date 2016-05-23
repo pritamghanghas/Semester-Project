@@ -18,7 +18,7 @@ windup_acceleration_threshold: 0.0001
 maximum_force_integrator_: 13
 maximum_momentum_integrator_: 1
 k_x: 5
-k_v: 40
+k_v: 16
 k_R: 10
 k_omega: 15
 k_if: 0.02

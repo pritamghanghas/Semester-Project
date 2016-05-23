@@ -32,7 +32,6 @@ public:
 
   //Getters
   int node_mode();
-  bool teaching_done();
 
   //Setters
   bool CheckModeChange(int new_mode);
@@ -78,8 +77,8 @@ public:
 private:
   int node_mode_; //Teach or repeat
   int teaching_mode_; //1 for space, 2 for time
-  bool teaching_done_;
   bool has_teaching_just_started_;
+  bool are_parameters_initialized_;
   double waypoints_distance_threshold_;
 
   Eigen::Matrix3d inertia_;
