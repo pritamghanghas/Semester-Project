@@ -25,7 +25,7 @@ public:
   bool CallService();
   int get_node_mode();
 private:
-
+  int node_mode_;
   SkyeTeachAndRepeat teach_and_repeat_obj_;
   //Eigen variables
   /**

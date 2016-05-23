@@ -118,7 +118,10 @@ void SkyeTeachAndRepeatNode::StateCallback(const gazebo_msgs::LinkState::ConstPt
     orientation_if_.z() = msg->pose.orientation.z;
     orientation_if_.w() = msg->pose.orientation.w;
 
-    //    teach_and_repeat_obj_.UpdateControllerParameters(); // This should allow new parameters from outside (ie. QGC)
+    // Interface for updating controller parameters online, not required by ROS node
+    //    teach_and_repeat_obj_.UpdateControllerParameters();
+
+    // This should allow new parameters from outside (ie. QGC)
     teach_and_repeat_obj_.ExecuteTeachAndRepeat(position_if_,
                                                 velocity_if_,
                                                 angular_velocity_bf_,
@@ -126,9 +129,9 @@ void SkyeTeachAndRepeatNode::StateCallback(const gazebo_msgs::LinkState::ConstPt
                                                 &control_force_bf_,
                                                 &control_momentum_bf_);
 
-//    if(control_force_bf_) {
-//        this->CallService(goal_pose_);
-//    }
+    if(node_mode_ == REPEAT_MODE) {
+        this->CallService();
+    }
 
 }
 
@@ -144,6 +147,7 @@ void SkyeTeachAndRepeatNode::ExecuteActionCallback(const std_msgs::Int16::ConstP
 void SkyeTeachAndRepeatNode::ModeSelectionCallback(const std_msgs::Int16::ConstPtr& msg){
     int new_mode = msg->data;
     if ( teach_and_repeat_obj_.CheckModeChange(new_mode) ) {
+        node_mode_ = new_mode;
         std::cout << "New mode found is: " << new_mode << std::endl;
     }
 }
@@ -206,10 +210,6 @@ int main(int argc, char **argv){
     ros::Rate r(50); // 50 hz
     while (nh.ok())
     {
-        if (node.get_node_mode() == 2) {
-            //            if (!node.CallService()) return -1;
-        }
-
         ros::spinOnce();
         r.sleep();
     }
