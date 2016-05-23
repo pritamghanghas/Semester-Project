@@ -25,6 +25,42 @@
 
 
 class PoseControllerNode {
+public:
+    /**
+     * @brief PoseControllerNode : the constructor initializes the dynamic parameters, creates the desired controller sets up the service to control skye
+     * @param nh : Ros node handle to create the service
+     *
+     * The constructor has a fixed service name that is saved as a class member in the main function. The successful creation of this
+     * node is conditioned upon succesfully finding the service. In case the service is wrong or not published the node does not created.
+     * The dynamic parameters are used for dynamically configure control parameters
+     */
+    PoseControllerNode(ros::NodeHandle nh);
+    ~PoseControllerNode ();
+
+    /**
+     * @brief ConfigCallback : Callback for the dynamic configuration of the parameters.
+     * @param config : the skye_params congifuration file
+     * @param level : not used
+     */
+    void ConfigCallback(const skye_controls::skye_paramsConfig &config, uint32_t level);
+    /**
+     * @brief PositionCallback : this callback is called by the topic providing Skye's ground truth.
+     * @param msg : the message containing the lik state
+     * This is used as callback to perform the control loop, which means that control inputs are applied every time a new
+     * linkstate is received.
+     */
+    void PositionCallback(const gazebo_msgs::LinkState::ConstPtr& msg);
+    /**
+     * @brief AngularVelocityCallback : this callback receives the angular velocity from the IMU
+     * @param msg :  the imu message containing angular velocity
+     */
+    void AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg);
+    /**
+     * @brief CallService : utility wrapped function to call the service
+     * @return : true if the service was called correctly
+     */
+    bool CallService();
+
 private:
 
     //variables
@@ -161,41 +197,6 @@ private:
     bool ParseParameters(ros::NodeHandle nh);
 
 
-public:
-    /**
-     * @brief PoseControllerNode : the constructor initializes the dynamic parameters, creates the desired controller sets up the service to control skye
-     * @param nh : Ros node handle to create the service
-     *
-     * The constructor has a fixed service name that is saved as a class member in the main function. The successful creation of this
-     * node is conditioned upon succesfully finding the service. In case the service is wrong or not published the node does not created.
-     * The dynamic parameters are used for dynamically configure control parameters
-     */
-    PoseControllerNode(ros::NodeHandle nh);
-    ~PoseControllerNode ();
-
-    /**
-     * @brief ConfigCallback : Callback for the dynamic configuration of the parameters.
-     * @param config : the skye_params congifuration file
-     * @param level : not used
-     */
-    void ConfigCallback(const skye_controls::skye_paramsConfig &config, uint32_t level);
-    /**
-     * @brief PositionCallback : this callback is called by the topic providing Skye's ground truth.
-     * @param msg : the message containing the lik state
-     * This is used as callback to perform the control loop, which means that control inputs are applied every time a new
-     * linkstate is received.
-     */
-    void PositionCallback(const gazebo_msgs::LinkState::ConstPtr& msg);
-    /**
-     * @brief AngularVelocityCallback : this callback receives the angular velocity from the IMU
-     * @param msg :  the imu message containing angular velocity
-     */
-    void AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg);
-    /**
-     * @brief CallService : utility wrapped function to call the service
-     * @return : true if the service was called correctly
-     */
-    bool CallService();
 
 
 };

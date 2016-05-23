@@ -28,10 +28,12 @@ include_directories(
   include
 )
 
+add_library(teach_and_repeat src/library/skye_teach_and_repeat.cpp)
 
 ## Declare a C++ executable
 add_executable(skye_teach_and_repeat_node
-                    src/skye_teach_and_repeat_node.cpp)
+                    src/skye_teach_and_repeat_node.cpp
+                    src/library/skye_teach_and_repeat.cpp)
 
 #add_library(skye_gazebo_blimp_dynamics_plugin src/gazebo_blimp_dynamics_plugin.cpp)
 ## Specify libraries to link a library or executable target against
@@ -42,4 +44,6 @@ target_link_libraries(skye_teach_and_repeat_node
                           ${skye_controls_LIBRARIES}
  )
 target_link_libraries(skye_teach_and_repeat_node waypoint_ctrl)
+target_link_libraries(skye_teach_and_repeat_node geometric_ctrl)
+target_link_libraries(skye_teach_and_repeat_node teach_and_repeat)
 

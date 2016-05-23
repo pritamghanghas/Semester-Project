@@ -11,7 +11,9 @@
  * It provides an easy way to pass waypoints, orientation and a threshold
  */
 struct WaypointControllerParameters{
-    std::vector<Eigen::Vector3d> input_waypoints;
+    std::vector<Eigen::Vector3d> input_positions;
+    std::vector<Eigen::Vector3d> input_velocities;
+    std::vector<Eigen::Vector3d> input_angular_velocities;
     std::vector<Eigen::Quaterniond> input_orientations;
     double input_goal_change_threshold;
 };
@@ -22,6 +24,8 @@ struct WaypointControllerParameters{
  */
 struct WaypointPose {
     Eigen::Vector3d position;
+    Eigen::Vector3d velocity;
+    Eigen::Vector3d angular_velocity;
     Eigen::Quaterniond orientation;
 };
 
@@ -45,12 +49,14 @@ public:
      * @param current_position_if : the current position vector expressed in the inertial frame
      * @param new_pose : the output vector passed as a new Waypose
      */
-    void ComputeGoal(const Eigen::Vector3d &current_position_if,
+    void ComputeGoalPosition(const Eigen::Vector3d &current_position_if,
                      WaypointPose *new_pose);
 private:
     double goal_change_threshold_;
 
-    std::vector<Eigen::Vector3d> waypoints_;
+    std::vector<Eigen::Vector3d> positions_;
+    std::vector<Eigen::Vector3d> velocities_;
+    std::vector<Eigen::Vector3d> angular_velocities_;
     std::vector<Eigen::Quaterniond>  orientations_;
     WaypointControllerParameters controller_parameters_;
 };

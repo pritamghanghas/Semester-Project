@@ -11,51 +11,22 @@
 #include <skye_ros/ApplyWrenchCogBf.h>
 #include <std_msgs/Int16.h>
 
-#include <skye_controls/skye_geometric_controller.h>
-#include <skye_controls/skye_paramsConfig.h>
-#include <skye_controls/waypoint_controller.h>
-
-struct SkyeWaypoint{
-  //TODO: add time
-  Eigen::Vector3d waypoint_position_if;
-  Eigen::Vector3d waypoint_velocity_if;
-  Eigen::Vector3d waypoint_angular_velocity_bf;
-  Eigen::Quaterniond waypoint_orientation_if;
-};
-
-struct SkyeAction{
-  int action_id;
-  std::vector<SkyeWaypoint> action_trajectory;
-};
+#include <skye_teach_and_repeat/skye_teach_and_repeat.h>
 
 class SkyeTeachAndRepeatNode
 {
 public:
   SkyeTeachAndRepeatNode(ros::NodeHandle nh);
   ~SkyeTeachAndRepeatNode();
-  void TeachPhase(const Eigen::Vector3d& position_if,
-                  const Eigen::Vector3d& velocity_if,
-                  const Eigen::Vector3d& angular_velocity_bf,
-                  const Eigen::Quaterniond& orientation_if);
-  void RepeatPhase();
   void AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg);
   void StateCallback(const gazebo_msgs::LinkState::ConstPtr& msg);
   void ModeSelectionCallback(const std_msgs::Int16::ConstPtr& msg);
   void ExecuteActionCallback(const std_msgs::Int16::ConstPtr& msg);
-  void PackParameters();
   bool CallService();
-  int node_mode();
-  bool teaching_done();
+  int get_node_mode();
 private:
-  int node_mode_;
-  int teaching_mode_; //1 for space, 2 for time
-  bool teaching_done_;
-  bool has_teaching_just_started_;
-  double waypoints_distance_threshold_;
-  int action_selected_;
 
-  std::vector<SkyeAction> saved_data_;
-
+  SkyeTeachAndRepeat teach_and_repeat_obj_;
   //Eigen variables
   /**
    * @brief position_if_ : position vector expresed in the inertial frame
@@ -105,10 +76,15 @@ private:
    */
   skye_ros::ApplyWrenchCogBf srv_;
 
+  /**
+   * @brief skye_parameters_ : SKye's parameters to easily pass among classes and functions
+   */
+  SkyeParameters skye_parameters_;
 
-  //Geometric Controller
-  WaypointControllerParameters waypoints_parameters_;
-  WaypointController waiponts_controller_;
+  /**
+   * @brief inertia_ : Skye's inertia matrix
+   */
+  Eigen::Matrix3d inertia_;
 
 };
 

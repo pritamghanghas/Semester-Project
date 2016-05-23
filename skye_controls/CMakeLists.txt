@@ -33,6 +33,7 @@ include_directories(
 )
 
 add_library(waypoint_ctrl src/library/waypoint_controller.cpp)
+add_library(geometric_ctrl src/library/skye_geometric_controller.cpp)
 
 ## Declare a C++ executable
 add_executable(skye_controls_node

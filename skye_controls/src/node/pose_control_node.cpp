@@ -49,7 +49,7 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     }
 
     // Parse the waypoints
-    WaypointsParser parser(nh, &waypoint_parameters_.input_waypoints, &waypoint_parameters_.input_orientations );
+    WaypointsParser parser(nh, &waypoint_parameters_.input_positions, &waypoint_parameters_.input_orientations );
     waypoint_controller_.InitParameters(waypoint_parameters_);
 
     // Pack desired position
@@ -164,11 +164,12 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
     orientation_if_.z() = msg->pose.orientation.z;
     orientation_if_.w() = msg->pose.orientation.w;
 
-    if (waypoint_parameters_.input_waypoints.size() > 0) {
+    if (waypoint_parameters_.input_positions.size() > 0) {
         WaypointPose new_pose;
-        waypoint_controller_.ComputeGoal(position_if_, &new_pose);
+        waypoint_controller_.ComputeGoalPosition(position_if_, &new_pose);
 
-        geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.orientation);
+        geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.velocity,
+                                                new_pose.angular_velocity, new_pose.orientation);
 
         // Update the gains with new dynamic parameters
         geometric_controller_.UpdateGains(k_x_ ,k_v_, k_if_, k_im_, k_R_, k_omega_);

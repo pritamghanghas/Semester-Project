@@ -6,7 +6,12 @@ choice_topic: /skye_teach_and_repeat/std_msgs/action_choice
 
 teaching_mode: 1 #1 is space, 2 is time
 waypoints_distance_threshold: 1
-
+k_x: 5
+k_v: 40
+k_R: 10
+k_omega: 15
+k_if: 0.02
+k_im: 0.0
 
 ### POSITION HOLD
 #waypoints_x: [ 0.0]

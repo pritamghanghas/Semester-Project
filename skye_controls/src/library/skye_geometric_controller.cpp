@@ -395,7 +395,11 @@ void SkyeGeometricController::ComputeAcceleration(Eigen::Vector3d *output_accele
 }
 
 void SkyeGeometricController::UpdateDesiredPose(const Eigen::Vector3d &desired_position_if,
+                                                const Eigen::Vector3d &desired_velocity_if,
+                                                const Eigen::Vector3d &desired_angular_velocity_bf,
                                                 const Eigen::Quaterniond &desired_orientation_if){
     desired_position_if_ = desired_position_if;
+    desired_velocity_if_ = desired_velocity_if;
+    desired_angular_velocity_bf_ = desired_angular_velocity_bf;
     R_des_if_ = desired_orientation_if.matrix();
 }
