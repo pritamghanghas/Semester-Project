@@ -247,8 +247,12 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
             // Save new waypoint into SkyeAction vector
             SkyeWaypoint new_waypoint;
             new_waypoint.waypoint_position_if = position_if;
+
             new_waypoint.waypoint_velocity_if = velocity_if;
             new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
+//            new_waypoint.waypoint_velocity_if << 0,0,0;
+//            new_waypoint.waypoint_angular_velocity_bf << 0,0,0;
+
             new_waypoint.waypoint_orientation_if = orientation_if;
             last_action->action_trajectory.push_back(new_waypoint);
             std::cout << "New W traj size: " << last_action->action_trajectory.size()
