@@ -38,31 +38,31 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
 
     //Get the parameters
     bool read_all_parameters = nh.getParam("wrench_service_name", wrench_service_name_) &&
-            nh.getParam("mass", skye_parameters_.input_mass) &&
-            nh.getParam("radius_", skye_parameters_.input_radius) &&
-            nh.getParam("number_of_actuators_", skye_parameters_.input_number_of_actuators) &&
-            nh.getParam("maximum_force_cog_", skye_parameters_.input_maximum_force_cog) &&
-            nh.getParam("distance_integrator_treshold_", skye_parameters_.input_distance_integrator_treshold) &&
-            nh.getParam("attitude_integrator_treshold_", skye_parameters_.input_attitude_integrator_treshold) &&
-            nh.getParam("maximum_force_integrator_", skye_parameters_.input_maximum_force_integrator) &&
-            nh.getParam("maximum_momentum_integrator_", skye_parameters_.input_maximum_momentum_integrator) &&
-            nh.getParam("windup_force_threshold", skye_parameters_.input_windup_force_threshold) &&
-            nh.getParam("windup_acceleration_threshold", skye_parameters_.input_windup_acceleration_threshold) &&
-            nh.getParam("wind_x", wind_x_) &&
-            nh.getParam("wind_y", wind_y_) &&
-            nh.getParam("wind_z", wind_z_) &&
-            nh.getParam("wind_x_var", wind_x_var_) &&
-            nh.getParam("wind_y_var", wind_y_var_) &&
-            nh.getParam("wind_z_var", wind_z_var_) &&
-            nh.getParam("inertia_11", inertia_11) &&
-            nh.getParam("inertia_12", inertia_12) &&
-            nh.getParam("inertia_13", inertia_13) &&
-            nh.getParam("inertia_21", inertia_21) &&
-            nh.getParam("inertia_22", inertia_22) &&
-            nh.getParam("inertia_23", inertia_23) &&
-            nh.getParam("inertia_31", inertia_31) &&
-            nh.getParam("inertia_32", inertia_32) &&
-            nh.getParam("inertia_33", inertia_33);
+                               nh.getParam("mass", skye_parameters_.input_mass) &&
+                               nh.getParam("radius_", skye_parameters_.input_radius) &&
+                               nh.getParam("number_of_actuators_", skye_parameters_.input_number_of_actuators) &&
+                               nh.getParam("maximum_force_cog_", skye_parameters_.input_maximum_force_cog) &&
+                               nh.getParam("distance_integrator_treshold_", skye_parameters_.input_distance_integrator_treshold) &&
+                               nh.getParam("attitude_integrator_treshold_", skye_parameters_.input_attitude_integrator_treshold) &&
+                               nh.getParam("maximum_force_integrator_", skye_parameters_.input_maximum_force_integrator) &&
+                               nh.getParam("maximum_momentum_integrator_", skye_parameters_.input_maximum_momentum_integrator) &&
+                               nh.getParam("windup_force_threshold", skye_parameters_.input_windup_force_threshold) &&
+                               nh.getParam("windup_acceleration_threshold", skye_parameters_.input_windup_acceleration_threshold) &&
+                               nh.getParam("wind_x", wind_x_) &&
+                               nh.getParam("wind_y", wind_y_) &&
+                               nh.getParam("wind_z", wind_z_) &&
+                               nh.getParam("wind_x_var", wind_x_var_) &&
+                               nh.getParam("wind_y_var", wind_y_var_) &&
+                               nh.getParam("wind_z_var", wind_z_var_) &&
+                               nh.getParam("inertia_11", inertia_11) &&
+                               nh.getParam("inertia_12", inertia_12) &&
+                               nh.getParam("inertia_13", inertia_13) &&
+                               nh.getParam("inertia_21", inertia_21) &&
+                               nh.getParam("inertia_22", inertia_22) &&
+                               nh.getParam("inertia_23", inertia_23) &&
+                               nh.getParam("inertia_31", inertia_31) &&
+                               nh.getParam("inertia_32", inertia_32) &&
+                               nh.getParam("inertia_33", inertia_33);
     // Check if Skye's parameters where imported
     if (! read_all_parameters){
         ROS_ERROR("Geometric Parameters not imported");
@@ -178,7 +178,7 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
 
     if (waypoint_parameters_.input_positions.size() > 0) {
         WaypointPose new_pose;
-        waypoint_controller_.ComputeGoalPosition(position_if_, &new_pose);
+        waypoint_controller_.ComputeGoalPosition(position_if_, orientation_if_, &new_pose);
 
         std::cout << "Computed goal position" << std::endl;
 
@@ -248,7 +248,7 @@ int main(int argc, char **argv){
     // Import ros parameter for service and topic names
     std::string imu_topic, ground_truth_topic;
     bool read_all_parameters = nh.getParam("ground_truth_topic", ground_truth_topic) &&
-            nh.getParam("imu_topic", imu_topic);
+                               nh.getParam("imu_topic", imu_topic);
     // Check if names have correctly been imported
     if (! read_all_parameters) ROS_ERROR("Parameters not imported");
 

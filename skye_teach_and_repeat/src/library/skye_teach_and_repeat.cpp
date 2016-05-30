@@ -272,7 +272,6 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
     } else {
         ROS_ERROR("[Skye Teach And Repeat] Teaching mode is not set correctly. Please set it in the yaml parameter file");
     }
-
 }
 
 void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
@@ -282,7 +281,6 @@ void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
                                      Eigen::Vector3d* control_force_bf,
                                      Eigen::Vector3d* control_momentum_bf){
 
-
     //call waypoint controller and give it the waypoints, set some parameters
     WaypointPose new_pose;
     new_pose.position = position_if;
@@ -290,8 +288,7 @@ void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
     new_pose.angular_velocity = angular_velocity_bf;
     new_pose.orientation = orientation_if;
 
-    waypoints_controller_.ComputeGoalPosition(position_if, &new_pose);
-
+    waypoints_controller_.ComputeGoalPosition(position_if, orientation_if ,&new_pose);
 
     geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.velocity,
                                             new_pose.angular_velocity, new_pose.orientation);

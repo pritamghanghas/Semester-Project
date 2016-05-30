@@ -5,73 +5,8 @@
 
 #include <skye_controls/skye_geometric_controller.h>
 
-void test(){
-    Eigen::Matrix3f R1, R2, R_90, R_temp;
-    R1 << 1,0,0,
-            0,1,0,
-            0,0,1;
-    R2 << -1,0,0,
-            0,1,0,
-            0,0,-1;
-
-    Eigen::AngleAxisf angle_R1, angle_R2, target;
-
-    angle_R1 = R1;
-    angle_R2 = R2;
-
-
-
-    std::cout << "R1:" << std::endl << R1 << std::endl << std::endl;
-
-    std::cout << "R2:" << std::endl << R2 << std::endl << std::endl;
-
-    std::cout << "angle_R1 angle: " << angle_R1.angle() <<
-                 " | axis: " << std::endl << angle_R1.axis() << std::endl;
-
-    std::cout << "angle_R2 angle: " << angle_R2.angle() <<
-                 " | axis: " << std::endl << angle_R2.axis() << std::endl;
-
-    float diff = std::abs(angle_R1.angle() - angle_R2.angle());
-    if ( diff >= M_PI_2) {
-        std::cout << "Singularity detected!" << std::endl;
-        std::cout << "diff is:" << diff << std::endl;
-        R_temp = R2;
-
-        if (diff <= M_PI) { // in this case I am on the left side
-            std::cout << "diff is less than M_PI" << std::endl;
-
-            target.axis() = angle_R2.axis();
-            target.angle() = angle_R1.angle() + M_PI_2;
-            R2 = target;
-            std::cout << "New R2:" << std::endl << R2 << std::endl << std::endl;
-            std::cout << "R_temp:" << std::endl << R_temp << std::endl << std::endl;
-
-            std::cout << "target angle: " << target.angle() <<
-                         " | axis: " << std::endl << target.axis() << std::endl;
-        } else {
-            std::cout << "diff is GREATER than M_PI" << std::endl;
-
-            target.axis() = angle_R2.axis();
-            target.angle() = angle_R1.angle() - M_PI_2;
-            R2 = target;
-            std::cout << "New R2:" << std::endl << R2 << std::endl << std::endl;
-            std::cout << "R_temp:" << std::endl << R_temp << std::endl << std::endl;
-
-            std::cout << "target angle: " << target.angle() <<
-                         " | axis: " << std::endl << target.axis() << std::endl;
-        }
-
-    } else {
-        std::cout << "Dio Porco" << std::endl;
-    }
-
-    R1(10);
-
-}
-
 SkyeGeometricController::SkyeGeometricController(){
     singularity_detected_ = false;
-    //    test();
 }
 
 
