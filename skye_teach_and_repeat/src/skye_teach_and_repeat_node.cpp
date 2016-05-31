@@ -3,7 +3,7 @@
 //---------------------------------------------------------------------------------------------------------
 SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
     //Prepare variables for the parameters
-    double waypoints_distance_threshold;
+    double waypoints_distance_threshold, orientation_distance_threshold;
     int teaching_mode;
     //Declare parameters to be imported
     double inertia_11, inertia_12, inertia_13,
@@ -14,6 +14,7 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
     bool read_all_parameters = nh.getParam("wrench_service_name", wrench_service_name_) &&
                                nh.getParam("teaching_mode", teaching_mode) &&
                                nh.getParam("waypoints_distance_threshold", waypoints_distance_threshold) &&
+                               nh.getParam("orientation_distance_threshold", orientation_distance_threshold) &&
                                nh.getParam("mass", skye_parameters_.input_mass) &&
                                nh.getParam("radius_", skye_parameters_.input_radius) &&
                                nh.getParam("number_of_actuators_", skye_parameters_.input_number_of_actuators) &&
@@ -30,12 +31,12 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
                                nh.getParam("k_omega", k_omega) &&
                                nh.getParam("k_if", k_if) &&
                                nh.getParam("k_im", k_im) &&
-                               //                               nh.getParam("wind_x", wind_x_) &&
-                               //                               nh.getParam("wind_y", wind_y_) &&
-                               //                               nh.getParam("wind_z", wind_z_) &&
-                               //                               nh.getParam("wind_x_var", wind_x_var_) &&
-                               //                               nh.getParam("wind_y_var", wind_y_var_) &&
-                               //                               nh.getParam("wind_z_var", wind_z_var_) &&
+//                               nh.getParam("wind_x", wind_x_) &&
+//                               nh.getParam("wind_y", wind_y_) &&
+//                               nh.getParam("wind_z", wind_z_) &&
+//                               nh.getParam("wind_x_var", wind_x_var_) &&
+//                               nh.getParam("wind_y_var", wind_y_var_) &&
+//                               nh.getParam("wind_z_var", wind_z_var_) &&
                                nh.getParam("inertia_11", inertia_11) &&
                                nh.getParam("inertia_12", inertia_12) &&
                                nh.getParam("inertia_13", inertia_13) &&
@@ -80,6 +81,7 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
 
     //Initialize parameters of the teach and repeat object
     teach_and_repeat_obj_.InitializeParameters(waypoints_distance_threshold,
+                                               orientation_distance_threshold,
                                                teaching_mode, inertia_,
                                                skye_parameters_);
 

@@ -70,7 +70,8 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     }
 
     //Get the parameters for the waypoint
-    read_all_parameters = nh.getParam("goal_change_threshold", waypoint_parameters_.input_goal_change_threshold);
+    read_all_parameters = nh.getParam("goal_change_threshold", waypoint_parameters_.input_goal_change_threshold) &&
+                          nh.getParam("orientation_change_threshold", waypoint_parameters_.input_orientation_change_threshold);
 
     if (! read_all_parameters){
         ROS_ERROR("Waypoint controller Parameters not imported");

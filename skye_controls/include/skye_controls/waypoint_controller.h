@@ -16,6 +16,7 @@ struct WaypointControllerParameters{
   std::vector<Eigen::Vector3d> input_angular_velocities;
   std::vector<Eigen::Quaterniond> input_orientations;
   double input_goal_change_threshold;
+  double input_orientation_change_threshold;
 };
 
 /**
@@ -54,7 +55,7 @@ public:
                            WaypointPose *new_pose);
 private:
   double goal_change_threshold_;
-
+  double orientation_change_threshold_;
   std::vector<Eigen::Vector3d> positions_;
   std::vector<Eigen::Vector3d> velocities_;
   std::vector<Eigen::Vector3d> angular_velocities_;

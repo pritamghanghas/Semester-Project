@@ -14,6 +14,7 @@ void WaypointController::InitParameters(WaypointControllerParameters parameters)
     angular_velocities_ = parameters.input_angular_velocities;
     orientations_ = parameters.input_orientations;
     goal_change_threshold_ = parameters.input_goal_change_threshold;
+    orientation_change_threshold_ = parameters.input_orientation_change_threshold;
 }
 
 void WaypointController::ComputeGoalPosition(const Eigen::Vector3d &current_position_if,
@@ -32,7 +33,7 @@ void WaypointController::ComputeGoalPosition(const Eigen::Vector3d &current_posi
 
 
     if (position_error_if.norm() < goal_change_threshold_ &&
-        orientation_error.norm() < 1 &&
+        orientation_error.norm() < orientation_change_threshold_ &&
             positions_.size()>1) {
         new_pose->position = positions_.at(1);
         new_pose->velocity = velocities_.at(1);

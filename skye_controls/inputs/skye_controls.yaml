@@ -12,7 +12,7 @@ windup_acceleration_threshold: 0.0001
 maximum_force_integrator_: 13
 maximum_momentum_integrator_: 1
 goal_change_threshold: 1.5
-
+orientation_change_threshold: 1
 wind_x: 0 #N
 wind_y: 0 #N
 wind_z: 0 #N

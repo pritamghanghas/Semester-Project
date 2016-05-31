@@ -75,10 +75,12 @@ bool SkyeTeachAndRepeat::AssignNewActionToRepeat(int action_to_repeat){
 }
 
 void SkyeTeachAndRepeat::InitializeParameters(double waypoints_threshold,
+                                              double orientation_threshold,
                                               int teaching_mode,
                                               const Eigen::Matrix3d& inertia,
                                               SkyeParameters geometric_params) {
     waypoints_distance_threshold_ =  waypoints_threshold;
+    orientation_distance_threshold_ = orientation_threshold;
     teaching_mode_ = teaching_mode;
     inertia_ = inertia;
     geometric_controller_parameters_ = geometric_params;
@@ -242,7 +244,16 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
         Eigen::Vector3d distance;
         std::vector<SkyeWaypoint> *current_trajectory = &(last_action->action_trajectory);
         distance = current_trajectory->at(current_trajectory->size() -1 ).waypoint_position_if - position_if;
-        if (distance.norm() > waypoints_distance_threshold_) {
+
+        Eigen::Quaterniond orientation_error;
+        orientation_error.x() = current_trajectory->at(current_trajectory->size() -1 ).waypoint_orientation_if.x() - orientation_if.x();
+        orientation_error.y() = current_trajectory->at(current_trajectory->size() -1 ).waypoint_orientation_if.y() - orientation_if.y();
+        orientation_error.z() = current_trajectory->at(current_trajectory->size() -1 ).waypoint_orientation_if.z() - orientation_if.z();
+        orientation_error.w() = current_trajectory->at(current_trajectory->size() -1 ).waypoint_orientation_if.w() - orientation_if.w();
+
+
+        if (distance.norm() > waypoints_distance_threshold_ ||
+                orientation_error.norm() > orientation_distance_threshold_) {
 
             // Save new waypoint into SkyeAction vector
             SkyeWaypoint new_waypoint;

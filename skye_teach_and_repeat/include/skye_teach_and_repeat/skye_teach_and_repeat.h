@@ -1,4 +1,4 @@
-#ifndef SKYE_TEACH_AND_REPEAT_H
+ #ifndef SKYE_TEACH_AND_REPEAT_H
 #define SKYE_TEACH_AND_REPEAT_H
 
 #include <Eigen/Eigen>
@@ -37,6 +37,7 @@ public:
   bool CheckModeChange(int new_mode);
   bool AssignNewActionToRepeat(int action_to_repeat);
   void InitializeParameters(double waypoints_threshold,
+                            double orientation_threshold,
                             int teaching_mode,
                             const Eigen::Matrix3d& inertia,
                             SkyeParameters geometric_params);
@@ -71,15 +72,13 @@ public:
                    Eigen::Vector3d* control_acceleration_bf);
 
 
-
-
-
 private:
   int node_mode_; //Teach or repeat
   int teaching_mode_; //1 for space, 2 for time
   bool has_teaching_just_started_;
   bool are_parameters_initialized_;
   double waypoints_distance_threshold_;
+  double orientation_distance_threshold_;
 
   Eigen::Matrix3d inertia_;
 
