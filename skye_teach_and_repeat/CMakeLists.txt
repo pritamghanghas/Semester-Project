@@ -35,6 +35,8 @@ add_executable(skye_teach_and_repeat_node
                     src/skye_teach_and_repeat_node.cpp
                     src/library/skye_teach_and_repeat.cpp)
 
+add_definitions(-std=c++11)
+
 #add_library(skye_gazebo_blimp_dynamics_plugin src/gazebo_blimp_dynamics_plugin.cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(skye_teach_and_repeat_node

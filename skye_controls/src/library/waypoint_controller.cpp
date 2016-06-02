@@ -31,7 +31,6 @@ void WaypointController::ComputeGoalPosition(const Eigen::Vector3d &current_posi
     orientation_error.z() = orientations_.at(0).z() - current_orientation_if.z();
     orientation_error.w() = orientations_.at(0).w() - current_orientation_if.w();
 
-
     if (position_error_if.norm() < goal_change_threshold_ &&
         orientation_error.norm() < orientation_change_threshold_ &&
             positions_.size()>1) {

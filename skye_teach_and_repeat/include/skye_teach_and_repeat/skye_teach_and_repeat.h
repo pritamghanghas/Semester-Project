@@ -3,6 +3,9 @@
 
 #include <Eigen/Eigen>
 #include <vector>
+#include <chrono>
+
+
 #include <skye_controls/skye_geometric_controller.h>
 #include <skye_controls/skye_paramsConfig.h>
 #include <skye_controls/waypoint_controller.h>
@@ -12,6 +15,7 @@
 
 struct SkyeWaypoint{
   //TODO: add time
+  long double waypoint_time;
   Eigen::Vector3d waypoint_position_if;
   Eigen::Vector3d waypoint_velocity_if;
   Eigen::Vector3d waypoint_angular_velocity_bf;
@@ -79,6 +83,12 @@ private:
   bool are_parameters_initialized_;
   double waypoints_distance_threshold_;
   double orientation_distance_threshold_;
+
+  std::chrono::high_resolution_clock::time_point teach_starting_time_;
+  std::chrono::high_resolution_clock::time_point repeat_starting_time_;
+  std::chrono::high_resolution_clock::time_point current_time_;
+  std::chrono::duration<double> time_difference_;
+  long double elapsed_time_, delay_;
 
   Eigen::Matrix3d inertia_;
 

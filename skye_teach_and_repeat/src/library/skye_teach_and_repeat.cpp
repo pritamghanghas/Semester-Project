@@ -99,7 +99,6 @@ void SkyeTeachAndRepeat::UpdateControllerParameters(double k_x,
 }
 
 
-
 //----------------------------------------------------------------------------------------
 // Manipulation
 //----------------------------------------------------------------------------------------
@@ -150,7 +149,6 @@ void SkyeTeachAndRepeat::ExecuteTeachAndRepeat(const Eigen::Vector3d& position_i
 
     if (node_mode_ == TEACH_MODE) {
         // teach phase
-
         this->TeachPhase(position_if, velocity_if, angular_velocity_bf, orientation_if);
     }
     else if (node_mode_ == REPEAT_MODE) {
@@ -158,6 +156,7 @@ void SkyeTeachAndRepeat::ExecuteTeachAndRepeat(const Eigen::Vector3d& position_i
 
             //repeat phase
             if (are_parameters_initialized_) {
+                repeat_starting_time_= std::chrono::high_resolution_clock::now();
                 this->RepeatPhase(position_if, velocity_if, angular_velocity_bf,
                                   orientation_if, control_force_bf, control_acceleration_bf);
             }
@@ -210,6 +209,7 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
     if (teaching_mode_ == 1) { //space teaching mode
         // if new action, add it
         if (has_teaching_just_started_) {
+            teach_starting_time_ = std::chrono::high_resolution_clock::now();
             has_teaching_just_started_ = false;
             SkyeAction new_action;
             if (saved_data_.size() == 0) {
@@ -228,6 +228,11 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
         //if just started save the first waypoint
         if (last_action->action_trajectory.size() == 0) {
             SkyeWaypoint new_waypoint;
+//            new_waypoint.waypoint_time = time(0)*1000  - starting_time_ms_;
+            current_time_ = std::chrono::high_resolution_clock::now();
+            time_difference_ = std::chrono::duration_cast<std::chrono::duration<double>>(current_time_ - teach_starting_time_);
+            new_waypoint.waypoint_time = time_difference_.count();
+
             new_waypoint.waypoint_position_if = position_if;
             new_waypoint.waypoint_velocity_if = velocity_if;
             new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
@@ -257,6 +262,11 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
 
             // Save new waypoint into SkyeAction vector
             SkyeWaypoint new_waypoint;
+//            new_waypoint.waypoint_time = time(0)*1000 - starting_time_ms_;
+            current_time_ = std::chrono::high_resolution_clock::now();
+            time_difference_ = std::chrono::duration_cast<std::chrono::duration<double>>(current_time_ - teach_starting_time_);
+            new_waypoint.waypoint_time = time_difference_.count();
+
             new_waypoint.waypoint_position_if = position_if;
 
             new_waypoint.waypoint_velocity_if = velocity_if;
@@ -266,9 +276,9 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
 
             new_waypoint.waypoint_orientation_if = orientation_if;
             last_action->action_trajectory.push_back(new_waypoint);
-            std::cout << "New W traj size: " << last_action->action_trajectory.size()
+            std::cout << "Size: " << last_action->action_trajectory.size()
                       << " | dist.norm: " << distance.norm()
-                      << " | number of actions: " << saved_data_.size()
+                      << " | time: " << new_waypoint.waypoint_time
                       << " | pos: "
                       <<  position_if(0) << ", "
                       <<  position_if(1) << ", "
@@ -303,7 +313,6 @@ void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
 
     geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.velocity,
                                             new_pose.angular_velocity, new_pose.orientation);
-
     // Update last known state
     geometric_controller_.UpdateParameters(position_if, velocity_if, orientation_if, angular_velocity_bf);
 
@@ -316,6 +325,11 @@ void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
 
     // Calculate control momentum
     (*control_momentum_bf) = inertia_*(control_acceleration_bf);
+
+
+    current_time_= std::chrono::high_resolution_clock::now();
+    time_difference_ = std::chrono::duration_cast<std::chrono::duration<double>>(current_time_ - repeat_starting_time_);
+    elapsed_time_ = time_difference_.count();
 
     /********************* DEBUG *************************/
     std::cout << "*************** GOAL DATA ***************" <<  std::endl <<
@@ -335,11 +349,14 @@ void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
                  " | z: " << new_pose.angular_velocity(2) <<
                  std::endl <<  std::endl;
 
-    std::cout << "orientation_if: " << new_pose.orientation.x() <<
-                 " | y: " << new_pose.orientation.y() <<
-                 " | z: " << new_pose.orientation.z() <<
-                 " | w: " << new_pose.orientation.w() <<
+    std::cout << "elapsed_time_: " << elapsed_time_ <<
                  std::endl << std::endl;
+
+    std::cout << "new_pose.angular_velocity: " << new_pose.angular_velocity(0) <<
+                 " | y: " << new_pose.angular_velocity(1) <<
+                 " | z: " << new_pose.angular_velocity(2) <<
+                 std::endl <<  std::endl;
+
 
     std::cout << "force: " << (*control_force_bf)(0) <<
                  " | y: " << (*control_force_bf)(1) <<
