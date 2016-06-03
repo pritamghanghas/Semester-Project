@@ -5,8 +5,8 @@ mode_topic: /skye_teach_and_repeat/std_msgs/control_mode
 choice_topic: /skye_teach_and_repeat/std_msgs/action_choice
 
 teaching_mode: 1 #1 is space, 2 is time
-waypoints_distance_threshold: 2
-orientation_distance_threshold: 1
+waypoints_distance_threshold: 1
+orientation_distance_threshold: 0.3
 
 mass: 12
 radius_: 1.42

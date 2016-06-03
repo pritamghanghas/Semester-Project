@@ -31,9 +31,10 @@ void WaypointController::ComputeGoalPosition(const Eigen::Vector3d &current_posi
     orientation_error.z() = orientations_.at(0).z() - current_orientation_if.z();
     orientation_error.w() = orientations_.at(0).w() - current_orientation_if.w();
 
-    if (position_error_if.norm() < goal_change_threshold_ &&
-        orientation_error.norm() < orientation_change_threshold_ &&
-            positions_.size()>1) {
+    bool switch_condition = position_error_if.norm() < goal_change_threshold_ ;
+//                           || orientation_error.norm() < orientation_change_threshold_;
+
+    if ( switch_condition && positions_.size()>1) {
         new_pose->position = positions_.at(1);
         new_pose->velocity = velocities_.at(1);
         new_pose->angular_velocity = angular_velocities_.at(1);
@@ -52,7 +53,14 @@ void WaypointController::ComputeGoalPosition(const Eigen::Vector3d &current_posi
     /******************** DEBUG *******************************************
      * WHEN REMOVING THIS CODE DO NOT FORGET TO REMOVE IOSTREAM INCLUSION
      * IN THE HEADER FILE!!!!
-     *
+     */
+
+    std::cout << "--------------------------------------------------" << std::endl <<
+                 "orientation_error.norm(): " << orientation_error.norm() << std::endl <<
+                 "--------------------------------------------------" <<
+                 std::endl << std::endl;
+
+    /*
     std::cout << "--------------------------------------------------" << std::endl <<
                  "position_: " << current_position_if(0) <<
                  " | y: " << current_position_if(1) <<

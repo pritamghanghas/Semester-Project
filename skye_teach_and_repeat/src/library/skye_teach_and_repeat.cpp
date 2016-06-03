@@ -228,7 +228,6 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
         //if just started save the first waypoint
         if (last_action->action_trajectory.size() == 0) {
             SkyeWaypoint new_waypoint;
-//            new_waypoint.waypoint_time = time(0)*1000  - starting_time_ms_;
             current_time_ = std::chrono::high_resolution_clock::now();
             time_difference_ = std::chrono::duration_cast<std::chrono::duration<double>>(current_time_ - teach_starting_time_);
             new_waypoint.waypoint_time = time_difference_.count();
@@ -256,7 +255,6 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
         orientation_error.z() = current_trajectory->at(current_trajectory->size() -1 ).waypoint_orientation_if.z() - orientation_if.z();
         orientation_error.w() = current_trajectory->at(current_trajectory->size() -1 ).waypoint_orientation_if.w() - orientation_if.w();
 
-
         if (distance.norm() > waypoints_distance_threshold_ ||
                 orientation_error.norm() > orientation_distance_threshold_) {
 
@@ -269,10 +267,10 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
 
             new_waypoint.waypoint_position_if = position_if;
 
-            new_waypoint.waypoint_velocity_if = velocity_if;
-            new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
-//            new_waypoint.waypoint_velocity_if << 0,0,0;
-//            new_waypoint.waypoint_angular_velocity_bf << 0,0,0;
+//            new_waypoint.waypoint_velocity_if = velocity_if;
+//            new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
+            new_waypoint.waypoint_velocity_if << 0,0,0;
+            new_waypoint.waypoint_angular_velocity_bf << 0,0,0;
 
             new_waypoint.waypoint_orientation_if = orientation_if;
             last_action->action_trajectory.push_back(new_waypoint);
