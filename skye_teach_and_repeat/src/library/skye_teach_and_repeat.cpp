@@ -95,7 +95,7 @@ void SkyeTeachAndRepeat::UpdateControllerParameters(double k_x,
                                                     double k_omega){
     // Update the gains with new dynamic parameters
     geometric_controller_.UpdateGains(k_x ,k_v, k_if, k_im, k_R, k_omega);
-
+    std::cout << "CHANGED PARAMETERS" << std::endl;
 }
 
 
@@ -113,7 +113,6 @@ void SkyeTeachAndRepeat::PackParameters(){
         std::cout << "action_to_repeat->action_trajectory.size(): " << action_to_repeat.action_trajectory.size() << std::endl;
     // Go through all the waypoints
     for (int i = 0; i < action_to_repeat.action_trajectory.size(); i++) {
-        std::cout << "DIOPORCO i: " << i << std::endl;
         //Get current waypoint
         SkyeWaypoint current_waypoint;
         current_waypoint = action_to_repeat.action_trajectory.at(i);
@@ -143,13 +142,14 @@ void SkyeTeachAndRepeat::PackParameters(){
 void SkyeTeachAndRepeat::ExecuteTeachAndRepeat(const Eigen::Vector3d& position_if,
                                                const Eigen::Vector3d& velocity_if,
                                                const Eigen::Vector3d& angular_velocity_bf,
+                                               const Eigen::Vector3d& acceleration_if,
                                                const Eigen::Quaterniond& orientation_if,
                                                Eigen::Vector3d* control_force_bf,
                                                Eigen::Vector3d* control_acceleration_bf){
 
     if (node_mode_ == TEACH_MODE) {
         // teach phase
-        this->TeachPhase(position_if, velocity_if, angular_velocity_bf, orientation_if);
+        this->TeachPhase(position_if, velocity_if, angular_velocity_bf, acceleration_if, orientation_if);
     }
     else if (node_mode_ == REPEAT_MODE) {
         if (saved_data_.size() > 0 && action_selected_ > 0) {
@@ -204,6 +204,7 @@ void SkyeTeachAndRepeat::ExecuteTeachAndRepeat(const Eigen::Vector3d& position_i
 void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
                                     const Eigen::Vector3d& velocity_if,
                                     const Eigen::Vector3d& angular_velocity_bf,
+                                    const Eigen::Vector3d& acceleration_if,
                                     const Eigen::Quaterniond& orientation_if){
 
     if (teaching_mode_ == 1) { //space teaching mode
@@ -235,6 +236,7 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
             new_waypoint.waypoint_position_if = position_if;
             new_waypoint.waypoint_velocity_if = velocity_if;
             new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
+            new_waypoint.waypoint_acceleration_if = acceleration_if;
             new_waypoint.waypoint_orientation_if = orientation_if;
             last_action->action_trajectory.push_back(new_waypoint);
             std::cout << "Saved FIRST waypoint in action: "
@@ -267,10 +269,13 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
 
             new_waypoint.waypoint_position_if = position_if;
 
-//            new_waypoint.waypoint_velocity_if = velocity_if;
-//            new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
-            new_waypoint.waypoint_velocity_if << 0,0,0;
-            new_waypoint.waypoint_angular_velocity_bf << 0,0,0;
+            /*** velocitychange  *****/
+            new_waypoint.waypoint_velocity_if = velocity_if;
+            new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
+            new_waypoint.waypoint_acceleration_if = acceleration_if;
+
+//            new_waypoint.waypoint_velocity_if << 0,0,0;
+//            new_waypoint.waypoint_angular_velocity_bf << 0,0,0;
 
             new_waypoint.waypoint_orientation_if = orientation_if;
             last_action->action_trajectory.push_back(new_waypoint);
@@ -302,15 +307,15 @@ void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
 
     //call waypoint controller and give it the waypoints, set some parameters
     WaypointPose new_pose;
-    new_pose.position = position_if;
-    new_pose.velocity = velocity_if;
-    new_pose.angular_velocity = angular_velocity_bf;
-    new_pose.orientation = orientation_if;
-
+//    new_pose.position = position_if;
+//    new_pose.velocity = velocity_if;
+//    new_pose.angular_velocity = angular_velocity_bf;
+//    new_pose.orientation = orientation_if;
     waypoints_controller_.ComputeGoalPosition(position_if, orientation_if ,&new_pose);
 
     geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.velocity,
-                                            new_pose.angular_velocity, new_pose.orientation);
+                                            new_pose.angular_velocity, new_pose.acceleration,
+                                            new_pose.orientation);
     // Update last known state
     geometric_controller_.UpdateParameters(position_if, velocity_if, orientation_if, angular_velocity_bf);
 

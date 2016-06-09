@@ -9,7 +9,6 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
     double inertia_11, inertia_12, inertia_13,
             inertia_21, inertia_22, inertia_23,
             inertia_31, inertia_32, inertia_33;
-    double k_x, k_v, k_R, k_omega, k_if, k_im;
     //Get the parameters
     bool read_all_parameters = nh.getParam("wrench_service_name", wrench_service_name_) &&
                                nh.getParam("teaching_mode", teaching_mode) &&
@@ -25,18 +24,18 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
                                nh.getParam("maximum_momentum_integrator_", skye_parameters_.input_maximum_momentum_integrator) &&
                                nh.getParam("windup_force_threshold", skye_parameters_.input_windup_force_threshold) &&
                                nh.getParam("windup_acceleration_threshold", skye_parameters_.input_windup_acceleration_threshold) &&
-                               nh.getParam("k_x", k_x) &&
-                               nh.getParam("k_v", k_v) &&
-                               nh.getParam("k_R", k_R) &&
-                               nh.getParam("k_omega", k_omega) &&
-                               nh.getParam("k_if", k_if) &&
-                               nh.getParam("k_im", k_im) &&
-//                               nh.getParam("wind_x", wind_x_) &&
-//                               nh.getParam("wind_y", wind_y_) &&
-//                               nh.getParam("wind_z", wind_z_) &&
-//                               nh.getParam("wind_x_var", wind_x_var_) &&
-//                               nh.getParam("wind_y_var", wind_y_var_) &&
-//                               nh.getParam("wind_z_var", wind_z_var_) &&
+                               //                               nh.getParam("k_x", k_x_) &&
+                               //                               nh.getParam("k_v", k_v_) &&
+                               //                               nh.getParam("k_R", k_R_) &&
+                               //                               nh.getParam("k_omega", k_omega_) &&
+                               //                               nh.getParam("k_if", k_if_) &&
+                               //                               nh.getParam("k_im", k_im_) &&
+                               //                               nh.getParam("wind_x", wind_x_) &&
+                               //                               nh.getParam("wind_y", wind_y_) &&
+                               //                               nh.getParam("wind_z", wind_z_) &&
+                               //                               nh.getParam("wind_x_var", wind_x_var_) &&
+                               //                               nh.getParam("wind_y_var", wind_y_var_) &&
+                               //                               nh.getParam("wind_z_var", wind_z_var_) &&
                                nh.getParam("inertia_11", inertia_11) &&
                                nh.getParam("inertia_12", inertia_12) &&
                                nh.getParam("inertia_13", inertia_13) &&
@@ -62,12 +61,12 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
 
     // Save matrices in SkyeParameters struct
     skye_parameters_.input_inertia = inertia_ ;
-    skye_parameters_.input_k_x = k_x;
-    skye_parameters_.input_k_v = k_v;
-    skye_parameters_.input_k_omega = k_omega;
-    skye_parameters_.input_k_R = k_R;
-    skye_parameters_.input_k_if = k_if;
-    skye_parameters_.input_k_im = k_im;
+    skye_parameters_.input_k_x = k_x_;
+    skye_parameters_.input_k_v = k_v_;
+    skye_parameters_.input_k_omega = k_omega_;
+    skye_parameters_.input_k_R = k_R_;
+    skye_parameters_.input_k_if = k_if_;
+    skye_parameters_.input_k_im = k_im_;
     // Initialize temporary stuff to zero
     Eigen::Vector3d zero_v;
     zero_v << 0,0,0;
@@ -76,8 +75,10 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
     skye_parameters_.input_desired_angular_velocity_bf = zero_v;
     skye_parameters_.input_desired_velocity_if = zero_v;
     skye_parameters_.input_R_des_if << 1, 0, 0,
-                                        0, 1, 0,
-                                        0, 0, 1;
+            0, 1, 0,
+            0, 0, 1;
+
+    gravity_acceleration_if_ << 0,0,9.81007;
 
     //Initialize parameters of the teach and repeat object
     teach_and_repeat_obj_.InitializeParameters(waypoints_distance_threshold,
@@ -96,12 +97,45 @@ SkyeTeachAndRepeatNode::~SkyeTeachAndRepeatNode(){
 }
 
 //---------------------------------------------------------------------------------------------------------
+void SkyeTeachAndRepeatNode::ConfigCallback(const skye_teach_and_repeat::skye_trparamsConfig &config, uint32_t level)
+{
+    // Set class variables to new values. They match what is input at the dynamic reconfigure GUI.
+    k_x_ = config.k_x_tr;
+    k_v_ = config.k_v_tr;
+    k_R_ = config.k_R_tr;
+    k_omega_ = config.k_omega_tr;
+    k_if_ = config.k_if_tr;
+    k_im_ = config.k_im_tr;
+}
+
+//---------------------------------------------------------------------------------------------------------
 void SkyeTeachAndRepeatNode::AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg){
     // Save angular velocity from IMU topic
     // this is in the imu frame but since it is a rigid body they are the same in terms of angular velocity
     angular_velocity_bf_ << msg->angular_velocity.x,
             msg->angular_velocity.y,
             msg->angular_velocity.z;
+
+
+    linear_acceleration_raw_ << msg->linear_acceleration.x,
+            msg->linear_acceleration.y,
+            msg->linear_acceleration.z;
+
+    orientation_imu_if_.x() =  msg->orientation.x;
+    orientation_imu_if_.y() =  msg->orientation.y;
+    orientation_imu_if_.z() =  msg->orientation.z;
+    orientation_imu_if_.w() =  msg->orientation.w;
+
+    orientation_R_if_ = orientation_imu_if_.matrix();
+    gravity_acceleration_imu_ = orientation_R_if_*gravity_acceleration_if_;
+
+    acceleration_if_ = linear_acceleration_raw_ - gravity_acceleration_imu_;
+
+    std::cout << "-------------------------------------\n" <<
+                 "Acceleration:\n x:" << acceleration_if_(0) <<
+                 " | y: " << acceleration_if_(1) <<
+                 " | z: " << acceleration_if_(2) <<
+                 std::endl;
 }
 //---------------------------------------------------------------------------------------------------------
 void SkyeTeachAndRepeatNode::StateCallback(const gazebo_msgs::LinkState::ConstPtr& msg){
@@ -122,12 +156,18 @@ void SkyeTeachAndRepeatNode::StateCallback(const gazebo_msgs::LinkState::ConstPt
     orientation_if_.w() = msg->pose.orientation.w;
 
     // Interface for updating controller parameters online, not required by ROS node
-    //    teach_and_repeat_obj_.UpdateControllerParameters();
+    teach_and_repeat_obj_.UpdateControllerParameters(k_x_,
+                                                     k_v_,
+                                                     k_if_,
+                                                     k_im_,
+                                                     k_R_,
+                                                     k_omega_);
 
     // This should allow new parameters from outside (ie. QGC)
     teach_and_repeat_obj_.ExecuteTeachAndRepeat(position_if_,
                                                 velocity_if_,
                                                 angular_velocity_bf_,
+                                                acceleration_if_,
                                                 orientation_if_,
                                                 &control_force_bf_,
                                                 &control_momentum_bf_);
@@ -205,7 +245,7 @@ int main(int argc, char **argv){
 
     //Initialize node and subscribe to topics
     SkyeTeachAndRepeatNode node(nh);
-    ros::Subscriber pos_sub_ground_truth = nh.subscribe (ground_truth_topic, 1, &SkyeTeachAndRepeatNode::StateCallback, &node);
+//    ros::Subscriber pos_sub_ground_truth = nh.subscribe (ground_truth_topic, 1, &SkyeTeachAndRepeatNode::StateCallback, &node);
     ros::Subscriber pos_sub_imu = nh.subscribe (imu_topic, 1, &SkyeTeachAndRepeatNode::AngularVelocityCallback, &node);
     ros::Subscriber mode_sel_sub = nh.subscribe (mode_topic, 1, &SkyeTeachAndRepeatNode::ModeSelectionCallback, &node);
     ros::Subscriber choice_sel_sub = nh.subscribe (choice_topic, 1, &SkyeTeachAndRepeatNode::ExecuteActionCallback, &node);

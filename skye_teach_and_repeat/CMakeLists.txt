@@ -7,9 +7,16 @@ project(skye_teach_and_repeat)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   skye_ros
+  cmake_modules
   eigen_conversions
 std_msgs
 skye_controls
+dynamic_reconfigure
+)
+
+
+generate_dynamic_reconfigure_options(
+  cfg/skye_trparams.cfg
 )
 
 # make sure configure headers are built before any node using them
@@ -17,7 +24,7 @@ skye_controls
 
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS
+  CATKIN_DEPENDS dynamic_reconfigure
 )
 
 include_directories(

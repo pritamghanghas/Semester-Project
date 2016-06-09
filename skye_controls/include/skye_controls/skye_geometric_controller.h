@@ -169,6 +169,7 @@ public:
   void UpdateDesiredPose(const Eigen::Vector3d &desired_position_if,
                          const Eigen::Vector3d &desired_velocity_if,
                          const Eigen::Vector3d &desired_angular_velocity_bf,
+                         const Eigen::Vector3d &desired_acceleration_if,
                          const Eigen::Quaterniond &desired_orientation_bf);
 
 private:

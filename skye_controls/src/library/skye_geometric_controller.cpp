@@ -62,6 +62,7 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
                                                const Eigen::Quaterniond &orientation_if,
                                                const Eigen::Vector3d &a_angular_velocity_bf){
 
+
     // Calculate rotation matrix from NED(or inertial frame) to body fixed frame
     R_if_ = orientation_if.matrix();
 
@@ -98,28 +99,6 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
             temporary_rotation.angle() = current_rotation.angle()  - 3*M_PI_2;
             R_des_if_ = temporary_rotation;
         }
-        /*
-        std::cout << "Found critical point, switching to temporal goal" << std::endl;
-
-        std::cout << "R_if_:" << std::endl << R_if_ << std::endl << std::endl;
-
-        std::cout << "R_des_if_:" << std::endl << R_des_if_ << std::endl << std::endl;
-
-        std::cout << "R_temp_if_:" << std::endl << R_temp_if_ << std::endl << std::endl;
-
-        std::cout << "current_rotation angle: " << current_rotation.angle() <<
-                     " | axis: " << std::endl << current_rotation.axis() << std::endl;
-
-        std::cout << "temporary_rotation angle: " << temporary_rotation.angle() <<
-                     " | axis: " << std::endl << temporary_rotation.axis() << std::endl;
-
-        std::cout << "desired_rotation angle: " << desired_rotation.angle() <<
-                     " | axis: " << std::endl << desired_rotation.axis() << std::endl;
-
-        std::cout << "diff : " << diff <<
-                     std::endl << "--------------------------------------------------" <<
-                     std::endl;
-*/
     }
 
     if (diff <= M_PI_2 && singularity_detected_) {
@@ -129,24 +108,6 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
                 0,0,0,
                 0,0,0;
         temporary_rotation = R_temp_if_;
-        /*
-        std::cout << "Restoring original rotation matrix" << std::endl;
-
-        std::cout << "R_if_:" << std::endl << R_if_ << std::endl << std::endl;
-
-        std::cout << "R_des_if_:" << std::endl << R_des_if_ << std::endl << std::endl;
-
-        std::cout << "current_rotation angle: " << current_rotation.angle() <<
-                     " | axis: " << std::endl << current_rotation.axis() << std::endl;
-
-        std::cout << "desired_rotation angle: " << desired_rotation.angle() <<
-                     " | axis: " << std::endl << desired_rotation.axis() << std::endl;
-
-        std::cout << "diff : " << diff <<
-                     std::endl << "--------------------------------------------------" <<
-                     std::endl;
-
-*/
     }
 
 
@@ -279,7 +240,7 @@ void SkyeGeometricController::ComputeForce(Eigen::Vector3d *output_force_bf){
     Eigen::Vector3d proportional_term, derivative_term;
 
     proportional_term = k_x_*position_error_bf_;
-    derivative_term = k_v_*(velocity_error_bf_); // - mass_*desired_acceleration_if_ ;
+    derivative_term = k_v_*(velocity_error_bf_) - mass_*desired_acceleration_if_ ;
 
     // Integrator with antiwindup
     if (position_error_bf_.norm() < distance_integrator_treshold_ ) {
@@ -332,7 +293,10 @@ void SkyeGeometricController::ComputeAcceleration(Eigen::Vector3d *output_accele
 void SkyeGeometricController::UpdateDesiredPose(const Eigen::Vector3d &desired_position_if,
                                                 const Eigen::Vector3d &desired_velocity_if,
                                                 const Eigen::Vector3d &desired_angular_velocity_bf,
+                                                const Eigen::Vector3d &desired_acceleration_if,
                                                 const Eigen::Quaterniond &desired_orientation_if){
+    //save desired acceleration
+    desired_acceleration_if_ = desired_acceleration_if;
     desired_position_if_ = desired_position_if;
     desired_velocity_if_ = desired_velocity_if;
     desired_angular_velocity_bf_ = desired_angular_velocity_bf;

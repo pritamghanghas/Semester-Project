@@ -19,6 +19,7 @@ struct SkyeWaypoint{
   Eigen::Vector3d waypoint_position_if;
   Eigen::Vector3d waypoint_velocity_if;
   Eigen::Vector3d waypoint_angular_velocity_bf;
+  Eigen::Vector3d waypoint_acceleration_if;
   Eigen::Quaterniond waypoint_orientation_if;
 };
 
@@ -59,6 +60,7 @@ public:
   void ExecuteTeachAndRepeat(const Eigen::Vector3d& position_if,
                              const Eigen::Vector3d& velocity_if,
                              const Eigen::Vector3d& angular_velocity_bf,
+                             const Eigen::Vector3d& acceleration_if,
                              const Eigen::Quaterniond& orientation_if,
                              Eigen::Vector3d* control_force_bf,
                              Eigen::Vector3d* control_acceleration_bf);
@@ -66,6 +68,7 @@ public:
   void TeachPhase(const Eigen::Vector3d& position_if,
                   const Eigen::Vector3d& velocity_if,
                   const Eigen::Vector3d& angular_velocity_bf,
+                  const Eigen::Vector3d& acceleration_if,
                   const Eigen::Quaterniond& orientation_if);
 
   void RepeatPhase(const Eigen::Vector3d& position_if,

@@ -7,11 +7,15 @@
 #include <iostream>
 #include <geometry_msgs/Wrench.h>
 #include <sensor_msgs/Imu.h>
+#include <dynamic_reconfigure/server.h>
+
 #include <gazebo_msgs/LinkState.h>
 #include <skye_ros/ApplyWrenchCogBf.h>
 #include <std_msgs/Int16.h>
 
 #include <skye_teach_and_repeat/skye_teach_and_repeat.h>
+#include <skye_teach_and_repeat/skye_trparamsConfig.h>
+
 
 class SkyeTeachAndRepeatNode
 {
@@ -24,8 +28,21 @@ public:
   void ExecuteActionCallback(const std_msgs::Int16::ConstPtr& msg);
   bool CallService();
   int get_node_mode();
+
+  /**
+   * @brief ConfigCallback : Callback for the dynamic configuration of the parameters.
+   * @param config : the skye_params congifuration file
+   * @param level : not used
+   */
+  void ConfigCallback(const skye_teach_and_repeat::skye_trparamsConfig &config, uint32_t level);
+
+
 private:
   int node_mode_;
+
+  double k_x_, k_v_, k_R_, k_omega_, k_if_, k_im_;
+
+
   SkyeTeachAndRepeat teach_and_repeat_obj_;
   //Eigen variables
   /**
@@ -40,6 +57,11 @@ private:
    * @brief angular_velocity_bf_ :  angular velocity vector expressed in the body frame
    */
   Eigen::Vector3d angular_velocity_bf_;
+  /**
+   * @brief acceleration_if_:  linear acceleration expressed in the inertial frame
+   */
+  Eigen::Vector3d acceleration_if_;
+
   /**
    * @brief orientation_if_ : skye's orientation expressed as a quaternion
    */
@@ -57,6 +79,27 @@ private:
    */
   Eigen::Vector3d control_momentum_bf_;
 
+  // acceleration stuff
+  /**
+   * @brief linear_acceleration_raw_ : acceleration from IMU
+   */
+  Eigen::Vector3d linear_acceleration_raw_;
+  /**
+   * @brief gravity_acceleration_ : constant vector for gravity in if
+   */
+  Eigen::Vector3d gravity_acceleration_if_;
+  /**
+   * @brief gravity_acceleration_imu_ : gravity in imu frame
+   */
+  Eigen::Vector3d gravity_acceleration_imu_;
+  /**
+   * @brief orientation_imu_if_ : rotation quaternion from imu to if
+   */
+  Eigen::Quaterniond orientation_imu_if_;
+  /**
+   * @brief orientation_R_if_ : rotates imu frame to inertial frame
+   */
+  Eigen::Matrix3d orientation_R_if_;
   /**
    * @brief wrench_service_name_ : name of the service to apply a wrench to the COG of skye in body frame
    */
@@ -85,6 +128,18 @@ private:
    * @brief inertia_ : Skye's inertia matrix
    */
   Eigen::Matrix3d inertia_;
+
+  //dynamic reconfigure server for dynamic parameters
+  /**
+   * @brief dr_srv_ : server for the dynamic reconfiuration of parameters
+   */
+  dynamic_reconfigure::Server<skye_teach_and_repeat::skye_trparamsConfig> dr_srv_;
+  /**
+   * @brief cb : type of the callback for skye dynamic parameters
+   */
+  dynamic_reconfigure::Server<skye_teach_and_repeat::skye_trparamsConfig>::CallbackType cb;
+
+
 
 };
 

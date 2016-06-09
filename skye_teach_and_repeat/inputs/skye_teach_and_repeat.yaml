@@ -18,12 +18,14 @@ windup_force_threshold: 0.000
 windup_acceleration_threshold: 0.0001
 maximum_force_integrator_: 13
 maximum_momentum_integrator_: 1
-k_x: 5
-k_v: 16
-k_R: 10
-k_omega: 15
-k_if: 0.02
-k_im: 0.0
+
+#k_x: 0
+#k_v: 0
+#k_R: 5
+#k_omega: 5
+#k_if: 0.02
+#k_im: 0.0
+
 inertia_11: 8.9927
 inertia_12: 0.1046
 inertia_13: -0.0843

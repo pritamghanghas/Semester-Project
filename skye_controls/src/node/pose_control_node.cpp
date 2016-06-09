@@ -184,7 +184,7 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
         std::cout << "Computed goal position" << std::endl;
 
         geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.velocity,
-                                                new_pose.angular_velocity, new_pose.orientation);
+                                                new_pose.angular_velocity, new_pose.acceleration, new_pose.orientation);
 
         std::cout << "Updated poses" << std::endl;
 
