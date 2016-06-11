@@ -19,7 +19,6 @@ PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
     //Setup service for control input if the service is ready
     ros::service::waitForService(wrench_service_name_);
     wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
-
 }
 
 PoseControllerNode::~PoseControllerNode (){
@@ -84,10 +83,13 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     for (int i = 0; i < waypoint_parameters_.input_orientations.size(); ++i) {
         waypoint_parameters_.input_velocities.push_back(zero_v);
         waypoint_parameters_.input_angular_velocities.push_back(zero_v);
+        waypoint_parameters_.input_accelerations.push_back(zero_v);
     }
 
-    waypoint_controller_.InitParameters(waypoint_parameters_);
-
+    bool is_waypoint_controller_ok =  waypoint_controller_.InitParameters(waypoint_parameters_);
+    if (! is_waypoint_controller_ok) {
+        ROS_ERROR("WAYPOINT CONTROLLER NOT INITIALIZED CORRECTLY, CHECK SIZES");
+    }
     // Pack desired position
     skye_parameters_.input_desired_position_if<< 0,0,0;
 
@@ -177,8 +179,12 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
 
     std::cout << "Got state and saved" << std::endl;
 
+    std::cout << "waypoint_parameters_.input_positions.size() : " << waypoint_parameters_.input_positions.size() << std::endl;
     if (waypoint_parameters_.input_positions.size() > 0) {
+
         WaypointPose new_pose;
+        std::cout << "Created pose" << std::endl;
+
         waypoint_controller_.ComputeGoalPosition(position_if_, orientation_if_, &new_pose);
 
         std::cout << "Computed goal position" << std::endl;
@@ -201,6 +207,7 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
 
     }
 
+    std::cout << "---------------------------------------------------------------" << std::endl;
     /********************* DEBUG *************************/
     std::cout << "force: " << control_force_bf_(0) <<
                  " | y: " << control_force_bf_(1) <<
@@ -246,6 +253,8 @@ int main(int argc, char **argv){
     ros::init(argc, argv, "skye_position_controller_node");
     ros::NodeHandle nh;
 
+    std::cout << "Ros is init" << std::endl;
+
     // Import ros parameter for service and topic names
     std::string imu_topic, ground_truth_topic;
     bool read_all_parameters = nh.getParam("ground_truth_topic", ground_truth_topic) &&
@@ -253,11 +262,15 @@ int main(int argc, char **argv){
     // Check if names have correctly been imported
     if (! read_all_parameters) ROS_ERROR("Parameters not imported");
 
+    std::cout << "Read topic names" << std::endl;
+
     //Initialize node and subscribe to topics
     PoseControllerNode node(nh);
     ros::Subscriber pos_sub_ground_truth = nh.subscribe (ground_truth_topic, 1, &PoseControllerNode::PositionCallback, &node);
     ros::Subscriber pos_sub_imu = nh.subscribe (imu_topic, 1, &PoseControllerNode::AngularVelocityCallback, &node);
 
+
+    std::cout << "start looping" << std::endl;
     ros::Rate r(50); // 50 hz
     while (nh.ok())
     {

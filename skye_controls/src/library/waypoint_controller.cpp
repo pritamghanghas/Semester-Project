@@ -8,7 +8,7 @@ WaypointController::~WaypointController(){
 
 }
 
-void WaypointController::InitParameters(WaypointControllerParameters parameters){
+bool WaypointController::InitParameters(WaypointControllerParameters parameters){
     positions_ = parameters.input_positions;
     velocities_ = parameters.input_velocities;
     angular_velocities_ = parameters.input_angular_velocities;
@@ -16,6 +16,14 @@ void WaypointController::InitParameters(WaypointControllerParameters parameters)
     orientations_ = parameters.input_orientations;
     goal_change_threshold_ = parameters.input_goal_change_threshold;
     orientation_change_threshold_ = parameters.input_orientation_change_threshold;
+
+    if (positions_.size() != velocities_.size() ||
+            velocities_.size() != angular_velocities_.size() ||
+            angular_velocities_.size() != accelerations_.size() ||
+            accelerations_.size() != orientations_.size() ) {
+        return false;
+    }
+    return true;
 }
 
 void WaypointController::ComputeGoalPosition(const Eigen::Vector3d &current_position_if,
@@ -23,6 +31,15 @@ void WaypointController::ComputeGoalPosition(const Eigen::Vector3d &current_posi
                                              WaypointPose *new_pose){
 
     Eigen::Vector3d position_error_if;
+
+    std::cout << "positions_.size(): " << positions_.size() << std::endl;
+    std::cout << "orientations_.size(): " << orientations_.size() << std::endl;
+    std::cout << "angular_velocities_.size(): " << angular_velocities_.size() << std::endl;
+    std::cout << "velocities_.size(): " << velocities_.size() << std::endl;
+    std::cout << "accelerations_.size(): " << accelerations_.size() << std::endl;
+
+
+
     position_error_if << (positions_.at(0))(0) - current_position_if(0),
             (positions_.at(0))(1) - current_position_if(1),
             (positions_.at(0))(2) - current_position_if(2);
@@ -32,10 +49,17 @@ void WaypointController::ComputeGoalPosition(const Eigen::Vector3d &current_posi
     orientation_error.z() = orientations_.at(0).z() - current_orientation_if.z();
     orientation_error.w() = orientations_.at(0).w() - current_orientation_if.w();
 
-    bool switch_condition = position_error_if.norm() < goal_change_threshold_ ;
-//                           && orientation_error.norm() < orientation_change_threshold_;
+
+    std::cout << "calculated orientation error" << std::endl;
+
+    bool switch_condition = position_error_if.norm() < goal_change_threshold_
+                            && orientation_error.norm() < orientation_change_threshold_;
+
+    std::cout << "switch condition: "<< switch_condition << std::endl;
 
     if ( switch_condition && positions_.size()>1) {
+        std::cout << "in if statement" << std::endl;
+
         new_pose->position = positions_.at(1);
         new_pose->velocity = velocities_.at(1);
         new_pose->angular_velocity = angular_velocities_.at(1);
@@ -47,12 +71,25 @@ void WaypointController::ComputeGoalPosition(const Eigen::Vector3d &current_posi
         orientations_.erase(orientations_.begin());
         accelerations_.erase(accelerations_.begin());
     } else {
+        std::cout << "in else statemens" << std::endl;
+
         new_pose->position = positions_.at(0);
+        std::cout << "position saved" << std::endl;
+
         new_pose->velocity = velocities_.at(0);
+        std::cout << "velocity saved" << std::endl;
+
         new_pose->angular_velocity = angular_velocities_.at(0);
+        std::cout << "ang vel saved" << std::endl;
+
         new_pose->orientation = orientations_.at(0);
+        std::cout << "orientation saved" << std::endl;
+
         new_pose->acceleration = accelerations_.at(0);
+        std::cout << "acceleration saved" << std::endl;
     }
+
+    std::cout << "passed if els" << std::endl;
 
     /******************** DEBUG *******************************************
      * WHEN REMOVING THIS CODE DO NOT FORGET TO REMOVE IOSTREAM INCLUSION

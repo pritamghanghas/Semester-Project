@@ -63,13 +63,9 @@ bool SkyeTeachAndRepeat::AssignNewActionToRepeat(int action_to_repeat){
             waypoints_controller_.InitParameters(waypoints_parameters_);
             std::cout << " ... Done!" << std::endl;
             are_parameters_initialized_ = true;
-
-
         } else {
             are_parameters_initialized_ = false;
         }
-
-
         return true;
     }
 }

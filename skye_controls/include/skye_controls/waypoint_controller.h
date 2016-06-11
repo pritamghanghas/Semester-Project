@@ -46,7 +46,7 @@ public:
      * @brief InitParameters : saves parameters in class members
      * @param parameters : a WaypointControllerParameters struct with parameters in it.
      */
-  void InitParameters(WaypointControllerParameters parameters);
+  bool InitParameters(WaypointControllerParameters parameters);
   /**
      * @brief ComputeGoal : computes a new goal given the actual position of skye
      * @param current_position_if : the current position vector expressed in the inertial frame
