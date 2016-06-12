@@ -177,22 +177,12 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
     orientation_if_.z() = msg->pose.orientation.z;
     orientation_if_.w() = msg->pose.orientation.w;
 
-    std::cout << "Got state and saved" << std::endl;
-
-    std::cout << "waypoint_parameters_.input_positions.size() : " << waypoint_parameters_.input_positions.size() << std::endl;
     if (waypoint_parameters_.input_positions.size() > 0) {
 
         WaypointPose new_pose;
-        std::cout << "Created pose" << std::endl;
-
         waypoint_controller_.ComputeGoalPosition(position_if_, orientation_if_, &new_pose);
-
-        std::cout << "Computed goal position" << std::endl;
-
         geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.velocity,
                                                 new_pose.angular_velocity, new_pose.acceleration, new_pose.orientation);
-
-        std::cout << "Updated poses" << std::endl;
 
         // Update the gains with new dynamic parameters
         geometric_controller_.UpdateGains(k_x_ ,k_v_, k_if_, k_im_, k_R_, k_omega_);

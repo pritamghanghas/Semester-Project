@@ -123,7 +123,7 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
      * WHEN REMOVING THIS CODE DO NOT FORGET TO REMOVE IOSTREAM INCLUSION
      * IN THE HEADER FILE!!!!
      *
-*/
+
     std::cout << "--------------------------------------------------" << std::endl <<
                  "position_: " << position_if(0) <<
                  " | y: " << position_if(1) <<
@@ -154,7 +154,7 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
                  " | z: " << integral_term_force_(2) <<
                  std::endl << std::endl;
 
-
+*/
     // ATTITUDE
 
     /*std::cout << "attitude_error_: " << attitude_error_bf_(0) <<
@@ -196,10 +196,6 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
                  std::endl << "--------------------------------------------------" <<
                  std::endl;
 
-
-    //    if (singularity_detected_) {
-    //        position_if(4);
-    //    }
     ******************** END DEBUG *************************/
 
 }

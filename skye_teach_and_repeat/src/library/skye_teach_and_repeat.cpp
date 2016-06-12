@@ -7,6 +7,7 @@ SkyeTeachAndRepeat::SkyeTeachAndRepeat() {
     action_selected_ = 0;
     are_parameters_initialized_ = false;
     has_teaching_just_started_ = true;
+    already_printed_ = false;
 
 }
 
@@ -91,7 +92,6 @@ void SkyeTeachAndRepeat::UpdateControllerParameters(double k_x,
                                                     double k_omega){
     // Update the gains with new dynamic parameters
     geometric_controller_.UpdateGains(k_x ,k_v, k_if, k_im, k_R, k_omega);
-    std::cout << "CHANGED PARAMETERS" << std::endl;
 }
 
 
@@ -99,14 +99,14 @@ void SkyeTeachAndRepeat::UpdateControllerParameters(double k_x,
 // Manipulation
 //----------------------------------------------------------------------------------------
 void SkyeTeachAndRepeat::PackParameters(){
-        std::cout << "got request to pack parameters" << std::endl;
+    std::cout << "got request to pack parameters" << std::endl;
     SkyeAction action_to_repeat;
 
-        std::cout << "Found the action to repeat, it is #: " << action_selected_ - 1 << std::endl;
-        std::cout << "saved_data_.size(): " << saved_data_.size()<< std::endl;
+    std::cout << "Found the action to repeat, it is #: " << action_selected_ - 1 << std::endl;
+    std::cout << "saved_data_.size(): " << saved_data_.size()<< std::endl;
     action_to_repeat =  saved_data_.at(action_selected_ - 1);
-        std::cout << "Found the action to repeat, it is #: " << action_selected_ - 1 << std::endl;
-        std::cout << "action_to_repeat->action_trajectory.size(): " << action_to_repeat.action_trajectory.size() << std::endl;
+    std::cout << "Found the action to repeat, it is #: " << action_selected_ - 1 << std::endl;
+    std::cout << "action_to_repeat->action_trajectory.size(): " << action_to_repeat.action_trajectory.size() << std::endl;
     // Go through all the waypoints
     for (int i = 0; i < action_to_repeat.action_trajectory.size(); i++) {
         //Get current waypoint
@@ -114,18 +114,20 @@ void SkyeTeachAndRepeat::PackParameters(){
         current_waypoint = action_to_repeat.action_trajectory.at(i);
 
         // Get current waypoint data
-        Eigen::Vector3d position, velocity, angular_velocity;
+        Eigen::Vector3d position, velocity, angular_velocity, acceleration;
         Eigen::Quaterniond orientation;
         position = current_waypoint.waypoint_position_if;
         orientation = current_waypoint.waypoint_orientation_if;
         velocity = current_waypoint.waypoint_velocity_if;
         angular_velocity= current_waypoint.waypoint_angular_velocity_bf;
+        acceleration = current_waypoint.waypoint_acceleration_if;
 
         //Save stuff into waypoints_parameters struct
         waypoints_parameters_.input_positions.push_back(position);
         waypoints_parameters_.input_velocities.push_back(velocity);
         waypoints_parameters_.input_angular_velocities.push_back(angular_velocity);
         waypoints_parameters_.input_orientations.push_back(orientation);
+        waypoints_parameters_.input_accelerations.push_back(acceleration);
         //TODO implement interaces in geometric controller and other controller
     }
     std::cout << "Finished packing parameters, leaving." << std::endl;
@@ -143,11 +145,67 @@ void SkyeTeachAndRepeat::ExecuteTeachAndRepeat(const Eigen::Vector3d& position_i
                                                Eigen::Vector3d* control_force_bf,
                                                Eigen::Vector3d* control_acceleration_bf){
 
-    if (node_mode_ == TEACH_MODE) {
+
+    /************************* BEGIN DEBUG *********************************/
+    if (0) {
+        std::cout << "--------------------- execute T & r-----------------------------" << std::endl <<
+                     "position_if: " << position_if(0) <<
+                     " | y: " << position_if(1) <<
+                     " | z: " << position_if(2) <<
+                     std::endl << std::endl;
+
+
+        std::cout << "velocity_if: " << velocity_if(0) <<
+                     " | y: " << velocity_if(1) <<
+                     " | z: " << velocity_if(2) <<
+                     std::endl << std::endl;
+
+        std::cout << "angular_velocity_bf: " << angular_velocity_bf(0) <<
+                     " | y: " << angular_velocity_bf(1) <<
+                     " | z: " << angular_velocity_bf(2) <<
+                     std::endl << std::endl;
+
+
+        std::cout << "acceleration_if: " << acceleration_if(0) <<
+                     " | y: " << acceleration_if(1) <<
+                     " | z: " << acceleration_if(2) <<
+                     std::endl << std::endl;
+
+        std::cout << "orientation_if_: " << orientation_if.x() <<
+                     " | y: " << orientation_if.y() <<
+                     " | z: " << orientation_if.z() <<
+                     " | w: " << orientation_if.w() <<
+                     std::endl << std::endl;
+
+
+        // ATTITUDE
+
+        std::cout << "control_force_bf: " << (*control_force_bf)(0) <<
+                     " | y: " << (*control_force_bf)(1) <<
+                     " | z: " << (*control_force_bf)(2) <<
+                     std::endl << std::endl;
+
+
+        std::cout << "control_acceleration_bf: " << (*control_acceleration_bf)(0) <<
+                     " | y: " << (*control_acceleration_bf)(1) <<
+                     " | z: " << (*control_acceleration_bf)(2) <<
+                     std::endl << std::endl;
+
+        std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+    }
+
+    /************************* END DEBUG *********************************/
+
+    switch (node_mode_) {
+    case TEACH_MODE: {
         // teach phase
         this->TeachPhase(position_if, velocity_if, angular_velocity_bf, acceleration_if, orientation_if);
+        if (already_printed_) {
+            already_printed_ = false;
+        }
+        break;
     }
-    else if (node_mode_ == REPEAT_MODE) {
+    case REPEAT_MODE: {
         if (saved_data_.size() > 0 && action_selected_ > 0) {
 
             //repeat phase
@@ -156,44 +214,68 @@ void SkyeTeachAndRepeat::ExecuteTeachAndRepeat(const Eigen::Vector3d& position_i
                 this->RepeatPhase(position_if, velocity_if, angular_velocity_bf,
                                   orientation_if, control_force_bf, control_acceleration_bf);
             }
-        } else if (node_mode_ == 3){
-            std::cout << "------------------------------------------------------" << std::endl
-                         << " | number of actions: " << saved_data_.size() << std::endl;
-               for (int i = 0; i < saved_data_.size(); ++i) {
-                   std::cout << "Action: [" << i
-                             << "]  with ID: [" << saved_data_.at(i).action_id
-                             <<"] has this amount of wayp: " << saved_data_.at(i).action_trajectory.size()
-                            << std::endl;
-               }
-               std::vector<SkyeWaypoint> temp = saved_data_.at(action_selected_-1).action_trajectory;
-               for (int i = 0; i < temp.size(); ++i) {
-                   std::cout << "P[" << i
-                             << "]  position: "
-                             << temp.at(i).waypoint_position_if(0) << ", "
-                             << temp.at(i).waypoint_position_if(1) << ", "
-                             << temp.at(i).waypoint_position_if(2) << std::endl
-                             << "]  velocity: "
-                             << temp.at(i).waypoint_velocity_if(0) << ", "
-                             << temp.at(i).waypoint_velocity_if(1) << ", "
-                             << temp.at(i).waypoint_velocity_if(2) << std::endl
-                             << "]  ang_velo: "
-                             << temp.at(i).waypoint_angular_velocity_bf(0) << ", "
-                             << temp.at(i).waypoint_angular_velocity_bf(1) << ", "
-                             << temp.at(i).waypoint_angular_velocity_bf(2) << std::endl
-                             << "]  orientat: "
-                             << temp.at(i).waypoint_orientation_if.x() << ", "
-                             << temp.at(i).waypoint_orientation_if.y() << ", "
-                             << temp.at(i).waypoint_orientation_if.z() << ", "
-                             << temp.at(i).waypoint_orientation_if.w() << std::endl
-                            << std::endl;
-               }
-
         } else {
             ROS_INFO("Please perform teaching phase first using the appropriate topic and select an action to repeat using the appropriate topic");
         }
+        if (already_printed_) {
+            already_printed_ = false;
+        }
+        break;
+    }
+    case 3: {
+        if (already_printed_) {
+            break;
+        } else {
+            already_printed_ = true;
+        }
+        std::cout << "------------------------------------------------------" << std::endl
+                  << " | number of actions: " << saved_data_.size() << std::endl;
+        for (int i = 0; i < saved_data_.size(); ++i) {
+            std::cout << "Action: [" << i
+                      << "]  with ID: [" << saved_data_.at(i).action_id
+                      <<"] has this amount of wayp: " << saved_data_.at(i).action_trajectory.size()
+                     << std::endl;
+        }
+        std::vector<SkyeWaypoint> temp;
+        if (action_selected_ < 1) {
+            temp = saved_data_.at(action_selected_).action_trajectory;
 
-    } else {
+        } else {
+            temp = saved_data_.at(action_selected_-1).action_trajectory;
+        }
+        for (int i = 0; i < temp.size(); ++i) {
+            std::cout << "P[" << i
+                      << "]  position: "
+                      << temp.at(i).waypoint_position_if(0) << ", "
+                      << temp.at(i).waypoint_position_if(1) << ", "
+                      << temp.at(i).waypoint_position_if(2) << std::endl
+                      << "Velocity: "
+                      << temp.at(i).waypoint_velocity_if(0) << ", "
+                      << temp.at(i).waypoint_velocity_if(1) << ", "
+                      << temp.at(i).waypoint_velocity_if(2) << std::endl
+                      << "Ang_velo: "
+                      << temp.at(i).waypoint_angular_velocity_bf(0) << ", "
+                      << temp.at(i).waypoint_angular_velocity_bf(1) << ", "
+                      << temp.at(i).waypoint_angular_velocity_bf(2) << std::endl
+                      << "Orientat: "
+                      << temp.at(i).waypoint_orientation_if.x() << ", "
+                      << temp.at(i).waypoint_orientation_if.y() << ", "
+                      << temp.at(i).waypoint_orientation_if.z() << ", "
+                      << temp.at(i).waypoint_orientation_if.w() << std::endl
+                      << "Acceleration: "
+                      << temp.at(i).waypoint_acceleration_if(0) << ", "
+                      << temp.at(i).waypoint_acceleration_if(1) << ", "
+                      << temp.at(i).waypoint_acceleration_if(2) << std::endl
+                      << "Time: "
+                      << temp.at(i).waypoint_time << std::endl
+
+                      << std::endl;
+        }
+        break;
+    }
+    default:
         ROS_INFO("Wrong mode chosen");
+        break;
     }
 }
 
@@ -234,6 +316,7 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
             new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
             new_waypoint.waypoint_acceleration_if = acceleration_if;
             new_waypoint.waypoint_orientation_if = orientation_if;
+            new_waypoint.waypoint_acceleration_if = acceleration_if;
             last_action->action_trajectory.push_back(new_waypoint);
             std::cout << "Saved FIRST waypoint in action: "
                       << last_action->action_id
@@ -258,7 +341,7 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
 
             // Save new waypoint into SkyeAction vector
             SkyeWaypoint new_waypoint;
-//            new_waypoint.waypoint_time = time(0)*1000 - starting_time_ms_;
+            //            new_waypoint.waypoint_time = time(0)*1000 - starting_time_ms_;
             current_time_ = std::chrono::high_resolution_clock::now();
             time_difference_ = std::chrono::duration_cast<std::chrono::duration<double>>(current_time_ - teach_starting_time_);
             new_waypoint.waypoint_time = time_difference_.count();
@@ -270,8 +353,8 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
             new_waypoint.waypoint_angular_velocity_bf = angular_velocity_bf;
             new_waypoint.waypoint_acceleration_if = acceleration_if;
 
-//            new_waypoint.waypoint_velocity_if << 0,0,0;
-//            new_waypoint.waypoint_angular_velocity_bf << 0,0,0;
+            //            new_waypoint.waypoint_velocity_if << 0,0,0;
+            //            new_waypoint.waypoint_angular_velocity_bf << 0,0,0;
 
             new_waypoint.waypoint_orientation_if = orientation_if;
             last_action->action_trajectory.push_back(new_waypoint);
@@ -280,9 +363,9 @@ void SkyeTeachAndRepeat::TeachPhase(const Eigen::Vector3d& position_if,
                       << " | time: " << new_waypoint.waypoint_time
                       << " | pos: "
                       <<  position_if(0) << ", "
-                      <<  position_if(1) << ", "
-                      <<  position_if(2)
-                      << std::endl;
+                       <<  position_if(1) << ", "
+                        <<  position_if(2)
+                         << std::endl;
         }
         /*   */
     } else if (teaching_mode_ == 2) { //time teaching mode
@@ -303,10 +386,13 @@ void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
 
     //call waypoint controller and give it the waypoints, set some parameters
     WaypointPose new_pose;
-//    new_pose.position = position_if;
-//    new_pose.velocity = velocity_if;
-//    new_pose.angular_velocity = angular_velocity_bf;
-//    new_pose.orientation = orientation_if;
+    new_pose.position = position_if;
+    new_pose.velocity = velocity_if;
+    new_pose.angular_velocity = angular_velocity_bf;
+    new_pose.orientation = orientation_if;
+
+
+
     waypoints_controller_.ComputeGoalPosition(position_if, orientation_if ,&new_pose);
 
     geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.velocity,
@@ -331,6 +417,18 @@ void SkyeTeachAndRepeat::RepeatPhase(const Eigen::Vector3d& position_if,
     elapsed_time_ = time_difference_.count();
 
     /********************* DEBUG *************************/
+    std::cout << "--------------------------------------------------" << std::endl <<
+                 "position_: " << position_if(0) <<
+                 " | y: " << position_if(1) <<
+                 " | z: " << position_if(2) <<
+                 std::endl << std::endl;
+
+    std::cout << "velocity_if: " << velocity_if(0) <<
+                 " | y: " << velocity_if(1) <<
+                 " | z: " << velocity_if(2) <<
+                 std::endl << std::endl;
+
+
     std::cout << "*************** GOAL DATA ***************" <<  std::endl <<
                  "POSITION: " << new_pose.position(0) <<
                  " | y: " << new_pose.position(1) <<

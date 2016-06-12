@@ -84,12 +84,14 @@ private:
   int teaching_mode_; //1 for space, 2 for time
   bool has_teaching_just_started_;
   bool are_parameters_initialized_;
+  bool already_printed_;
   double waypoints_distance_threshold_;
   double orientation_distance_threshold_;
 
   std::chrono::high_resolution_clock::time_point teach_starting_time_;
   std::chrono::high_resolution_clock::time_point repeat_starting_time_;
   std::chrono::high_resolution_clock::time_point current_time_;
+
   std::chrono::duration<double> time_difference_;
   long double elapsed_time_, delay_;
 

@@ -8,7 +8,7 @@ teaching_mode: 1 #1 is space, 2 is time
 waypoints_distance_threshold: 0.1
 orientation_distance_threshold: 0.3
 
-mass: 12
+mass: 0 #5.9968563639
 radius_: 1.42
 number_of_actuators_: 4
 maximum_force_cog_: 15

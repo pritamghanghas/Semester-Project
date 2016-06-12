@@ -5,6 +5,8 @@
 #include <Eigen/Eigen>
 #include <vector>
 #include <iostream>
+#include <chrono>
+
 #include <geometry_msgs/Wrench.h>
 #include <sensor_msgs/Imu.h>
 #include <dynamic_reconfigure/server.h>
@@ -42,6 +44,7 @@ private:
 
   double k_x_, k_v_, k_R_, k_omega_, k_if_, k_im_;
 
+  ros::Publisher acc_pub_;
 
   SkyeTeachAndRepeat teach_and_repeat_obj_;
   //Eigen variables
@@ -53,14 +56,16 @@ private:
    * @brief velocity_if_ : linear velocity vector expressed in the inertial frame
    */
   Eigen::Vector3d velocity_if_;
-  /**
+  /**s
    * @brief angular_velocity_bf_ :  angular velocity vector expressed in the body frame
    */
   Eigen::Vector3d angular_velocity_bf_;
-  /**
-   * @brief acceleration_if_:  linear acceleration expressed in the inertial frame
-   */
-  Eigen::Vector3d acceleration_if_;
+  Eigen::Vector3d acceleration_imu_;
+  Eigen::Vector3d acceleration_bf_;
+  Eigen::Vector3d angular_acceleration_bf_;
+  Eigen::Vector3d previous_angular_velocity_bf_;
+  Eigen::Vector3d radius_vector_;
+
 
   /**
    * @brief orientation_if_ : skye's orientation expressed as a quaternion
@@ -138,7 +143,6 @@ private:
    * @brief cb : type of the callback for skye dynamic parameters
    */
   dynamic_reconfigure::Server<skye_teach_and_repeat::skye_trparamsConfig>::CallbackType cb;
-
 
 
 };

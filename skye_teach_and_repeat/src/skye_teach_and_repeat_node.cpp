@@ -58,6 +58,7 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
     // Pack desired position
     skye_parameters_.input_desired_position_if<< 0,0,0;
 
+    radius_vector_ << skye_parameters_.input_radius, 0,0;
 
     // Save matrices in SkyeParameters struct
     skye_parameters_.input_inertia = inertia_ ;
@@ -78,7 +79,7 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
             0, 1, 0,
             0, 0, 1;
 
-    gravity_acceleration_if_ << 0,0,9.81007;
+    gravity_acceleration_if_ << 0,0,9.800;
 
     //Initialize parameters of the teach and repeat object
     teach_and_repeat_obj_.InitializeParameters(waypoints_distance_threshold,
@@ -86,9 +87,17 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
                                                teaching_mode, inertia_,
                                                skye_parameters_);
 
+    // Configure callback for dynamic parameters
+    cb = boost::bind(&SkyeTeachAndRepeatNode::ConfigCallback, this, _1, _2);
+    dr_srv_.setCallback(cb);
+
     //Setup service for control input if the service is ready
     ros::service::waitForService(wrench_service_name_);
     wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
+
+    acc_pub_ = nh.advertise<sensor_msgs::Imu>("/skye_T_a_R/imu_bf", 1);
+    previous_time_ = std::chrono::high_resolution_clock::now();
+    previous_angular_velocity_bf_ << 0,0,0;
 
     ROS_INFO("Teach and Repeat node initialized correctly, waiting for mode selection");
 }
@@ -106,10 +115,29 @@ void SkyeTeachAndRepeatNode::ConfigCallback(const skye_teach_and_repeat::skye_tr
     k_omega_ = config.k_omega_tr;
     k_if_ = config.k_if_tr;
     k_im_ = config.k_im_tr;
+
+    if (1) {
+        std::cout << "***********************************************************" << std::endl <<
+                     "CALLED PARAMETERS CALLBACK!" << std::endl << std::endl;
+        std::cout << "k_x_tr: " << config.k_x_tr <<
+                     " | k_v_tr: " << config.k_v_tr <<
+                     " | k_R_tr: " << config.k_R_tr <<
+                     " | k_omega_tr: " << config.k_omega_tr <<
+                     " | k_if_tr: " << config.k_if_tr <<
+                     " | k_omega_: " << config.k_im_tr <<
+                     std::endl << std::endl;
+        std::cout << "***********************************************************" <<
+                     std::endl << std::endl;
+
+    }
+
+
 }
 
 //---------------------------------------------------------------------------------------------------------
 void SkyeTeachAndRepeatNode::AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg){
+    current_time_ = std::chrono::high_resolution_clock::now();
+
     // Save angular velocity from IMU topic
     // this is in the imu frame but since it is a rigid body they are the same in terms of angular velocity
     angular_velocity_bf_ << msg->angular_velocity.x,
@@ -127,15 +155,25 @@ void SkyeTeachAndRepeatNode::AngularVelocityCallback(const sensor_msgs::Imu::Con
     orientation_imu_if_.w() =  msg->orientation.w;
 
     orientation_R_if_ = orientation_imu_if_.matrix();
-    gravity_acceleration_imu_ = orientation_R_if_*gravity_acceleration_if_;
+    gravity_acceleration_imu_ = orientation_R_if_.transpose()*gravity_acceleration_if_;
 
-    acceleration_if_ = linear_acceleration_raw_ - gravity_acceleration_imu_;
+    acceleration_imu_ = linear_acceleration_raw_ - gravity_acceleration_imu_;
 
-    std::cout << "-------------------------------------\n" <<
-                 "Acceleration:\n x:" << acceleration_if_(0) <<
-                 " | y: " << acceleration_if_(1) <<
-                 " | z: " << acceleration_if_(2) <<
-                 std::endl;
+    angular_acceleration_bf_ = (angular_velocity_bf_ - previous_angular_velocity_bf_)/ 0.02; //0.02 because 50hz loop
+
+    acceleration_bf_ = acceleration_imu_ - angular_acceleration_bf_.cross(radius_vector_) - angular_velocity_bf_.cross(angular_velocity_bf_.cross(radius_vector_));
+
+    sensor_msgs::Imu mess;
+    mess.header.frame_id = msg->header.frame_id;
+    mess.header.stamp = msg->header.stamp;
+    mess.linear_acceleration.x = acceleration_bf_(0);
+    mess.linear_acceleration.y = acceleration_bf_(1);
+    mess.linear_acceleration.z = acceleration_bf_(2);
+    acc_pub_.publish(mess);
+
+    previous_angular_velocity_bf_ = angular_velocity_bf_;
+    previous_time_ = current_time_;
+
 }
 //---------------------------------------------------------------------------------------------------------
 void SkyeTeachAndRepeatNode::StateCallback(const gazebo_msgs::LinkState::ConstPtr& msg){
@@ -167,10 +205,72 @@ void SkyeTeachAndRepeatNode::StateCallback(const gazebo_msgs::LinkState::ConstPt
     teach_and_repeat_obj_.ExecuteTeachAndRepeat(position_if_,
                                                 velocity_if_,
                                                 angular_velocity_bf_,
-                                                acceleration_if_,
+                                                acceleration_imu_,
                                                 orientation_if_,
                                                 &control_force_bf_,
                                                 &control_momentum_bf_);
+
+
+
+    /******************** DEBUG ***********************
+     * WHEN REMOVING THIS CODE DO NOT FORGET TO REMOVE IOSTREAM INCLUSION
+     * IN THE HEADER FILE!!!!
+     *
+     */
+    if (1) {
+        std::cout << "--------------------- T & r-----------------------------" << std::endl <<
+                     "position_if_: " << position_if_(0) <<
+                     " | y: " << position_if_(1) <<
+                     " | z: " << position_if_(2) <<
+                     std::endl << std::endl;
+
+
+        std::cout << "velocity_if_: " << velocity_if_(0) <<
+                     " | y: " << velocity_if_(1) <<
+                     " | z: " << velocity_if_(2) <<
+                     std::endl << std::endl;
+
+        std::cout << "angular_velocity_bf_: " << angular_velocity_bf_(0) <<
+                     " | y: " << angular_velocity_bf_(1) <<
+                     " | z: " << angular_velocity_bf_(2) <<
+                     std::endl << std::endl;
+
+
+        std::cout << "acceleration_if_: " << acceleration_imu_(0) <<
+                     " | y: " << acceleration_imu_(1) <<
+                     " | z: " << acceleration_imu_(2) <<
+                     std::endl << std::endl;
+
+        std::cout << "orientation_if_: " << orientation_if_.x() <<
+                     " | y: " << orientation_if_.y() <<
+                     " | z: " << orientation_if_.z() <<
+                     " | w: " << orientation_if_.w() <<
+                     std::endl << std::endl;
+
+
+        // ATTITUDE
+
+        std::cout << "control_force_bf_: " << control_force_bf_(0) <<
+                     " | y: " << control_force_bf_(1) <<
+                     " | z: " << control_force_bf_(2) <<
+                     std::endl << std::endl;
+
+
+        std::cout << "control_momentum_bf_: " << control_momentum_bf_(0) <<
+                     " | y: " << control_momentum_bf_(1) <<
+                     " | z: " << control_momentum_bf_(2) <<
+                     std::endl << std::endl;
+
+
+
+        std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+
+
+
+    }
+
+    /******************** END DEBUG *************************/
+
 
     if(node_mode_ == REPEAT_MODE) {
         this->CallService();
@@ -239,13 +339,16 @@ int main(int argc, char **argv){
     zero.data = 0;
     ros::Publisher mode_sel_pub = nh.advertise<std_msgs::Int16>(mode_topic, 1);
     ros::Publisher repeat_choice_pub = nh.advertise<std_msgs::Int16>(choice_topic, 1);
+
+
     mode_sel_pub.publish(zero);
     repeat_choice_pub.publish(zero);
 
+    ros::Publisher acc_pub = nh.advertise<sensor_msgs::Imu>("/skye_T_a_R/imu_bf", 1);
 
     //Initialize node and subscribe to topics
     SkyeTeachAndRepeatNode node(nh);
-//    ros::Subscriber pos_sub_ground_truth = nh.subscribe (ground_truth_topic, 1, &SkyeTeachAndRepeatNode::StateCallback, &node);
+    ros::Subscriber pos_sub_ground_truth = nh.subscribe (ground_truth_topic, 1, &SkyeTeachAndRepeatNode::StateCallback, &node);
     ros::Subscriber pos_sub_imu = nh.subscribe (imu_topic, 1, &SkyeTeachAndRepeatNode::AngularVelocityCallback, &node);
     ros::Subscriber mode_sel_sub = nh.subscribe (mode_topic, 1, &SkyeTeachAndRepeatNode::ModeSelectionCallback, &node);
     ros::Subscriber choice_sel_sub = nh.subscribe (choice_topic, 1, &SkyeTeachAndRepeatNode::ExecuteActionCallback, &node);
