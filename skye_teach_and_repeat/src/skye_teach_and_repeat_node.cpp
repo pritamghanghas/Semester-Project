@@ -96,7 +96,6 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
     wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
 
     acc_pub_ = nh.advertise<sensor_msgs::Imu>("/skye_T_a_R/imu_bf", 1);
-    previous_time_ = std::chrono::high_resolution_clock::now();
     previous_angular_velocity_bf_ << 0,0,0;
 
     ROS_INFO("Teach and Repeat node initialized correctly, waiting for mode selection");
@@ -130,13 +129,10 @@ void SkyeTeachAndRepeatNode::ConfigCallback(const skye_teach_and_repeat::skye_tr
                      std::endl << std::endl;
 
     }
-
-
 }
 
 //---------------------------------------------------------------------------------------------------------
 void SkyeTeachAndRepeatNode::AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg){
-    current_time_ = std::chrono::high_resolution_clock::now();
 
     // Save angular velocity from IMU topic
     // this is in the imu frame but since it is a rigid body they are the same in terms of angular velocity
@@ -172,7 +168,6 @@ void SkyeTeachAndRepeatNode::AngularVelocityCallback(const sensor_msgs::Imu::Con
     acc_pub_.publish(mess);
 
     previous_angular_velocity_bf_ = angular_velocity_bf_;
-    previous_time_ = current_time_;
 
 }
 //---------------------------------------------------------------------------------------------------------
