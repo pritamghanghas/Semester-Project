@@ -236,7 +236,7 @@ void SkyeGeometricController::ComputeForce(Eigen::Vector3d *output_force_bf){
     Eigen::Vector3d proportional_term, derivative_term;
 
     proportional_term = k_x_*position_error_bf_;
-    derivative_term = k_v_*(velocity_error_bf_) - mass_*desired_acceleration_if_ ;
+    derivative_term = k_v_*(velocity_error_bf_) + mass_*desired_acceleration_if_ ;
 
     // Integrator with antiwindup
     if (position_error_bf_.norm() < distance_integrator_treshold_ ) {

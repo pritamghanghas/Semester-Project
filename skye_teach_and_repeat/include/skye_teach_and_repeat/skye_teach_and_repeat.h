@@ -12,6 +12,8 @@
 
 #define TEACH_MODE 1
 #define REPEAT_MODE 2
+#define SPACE_TEACHING_MODE 1
+#define TIME_TEACHING_MODE 2
 
 struct SkyeWaypoint{
   //TODO: add time
@@ -19,7 +21,7 @@ struct SkyeWaypoint{
   Eigen::Vector3d waypoint_position_if;
   Eigen::Vector3d waypoint_velocity_if;
   Eigen::Vector3d waypoint_angular_velocity_bf;
-  Eigen::Vector3d waypoint_acceleration_if;
+  Eigen::Vector3d waypoint_acceleration_bf;
   Eigen::Quaterniond waypoint_orientation_if;
 };
 
@@ -41,8 +43,10 @@ public:
   //Setters
   bool CheckModeChange(int new_mode);
   bool AssignNewActionToRepeat(int action_to_repeat);
-  void InitializeParameters(double waypoints_threshold,
-                            double orientation_threshold,
+  void InitializeParameters(double waypoints_change_threshold_position,
+                            double waypoints_change_threshold_orientation,
+                            double orientation_sample_threshold,
+                            double position_sample_threshold,
                             int teaching_mode,
                             const Eigen::Matrix3d& inertia,
                             SkyeParameters geometric_params);
@@ -85,8 +89,10 @@ private:
   bool has_teaching_just_started_;
   bool are_parameters_initialized_;
   bool already_printed_;
-  double waypoints_distance_threshold_;
-  double orientation_distance_threshold_;
+  double waypoints_change_threshold_position_;
+  double waypoints_change_threshold_orientation_;
+  double orientation_sample_threshold_;
+  double position_sample_threshold_;
 
   std::chrono::high_resolution_clock::time_point teach_starting_time_;
   std::chrono::high_resolution_clock::time_point repeat_starting_time_;

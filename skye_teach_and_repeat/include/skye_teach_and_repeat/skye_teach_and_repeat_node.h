@@ -29,7 +29,6 @@ public:
   void ModeSelectionCallback(const std_msgs::Int16::ConstPtr& msg);
   void ExecuteActionCallback(const std_msgs::Int16::ConstPtr& msg);
   bool CallService();
-  int get_node_mode();
 
   /**
    * @brief ConfigCallback : Callback for the dynamic configuration of the parameters.

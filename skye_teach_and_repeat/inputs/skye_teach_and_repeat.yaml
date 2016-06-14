@@ -4,11 +4,18 @@ imu_topic: /skye_gz/sensor_msgs/imu_sk
 mode_topic: /skye_teach_and_repeat/std_msgs/control_mode
 choice_topic: /skye_teach_and_repeat/std_msgs/action_choice
 
-teaching_mode: 1 #1 is space, 2 is time
-waypoints_distance_threshold: 0.1
-orientation_distance_threshold: 0.3
+#1 is space, 2 is time
+teaching_mode: 1
 
-mass: 0 #5.9968563639
+waypoints_change_threshold_position: 0.75
+position_sample_threshold: 0.25
+
+waypoints_change_threshold_orientation: 1
+orientation_sample_threshold: 0.6
+
+#5.9968563639
+
+mass: 5.9968563639
 radius_: 1.42
 number_of_actuators_: 4
 maximum_force_cog_: 15
