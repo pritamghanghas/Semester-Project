@@ -106,12 +106,12 @@ void SkyeTeachAndRepeatNode::ConfigCallback(const skye_teach_and_repeat::skye_tr
     k_omega_ = config.k_omega_tr;
     k_if_ = config.k_if_tr;
     k_im_ = config.k_im_tr;
-    skye_parameters_.input_k_x = k_x_;
-    skye_parameters_.input_k_v = k_v_;
-    skye_parameters_.input_k_omega = k_omega_;
-    skye_parameters_.input_k_R = k_R_;
-    skye_parameters_.input_k_if = k_if_;
-    skye_parameters_.input_k_im = k_im_;
+//    skye_parameters_.input_k_x = k_x_;
+//    skye_parameters_.input_k_v = k_v_;
+//    skye_parameters_.input_k_omega = k_omega_;
+//    skye_parameters_.input_k_R = k_R_;
+//    skye_parameters_.input_k_if = k_if_;
+//    skye_parameters_.input_k_im = k_im_;
 
 }
 

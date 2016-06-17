@@ -11,8 +11,8 @@
   <node name="skye_controls_node" pkg="skye_controls" type="skye_controls_node"
         respawn="false" output="screen"/>
 
-<!-- Start up the dynamic reconfigure GUI. >
-  <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure"/ -->
+<!-- Start up the dynamic reconfigure GUI. -->
+  <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure"/>
 
   <rosparam command="load" file="$(find skye_controls)/inputs/skye_controls.yaml"/>
 

@@ -93,6 +93,15 @@ void SkyeTeachAndRepeat::UpdateControllerParameters(double k_x,  double k_v,
                                                     double k_R,  double k_omega){
     // Update the gains with new dynamic parameters
     geometric_controller_.UpdateGains(k_x ,k_v, k_if, k_im, k_R, k_omega);
+//    std::cout << "--------------------- PARAMS UPDATED-----------------------------" << std::endl <<
+//                 "k_x: " << k_x<<
+//                 " | k_v: " << k_v <<
+//                 " | k_if: " << k_if <<
+//                 " | k_im: " << k_im <<
+//                 " | k_R: " << k_R <<
+//                 " | k_omega: " << k_omega <<
+//                 std::endl << std::endl;
+
 }
 
 
