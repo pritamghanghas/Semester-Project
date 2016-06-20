@@ -7,7 +7,6 @@
 #ifndef POSE_CONTROL_NODE_H
 #define POSE_CONTROL_NODE_H
 
-#include <iostream>
 #include <random>
 #include <Eigen/Eigen>
 #include <ros/ros.h>
@@ -88,24 +87,52 @@ private:
      * @brief k_R_ : the attitude control gain
      */
     double k_R_;
-
+    /**
+     * @brief wind_x_ : wind force in the x direction in the body frame
+     */
     double wind_x_;
+    /**
+     * @brief wind_y_ : wind force in the y direction in the body frame
+     */
     double wind_y_;
+    /**
+     * @brief wind_z_ : wind force in the z direction in the body frame
+     */
     double wind_z_;
+    /**
+     * @brief wind_x_var_ : wind variance in the x direction in the body frame
+     */
     double wind_x_var_;
+    /**
+     * @brief wind_y_var_ : wind variance in the y direction in the body frame
+     */
     double wind_y_var_;
+    /**
+     * @brief wind_z_var_ : wind variance in the z direction in the body frame
+     */
     double wind_z_var_;
+    /**
+     * @brief generator_ : random seed used to generate wind values around the mean
+     */
     std::default_random_engine generator_;
+    /**
+     * @brief x_dist_ : normal random distribution sampled for the wind in the axis x
+     */
     std::normal_distribution<double> *x_dist_;
+    /**
+     * @brief y_dist_ : normal random distribution sampled for the wind in the axis y
+     */
     std::normal_distribution<double> *y_dist_;
+    /**
+     * @brief z_dist_ : normal random distribution sampled for the wind in the axis z
+     */
     std::normal_distribution<double> *z_dist_;
-
     /**
      * @brief wrench_service_name_ : name of the service to apply a wrench to the COG of skye in body frame
      */
     std::string wrench_service_name_;
 
-    //ros stuff
+    //ros-related class members
     /**
      * @brief control_wrench_ : wrench created containing control force and momentum that are to be applied to Skye's cog
      */
@@ -129,7 +156,7 @@ private:
      */
     dynamic_reconfigure::Server<skye_controls::skye_paramsConfig>::CallbackType cb;
 
-    //Waypoint Controllers
+    //Waypoint Controller variables
     /**
      * @brief waypoint_controller_ : waypoint controller for multiple waypoint Skye's control
      */
@@ -139,7 +166,7 @@ private:
      */
     WaypointControllerParameters waypoint_parameters_;
 
-    //Skye node
+    //Skye geometric controller variables
     /**
      * @brief geometric_controller_ : geometric trajectory tracking controller as per Lee & al. paper
      */
@@ -195,10 +222,6 @@ private:
      * This also fetches the dynamic parameters for the first time. Then it packs the SkyeParameters struct for later.
      */
     bool ParseParameters(ros::NodeHandle nh);
-
-
-
-
 };
 
 

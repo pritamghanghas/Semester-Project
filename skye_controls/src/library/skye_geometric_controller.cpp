@@ -5,15 +5,17 @@
 
 #include <skye_controls/skye_geometric_controller.h>
 
+//---------------------------------------------------------------------------------------------------------
 SkyeGeometricController::SkyeGeometricController(){
     singularity_detected_ = false;
 }
 
-
+//---------------------------------------------------------------------------------------------------------
 inline void SkyeGeometricController::VectorFromSkewMatrix(Eigen::Matrix3d &skew_matrix, Eigen::Vector3d *vector) {
     *vector << skew_matrix(2, 1), skew_matrix(0,2), skew_matrix(1, 0);
 }
 
+//---------------------------------------------------------------------------------------------------------
 inline void SkyeGeometricController::ComputeNormalizedGains(){
     // To make the tuning independent of the inertia matrix we divide here.
     normalized_k_R_ << k_R_, k_R_, k_R_;
@@ -22,9 +24,9 @@ inline void SkyeGeometricController::ComputeNormalizedGains(){
     // To make the tuning independent of the inertia matrix we divide here.
     normalized_k_omega_ << k_omega_,k_omega_,k_omega_;
     normalized_k_omega_ = normalized_k_omega_.transpose()*inertia_.inverse();
-
 }
 
+//---------------------------------------------------------------------------------------------------------
 void SkyeGeometricController::InitializeParams(const SkyeParameters param){
 
     //Save the parameters
@@ -54,9 +56,9 @@ void SkyeGeometricController::InitializeParams(const SkyeParameters param){
 
     //Compute maximum acceleration cog
     maximum_acceleration_cog_bf_ = (maximum_force_cog_bf_/number_of_actuators_) * radius_;
-
 }
 
+//---------------------------------------------------------------------------------------------------------
 void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_if,
                                                const Eigen::Vector3d &velocity_if,
                                                const Eigen::Quaterniond &orientation_if,
@@ -79,14 +81,18 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
     position_error_bf_ = R_if_.transpose()*position_error_if_;
     velocity_error_bf_ = R_if_.transpose()*velocity_error_if_;
 
-
+    //Convert current rotations to axis angles
     Eigen::AngleAxisd current_rotation, desired_rotation, temporary_rotation;
     current_rotation = R_if_;
     desired_rotation = R_des_if_;
 
+    //Calculate the difference of the angles
     float diff = std::abs(current_rotation.angle() - desired_rotation.angle());
 
+    //Check if a critical point rotation has been found
     if (diff >= M_PI_2 && !singularity_detected_) {
+
+        //if there is a singularity keep track of it so to restore it afterwards
         singularity_detected_ = true;
         R_temp_if_ = R_des_if_;
 
@@ -101,8 +107,12 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
         }
     }
 
+    // If I detected a singularity and I am now close enough to my final attitude
     if (diff <= M_PI_2 && singularity_detected_) {
+        //I save that I don't have a singularity anymore
         singularity_detected_ = false;
+
+        //Original goal restored
         R_des_if_ = R_temp_if_;
         R_temp_if_ << 0,0,0,
                 0,0,0,
@@ -121,12 +131,9 @@ void SkyeGeometricController::UpdateParameters(const Eigen::Vector3d &position_i
 
 }
 
-void SkyeGeometricController::UpdateGains(double k_x,
-                                          double k_v,
-                                          double k_if,
-                                          double k_im,
-                                          double k_R,
-                                          double k_omega){
+//---------------------------------------------------------------------------------------------------------
+void SkyeGeometricController::UpdateGains(double k_x, double k_v, double k_if,
+                                          double k_im, double k_R, double k_omega){
     k_x_ = k_x;
     k_v_ = k_v;
     k_R_ = k_R;
@@ -134,9 +141,9 @@ void SkyeGeometricController::UpdateGains(double k_x,
     k_if_ = k_if;
     k_im_ = k_im;
     this->ComputeNormalizedGains();
-
 }
 
+//---------------------------------------------------------------------------------------------------------
 inline void SkyeGeometricController::SaturateVector(double a_threshold, Eigen::Vector3d *a_vector){
     if (std::abs((*a_vector)(0)) > a_threshold) {
         if(std::signbit((*a_vector)(0))) (*a_vector)(0) = a_threshold*(-1);
@@ -152,61 +159,89 @@ inline void SkyeGeometricController::SaturateVector(double a_threshold, Eigen::V
     }
 }
 
+//---------------------------------------------------------------------------------------------------------
 void SkyeGeometricController::ComputeForce(Eigen::Vector3d *output_force_bf){
 
     Eigen::Vector3d proportional_term, derivative_term;
 
+    //calcuate proportional term
     proportional_term = k_x_*position_error_bf_;
+
+    //calcuate derivative term + feedforward term
     derivative_term = k_v_*(velocity_error_bf_) + mass_*desired_acceleration_if_ ;
 
-    // Integrator with antiwindup
+    // Activate the integrator if within the proper area
     if (position_error_bf_.norm() < distance_integrator_treshold_ ) {
 
-        integrated_position_error_ += k_if_*position_error_bf_ + windup_force_ ;//+ windup_integrator_force_;
+        //Perform the integration with the latest windup term
+        integrated_position_error_ += k_if_*position_error_bf_ + windup_force_ ;
+
+        //Save the unsaturated and integrated force for the windup
         unbounded_force_integrator_ = integrated_position_error_;
+
+        //Now perform the saturation
         SaturateVector(maximum_force_integrator_, &integrated_position_error_);
 
+        //perform the back calculation for the inner windup loop
         windup_integrator_force_ = integrated_position_error_ - unbounded_force_integrator_;
     } else {
         integrated_position_error_ << 0,0,0;
-        integral_term_force_ << 0,0,0;
     }
 
+    //add all the terms of the controller
     resulting_force_ = proportional_term + derivative_term + integrated_position_error_;
     *output_force_bf = resulting_force_ ;
+
     // Force saturation
     this->SaturateVector(maximum_force_cog_bf_, output_force_bf);
+
+    //Perform the anti-windup back calculation for the outer part, i.e. the force saturation
     windup_force_ = *output_force_bf - resulting_force_ ;
 
 }
 
+//---------------------------------------------------------------------------------------------------------
 void SkyeGeometricController::ComputeAcceleration(Eigen::Vector3d *output_acceleration_bf){
 
     Eigen::Vector3d proportional_term, derivative_term;
+
+    //calcuate proportional term
     proportional_term = -normalized_k_R_.cwiseProduct(attitude_error_bf_);
+
+    //calcuate derivative term
     derivative_term = - normalized_k_omega_.cwiseProduct(angular_velocity_error_bf_)
                       + angular_velocity_.cross(angular_velocity_);
 
-    // Integrator with antiwindup
+    // Activate the integrator if within the proper area
     if (attitude_error_bf_.norm() < attitude_integrator_treshold_ ) {
-        integrated_acceleration_error_ += k_im_*attitude_error_bf_ + windup_acceleration_;// + windup_integrator_acceleration_;
+        //Perform the integration with the latest windup term
+        integrated_acceleration_error_ += k_im_*attitude_error_bf_ + windup_acceleration_;
+
+        //Save the unsaturated and integrated acceleration for the windup
         unbounded_acceleration_integrator_ = integrated_acceleration_error_;
+
+        //Now perform the saturation
         SaturateVector(maximum_momentum_integrator_, &integrated_acceleration_error_);
-        windup_integrator_acceleration_= integrated_position_error_ - unbounded_acceleration_integrator_;
+
+        //perform the back calculation for the inner windup loop
+        windup_integrator_acceleration_= integrated_acceleration_error_ - unbounded_acceleration_integrator_;
 
     } else {
         integrated_acceleration_error_ << 0,0,0;
     }
 
+    //add all the terms of the controller
     resulting_acceleration_ = proportional_term + derivative_term + integrated_acceleration_error_;
     *output_acceleration_bf = resulting_acceleration_ ;
+
     //acceleration saturation
     this->SaturateVector(maximum_acceleration_cog_bf_, output_acceleration_bf);
+
+    //Perform the anti-windup back calculation for the outer part, i.e. the acceleration saturation
     windup_acceleration_ = *output_acceleration_bf - resulting_acceleration_ ;
-
-
 }
 
+//---------------------------------------------------------------------------------------------------------
 void SkyeGeometricController::UpdateDesiredPose(const Eigen::Vector3d &desired_position_if,
                                                 const Eigen::Vector3d &desired_velocity_if,
                                                 const Eigen::Vector3d &desired_angular_velocity_bf,

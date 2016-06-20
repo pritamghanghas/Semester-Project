@@ -1,6 +1,7 @@
 #include <pose_control_node.h>
 #include <waypoints_parser.h>
 
+//-----------------------------------------------------------------------------------------------------------------------
 PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
     // setting to zero the control outputs for initialization
     control_force_bf_ << 0,0,0;
@@ -21,11 +22,12 @@ PoseControllerNode::PoseControllerNode(ros::NodeHandle nh){
     wrench_service_ = nh.serviceClient<skye_ros::ApplyWrenchCogBf>(wrench_service_name_, true);
 }
 
+//-----------------------------------------------------------------------------------------------------------------------
 PoseControllerNode::~PoseControllerNode (){
 };
 
 
-
+//-----------------------------------------------------------------------------------------------------------------------
 bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     Eigen::Vector3d zero_v;
     zero_v << 0,0,0;
@@ -62,6 +64,7 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
                                nh.getParam("inertia_31", inertia_31) &&
                                nh.getParam("inertia_32", inertia_32) &&
                                nh.getParam("inertia_33", inertia_33);
+
     // Check if Skye's parameters where imported
     if (! read_all_parameters){
         ROS_ERROR("Geometric Parameters not imported");
@@ -88,8 +91,9 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
 
     bool is_waypoint_controller_ok =  waypoint_controller_.InitParameters(waypoint_parameters_);
     if (! is_waypoint_controller_ok) {
-        ROS_ERROR("WAYPOINT CONTROLLER NOT INITIALIZED CORRECTLY, CHECK SIZES");
+        ROS_ERROR("Waypoint controller not properly initialized, check sizes");
     }
+
     // Pack desired position
     skye_parameters_.input_desired_position_if<< 0,0,0;
 
@@ -131,6 +135,7 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
     skye_parameters_.input_desired_angular_velocity_bf = zero_v;
     skye_parameters_.input_desired_velocity_if = zero_v;
 
+    // Initialize wind random distributions
     x_dist_ = new std::normal_distribution<double>(wind_x_,wind_x_var_);
     y_dist_ = new std::normal_distribution<double>(wind_y_,wind_y_var_);
     z_dist_ = new std::normal_distribution<double>(wind_z_,wind_z_var_);
@@ -139,10 +144,10 @@ bool PoseControllerNode::ParseParameters(ros::NodeHandle nh){
 }
 
 
-
+//-----------------------------------------------------------------------------------------------------------------------
 void PoseControllerNode::ConfigCallback(const skye_controls::skye_paramsConfig &config, uint32_t level)
 {
-    // Set class variables to new values. They match what is input at the dynamic reconfigure GUI.
+    // Set class members to new values. They match what is input at the dynamic reconfigure GUI.
     k_x_ = config.k_x_;
     k_v_ = config.k_v_;
     k_R_ = config.k_R_;
@@ -151,7 +156,7 @@ void PoseControllerNode::ConfigCallback(const skye_controls::skye_paramsConfig &
     k_im_ = config.k_im_;
 }
 
-
+//-----------------------------------------------------------------------------------------------------------------------
 void PoseControllerNode::AngularVelocityCallback(const sensor_msgs::Imu::ConstPtr& msg){
     // Save angular velocity from IMU topic
     // this is in the imu frame but since it is a rigid body they are the same in terms of angular velocity
@@ -160,6 +165,7 @@ void PoseControllerNode::AngularVelocityCallback(const sensor_msgs::Imu::ConstPt
             msg->angular_velocity.z;
 }
 
+//-----------------------------------------------------------------------------------------------------------------------
 void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr& msg){
     // pack last known position in inertial frame
     position_if_ << msg->pose.position.x,
@@ -177,10 +183,15 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
     orientation_if_.z() = msg->pose.orientation.z;
     orientation_if_.w() = msg->pose.orientation.w;
 
+    //perform waypoint control only if there is at least one waypoint
     if (waypoint_parameters_.input_positions.size() > 0) {
 
         WaypointPose new_pose;
+
+        //Computes the new goal position
         waypoint_controller_.ComputeGoalPosition(position_if_, orientation_if_, &new_pose);
+
+        //Updates desired values for the geometric controller
         geometric_controller_.UpdateDesiredPose(new_pose.position, new_pose.velocity,
                                                 new_pose.angular_velocity, new_pose.acceleration, new_pose.orientation);
 
@@ -194,36 +205,17 @@ void PoseControllerNode::PositionCallback(const gazebo_msgs::LinkState::ConstPtr
         geometric_controller_.ComputeAcceleration(&control_acceleration_bf_);
         // Calculate control momentum
         control_momentum_bf_ = inertia_*control_acceleration_bf_;
-
     }
-
-    std::cout << "---------------------------------------------------------------" << std::endl;
-    /********************* DEBUG *************************/
-    std::cout << "force: " << control_force_bf_(0) <<
-                 " | y: " << control_force_bf_(1) <<
-                 " | z: " << control_force_bf_(2) <<
-                 std::endl;
-
-    std::cout << "acceleration: " << control_acceleration_bf_(0) <<
-                 " | y: " << control_acceleration_bf_(1) <<
-                 " | z: " << control_acceleration_bf_(2) <<
-                 std::endl;
-
-    std::cout << "momentum: " << control_momentum_bf_(0) <<
-                 " | y: " << control_momentum_bf_(1) <<
-                 " | z: " << control_momentum_bf_(2) <<
-                 std::endl;
-    /********************* END DEBUG *************************/
-
 }
 
+//-----------------------------------------------------------------------------------------------------------------------
 bool PoseControllerNode::CallService(){
     srv_.request.start_time.nsec = 0;
     srv_.request.duration.sec =  1;
 
-
+    //Initialize random seed with current time to increase randomness
     srand (time(NULL));
-    control_wrench_.force.x =  control_force_bf_(0) + (*x_dist_)(generator_);
+    control_wrench_.force.x = control_force_bf_(0) + (*x_dist_)(generator_); //add random wind here, acts as disturbance
     control_wrench_.force.y = control_force_bf_(1) + (*y_dist_)(generator_);
     control_wrench_.force.z = control_force_bf_(2) + (*z_dist_)(generator_);
     control_wrench_.torque.x = control_momentum_bf_(0);
@@ -238,29 +230,25 @@ bool PoseControllerNode::CallService(){
     return true;
 }
 
+//-----------------------------------------------------------------------------------------------------------------------
 int main(int argc, char **argv){
     //Init ros and create node handle
     ros::init(argc, argv, "skye_position_controller_node");
     ros::NodeHandle nh;
 
-    std::cout << "Ros is init" << std::endl;
-
     // Import ros parameter for service and topic names
     std::string imu_topic, ground_truth_topic;
     bool read_all_parameters = nh.getParam("ground_truth_topic", ground_truth_topic) &&
                                nh.getParam("imu_topic", imu_topic);
+
     // Check if names have correctly been imported
     if (! read_all_parameters) ROS_ERROR("Parameters not imported");
-
-    std::cout << "Read topic names" << std::endl;
 
     //Initialize node and subscribe to topics
     PoseControllerNode node(nh);
     ros::Subscriber pos_sub_ground_truth = nh.subscribe (ground_truth_topic, 1, &PoseControllerNode::PositionCallback, &node);
     ros::Subscriber pos_sub_imu = nh.subscribe (imu_topic, 1, &PoseControllerNode::AngularVelocityCallback, &node);
 
-
-    std::cout << "start looping" << std::endl;
     ros::Rate r(50); // 50 hz
     while (nh.ok())
     {
@@ -268,5 +256,4 @@ int main(int argc, char **argv){
         ros::spinOnce();
         r.sleep();
     }
-
 }
