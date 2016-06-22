@@ -3,7 +3,6 @@
 
 #include <Eigen/Eigen>
 #include <vector>
-#include <iostream>// remove once debug is removed!!!
 
 /**
  * @brief The WaypointControllerParameters struct provides a thin interface to pass parameters.
@@ -16,7 +15,7 @@ struct WaypointControllerParameters{
   std::vector<Eigen::Vector3d> input_angular_velocities;
   std::vector<Eigen::Vector3d> input_accelerations;
   std::vector<Eigen::Quaterniond> input_orientations;
-  double input_goal_change_threshold;
+  double input_position_change_threshold;
   double input_orientation_change_threshold;
 };
 
@@ -56,14 +55,34 @@ public:
                            const Eigen::Quaterniond &current_orientation_if,
                            WaypointPose *new_pose);
 private:
-  double goal_change_threshold_;
+  /**
+   * @brief position_change_threshold_ : threshold on the position error that triggers the goal change.
+   */
+  double position_change_threshold_;
+  /**
+   * @brief orientation_change_threshold_ : threshold on the orientation that allows the goal change.
+   */
   double orientation_change_threshold_;
+  /**
+   * @brief positions_ : vector containing the positions of the waypoint controllers.
+   */
   std::vector<Eigen::Vector3d> positions_;
+  /**
+   * @brief velocities_ : vector containing all the velocities of the waypoints
+   */
   std::vector<Eigen::Vector3d> velocities_;
+  /**
+   * @brief angular_velocities_ : vector containing all the angular velocities of the waypoints.
+   */
   std::vector<Eigen::Vector3d> angular_velocities_;
+  /**
+   * @brief accelerations_ : vector containing all the accelerations of the waypoints.
+   */
   std::vector<Eigen::Vector3d> accelerations_;
+  /**
+   * @brief orientations_ : vector  containing all the orientations of the waypoints.
+   */
   std::vector<Eigen::Quaterniond>  orientations_;
-  WaypointControllerParameters controller_parameters_;
 };
 
 #endif // WAYPOINT_CONTROLLER_H

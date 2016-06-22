@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['posecontrollernode',['PoseControllerNode',['../class_pose_controller_node.html#a17466a8314ad354402401ba27157594c',1,'PoseControllerNode']]],
-  ['positioncallback',['PositionCallback',['../class_pose_controller_node.html#ac4582290cf6ff6b5cd9564fd386c3b39',1,'PoseControllerNode']]],
-  ['pubhullgroundtruth',['pubHullGroundTruth',['../classskye__ros_1_1_skye_ros.html#a8e2c41ab1a0aa514dff6d31aa6fcd008',1,'skye_ros::SkyeRos']]]
+  ['saturatevector',['SaturateVector',['../class_skye_geometric_controller.html#a75b38d5fe2687493eb6c0e917fc0fa1a',1,'SkyeGeometricController']]],
+  ['skyegeometriccontroller',['SkyeGeometricController',['../class_skye_geometric_controller.html#a40739735f7c55b861647ecad873080ac',1,'SkyeGeometricController']]]
 ];

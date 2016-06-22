@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['imucallback',['imuCallback',['../classskye__ros_1_1_skye_ros.html#a7fce94bed2f513ee63aac089ccf40538',1,'skye_ros::SkyeRos']]],
-  ['initializeparams',['InitializeParams',['../class_skye_geometric_controller.html#a78773edf4b0a80b1e26daec62b17a42a',1,'SkyeGeometricController']]],
-  ['initparameters',['InitParameters',['../class_waypoint_controller.html#a10f00d385c12c6ee03b3459d1fe552c1',1,'WaypointController']]]
+  ['parseparameters',['ParseParameters',['../class_pose_controller_node.html#ac1fe656c0f8df15dd3a78f12a57d04fa',1,'PoseControllerNode']]],
+  ['posecontrollernode',['PoseControllerNode',['../class_pose_controller_node.html#a17466a8314ad354402401ba27157594c',1,'PoseControllerNode']]],
+  ['positioncallback',['PositionCallback',['../class_pose_controller_node.html#ac4582290cf6ff6b5cd9564fd386c3b39',1,'PoseControllerNode']]]
 ];

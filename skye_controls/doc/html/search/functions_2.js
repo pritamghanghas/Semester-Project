@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['getgroundtruthfrequency',['getGroundTruthFrequency',['../classskye__ros_1_1_skye_ros.html#aa325d6b4adfceebf2cb630a56baae8b8',1,'skye_ros::SkyeRos']]],
-  ['getlinkstatened',['getLinkStateNed',['../classskye__ros_1_1_skye_ros.html#ac4bd9e5c80045fdf72a0e43eb43434e2',1,'skye_ros::SkyeRos']]]
+  ['initializeparams',['InitializeParams',['../class_skye_geometric_controller.html#a78773edf4b0a80b1e26daec62b17a42a',1,'SkyeGeometricController']]],
+  ['initparameters',['InitParameters',['../class_waypoint_controller.html#aa05440d8e44108c18d52a60cba938662',1,'WaypointController']]]
 ];

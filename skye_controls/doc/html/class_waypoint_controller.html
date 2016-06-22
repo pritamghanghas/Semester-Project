@@ -40,8 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -66,7 +64,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -75,7 +72,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -88,6 +85,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_waypoint_controller-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">WaypointController Class Reference</div>  </div>
@@ -101,26 +99,63 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a10f00d385c12c6ee03b3459d1fe552c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#a10f00d385c12c6ee03b3459d1fe552c1">InitParameters</a> (<a class="el" href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a> parameters)</td></tr>
-<tr class="memdesc:a10f00d385c12c6ee03b3459d1fe552c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">InitParameters : saves parameters in class members.  <a href="#a10f00d385c12c6ee03b3459d1fe552c1">More...</a><br/></td></tr>
-<tr class="separator:a10f00d385c12c6ee03b3459d1fe552c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99af680a2e0b31de954e96c4df44d26e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#a99af680a2e0b31de954e96c4df44d26e">ComputeGoal</a> (const Eigen::Vector3d &amp;current_position_if, <a class="el" href="struct_waypoint_pose.html">WaypointPose</a> *new_pose)</td></tr>
-<tr class="memdesc:a99af680a2e0b31de954e96c4df44d26e"><td class="mdescLeft">&#160;</td><td class="mdescRight">ComputeGoal : computes a new goal given the actual position of skye.  <a href="#a99af680a2e0b31de954e96c4df44d26e">More...</a><br/></td></tr>
-<tr class="separator:a99af680a2e0b31de954e96c4df44d26e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa05440d8e44108c18d52a60cba938662"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#aa05440d8e44108c18d52a60cba938662">InitParameters</a> (<a class="el" href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a> parameters)</td></tr>
+<tr class="memdesc:aa05440d8e44108c18d52a60cba938662"><td class="mdescLeft">&#160;</td><td class="mdescRight">InitParameters : saves parameters in class members.  <a href="#aa05440d8e44108c18d52a60cba938662">More...</a><br/></td></tr>
+<tr class="separator:aa05440d8e44108c18d52a60cba938662"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1e350a0e839cf98de1abefa54544b92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#af1e350a0e839cf98de1abefa54544b92">ComputeGoalPosition</a> (const Eigen::Vector3d &amp;current_position_if, const Eigen::Quaterniond &amp;current_orientation_if, <a class="el" href="struct_waypoint_pose.html">WaypointPose</a> *new_pose)</td></tr>
+<tr class="memdesc:af1e350a0e839cf98de1abefa54544b92"><td class="mdescLeft">&#160;</td><td class="mdescRight">ComputeGoal : computes a new goal given the actual position of skye.  <a href="#af1e350a0e839cf98de1abefa54544b92">More...</a><br/></td></tr>
+<tr class="separator:af1e350a0e839cf98de1abefa54544b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a1529bd3b5d8b471f017e7e43481bf37a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1529bd3b5d8b471f017e7e43481bf37a"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#a1529bd3b5d8b471f017e7e43481bf37a">position_change_threshold_</a></td></tr>
+<tr class="memdesc:a1529bd3b5d8b471f017e7e43481bf37a"><td class="mdescLeft">&#160;</td><td class="mdescRight">position_change_threshold_ : threshold on the position error that triggers the goal change. <br/></td></tr>
+<tr class="separator:a1529bd3b5d8b471f017e7e43481bf37a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd282df89cd96fc9afd14ff401616ae6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd282df89cd96fc9afd14ff401616ae6"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#afd282df89cd96fc9afd14ff401616ae6">orientation_change_threshold_</a></td></tr>
+<tr class="memdesc:afd282df89cd96fc9afd14ff401616ae6"><td class="mdescLeft">&#160;</td><td class="mdescRight">orientation_change_threshold_ : threshold on the orientation that allows the goal change. <br/></td></tr>
+<tr class="separator:afd282df89cd96fc9afd14ff401616ae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc7310047b62787226e1fc7802c32aad"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afc7310047b62787226e1fc7802c32aad"></a>
+std::vector&lt; Eigen::Vector3d &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#afc7310047b62787226e1fc7802c32aad">positions_</a></td></tr>
+<tr class="memdesc:afc7310047b62787226e1fc7802c32aad"><td class="mdescLeft">&#160;</td><td class="mdescRight">positions_ : vector containing the positions of the waypoint controllers. <br/></td></tr>
+<tr class="separator:afc7310047b62787226e1fc7802c32aad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0609521600ea43b7a3c50e436560153b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0609521600ea43b7a3c50e436560153b"></a>
+std::vector&lt; Eigen::Vector3d &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#a0609521600ea43b7a3c50e436560153b">velocities_</a></td></tr>
+<tr class="memdesc:a0609521600ea43b7a3c50e436560153b"><td class="mdescLeft">&#160;</td><td class="mdescRight">velocities_ : vector containing all the velocities of the waypoints <br/></td></tr>
+<tr class="separator:a0609521600ea43b7a3c50e436560153b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad56afddef4b8a1a8f89a8d19c0dd96b8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad56afddef4b8a1a8f89a8d19c0dd96b8"></a>
+std::vector&lt; Eigen::Vector3d &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#ad56afddef4b8a1a8f89a8d19c0dd96b8">angular_velocities_</a></td></tr>
+<tr class="memdesc:ad56afddef4b8a1a8f89a8d19c0dd96b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">angular_velocities_ : vector containing all the angular velocities of the waypoints. <br/></td></tr>
+<tr class="separator:ad56afddef4b8a1a8f89a8d19c0dd96b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af49bbc5e7035764fba517c9d7194f627"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af49bbc5e7035764fba517c9d7194f627"></a>
+std::vector&lt; Eigen::Vector3d &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#af49bbc5e7035764fba517c9d7194f627">accelerations_</a></td></tr>
+<tr class="memdesc:af49bbc5e7035764fba517c9d7194f627"><td class="mdescLeft">&#160;</td><td class="mdescRight">accelerations_ : vector containing all the accelerations of the waypoints. <br/></td></tr>
+<tr class="separator:af49bbc5e7035764fba517c9d7194f627"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93ff74a9b72d522fc1e7ea7cd205df0b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a93ff74a9b72d522fc1e7ea7cd205df0b"></a>
+std::vector&lt; Eigen::Quaterniond &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_waypoint_controller.html#a93ff74a9b72d522fc1e7ea7cd205df0b">orientations_</a></td></tr>
+<tr class="memdesc:a93ff74a9b72d522fc1e7ea7cd205df0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">orientations_ : vector containing all the orientations of the waypoints. <br/></td></tr>
+<tr class="separator:a93ff74a9b72d522fc1e7ea7cd205df0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="class_waypoint_controller.html" title="The WaypointController class takes care of providing new goals whenever a certain threshold is passed...">WaypointController</a> class takes care of providing new goals whenever a certain threshold is passed. </p>
 <p>before computing a new goal the class instance shoud have the parameters initialized with InitParameters </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a99af680a2e0b31de954e96c4df44d26e"></a>
+<a class="anchor" id="af1e350a0e839cf98de1abefa54544b92"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void WaypointController::ComputeGoal </td>
+          <td class="memname">void WaypointController::ComputeGoalPosition </td>
           <td>(</td>
           <td class="paramtype">const Eigen::Vector3d &amp;&#160;</td>
           <td class="paramname"><em>current_position_if</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::Quaterniond &amp;&#160;</td>
+          <td class="paramname"><em>current_orientation_if</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -147,12 +182,12 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a10f00d385c12c6ee03b3459d1fe552c1"></a>
+<a class="anchor" id="aa05440d8e44108c18d52a60cba938662"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void WaypointController::InitParameters </td>
+          <td class="memname">bool WaypointController::InitParameters </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a>&#160;</td>
           <td class="paramname"><em>parameters</em></td><td>)</td>
@@ -172,13 +207,13 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>skye_controls/include/skye_controls/<a class="el" href="waypoint__controller_8h_source.html">waypoint_controller.h</a></li>
-<li>skye_controls/src/library/waypoint_controller.cpp</li>
+<li>include/skye_controls/<a class="el" href="waypoint__controller_8h_source.html">waypoint_controller.h</a></li>
+<li>src/library/waypoint_controller.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon May 16 2016 15:54:02 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2016 14:39:21 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

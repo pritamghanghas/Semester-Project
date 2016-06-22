@@ -40,8 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -66,7 +64,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
       <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
       <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
@@ -75,7 +72,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -104,6 +101,15 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a4c14b1d687197e91103b42de17f7234a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4c14b1d687197e91103b42de17f7234a"></a>
 Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><b>position</b></td></tr>
 <tr class="separator:a4c14b1d687197e91103b42de17f7234a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7721651643e8d44dc5fd3e75c82caaa1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7721651643e8d44dc5fd3e75c82caaa1"></a>
+Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><b>velocity</b></td></tr>
+<tr class="separator:a7721651643e8d44dc5fd3e75c82caaa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adce90178cc0e3a8f36d6a05b3a266069"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adce90178cc0e3a8f36d6a05b3a266069"></a>
+Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><b>angular_velocity</b></td></tr>
+<tr class="separator:adce90178cc0e3a8f36d6a05b3a266069"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8b52d815e3b3b18ffc04343819dd2bb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad8b52d815e3b3b18ffc04343819dd2bb"></a>
+Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><b>acceleration</b></td></tr>
+<tr class="separator:ad8b52d815e3b3b18ffc04343819dd2bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add7868caf7e885948e09b95a71dc3e58"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add7868caf7e885948e09b95a71dc3e58"></a>
 Eigen::Quaterniond&#160;</td><td class="memItemRight" valign="bottom"><b>orientation</b></td></tr>
 <tr class="separator:add7868caf7e885948e09b95a71dc3e58"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -111,12 +117,12 @@ Eigen::Quaterniond&#160;</td><td class="memItemRight" valign="bottom"><b>orienta
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="struct_waypoint_pose.html" title="The WaypointPose struct is used to pack position and orientation together position is an Eigen::Vecto...">WaypointPose</a> struct is used to pack position and orientation together position is an Eigen::Vector3d and orientation is an Eigen::Quaterniond. </p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>skye_controls/include/skye_controls/<a class="el" href="waypoint__controller_8h_source.html">waypoint_controller.h</a></li>
+<li>include/skye_controls/<a class="el" href="waypoint__controller_8h_source.html">waypoint_controller.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon May 16 2016 15:54:02 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2016 14:39:21 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

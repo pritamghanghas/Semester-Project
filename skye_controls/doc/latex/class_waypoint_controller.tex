@@ -13,10 +13,34 @@ The \hyperlink{class_waypoint_controller}{Waypoint\-Controller} class takes care
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \hyperlink{class_waypoint_controller_a10f00d385c12c6ee03b3459d1fe552c1}{Init\-Parameters} (\hyperlink{struct_waypoint_controller_parameters}{Waypoint\-Controller\-Parameters} parameters)
+bool \hyperlink{class_waypoint_controller_aa05440d8e44108c18d52a60cba938662}{Init\-Parameters} (\hyperlink{struct_waypoint_controller_parameters}{Waypoint\-Controller\-Parameters} parameters)
 \begin{DoxyCompactList}\small\item\em Init\-Parameters \-: saves parameters in class members. \end{DoxyCompactList}\item 
-void \hyperlink{class_waypoint_controller_a99af680a2e0b31de954e96c4df44d26e}{Compute\-Goal} (const Eigen\-::\-Vector3d \&current\-\_\-position\-\_\-if, \hyperlink{struct_waypoint_pose}{Waypoint\-Pose} $\ast$new\-\_\-pose)
+void \hyperlink{class_waypoint_controller_af1e350a0e839cf98de1abefa54544b92}{Compute\-Goal\-Position} (const Eigen\-::\-Vector3d \&current\-\_\-position\-\_\-if, const Eigen\-::\-Quaterniond \&current\-\_\-orientation\-\_\-if, \hyperlink{struct_waypoint_pose}{Waypoint\-Pose} $\ast$new\-\_\-pose)
 \begin{DoxyCompactList}\small\item\em Compute\-Goal \-: computes a new goal given the actual position of skye. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{class_waypoint_controller_a1529bd3b5d8b471f017e7e43481bf37a}{double \hyperlink{class_waypoint_controller_a1529bd3b5d8b471f017e7e43481bf37a}{position\-\_\-change\-\_\-threshold\-\_\-}}\label{class_waypoint_controller_a1529bd3b5d8b471f017e7e43481bf37a}
+
+\begin{DoxyCompactList}\small\item\em position\-\_\-change\-\_\-threshold\-\_\- \-: threshold on the position error that triggers the goal change. \end{DoxyCompactList}\item 
+\hypertarget{class_waypoint_controller_afd282df89cd96fc9afd14ff401616ae6}{double \hyperlink{class_waypoint_controller_afd282df89cd96fc9afd14ff401616ae6}{orientation\-\_\-change\-\_\-threshold\-\_\-}}\label{class_waypoint_controller_afd282df89cd96fc9afd14ff401616ae6}
+
+\begin{DoxyCompactList}\small\item\em orientation\-\_\-change\-\_\-threshold\-\_\- \-: threshold on the orientation that allows the goal change. \end{DoxyCompactList}\item 
+\hypertarget{class_waypoint_controller_afc7310047b62787226e1fc7802c32aad}{std\-::vector$<$ Eigen\-::\-Vector3d $>$ \hyperlink{class_waypoint_controller_afc7310047b62787226e1fc7802c32aad}{positions\-\_\-}}\label{class_waypoint_controller_afc7310047b62787226e1fc7802c32aad}
+
+\begin{DoxyCompactList}\small\item\em positions\-\_\- \-: vector containing the positions of the waypoint controllers. \end{DoxyCompactList}\item 
+\hypertarget{class_waypoint_controller_a0609521600ea43b7a3c50e436560153b}{std\-::vector$<$ Eigen\-::\-Vector3d $>$ \hyperlink{class_waypoint_controller_a0609521600ea43b7a3c50e436560153b}{velocities\-\_\-}}\label{class_waypoint_controller_a0609521600ea43b7a3c50e436560153b}
+
+\begin{DoxyCompactList}\small\item\em velocities\-\_\- \-: vector containing all the velocities of the waypoints \end{DoxyCompactList}\item 
+\hypertarget{class_waypoint_controller_ad56afddef4b8a1a8f89a8d19c0dd96b8}{std\-::vector$<$ Eigen\-::\-Vector3d $>$ \hyperlink{class_waypoint_controller_ad56afddef4b8a1a8f89a8d19c0dd96b8}{angular\-\_\-velocities\-\_\-}}\label{class_waypoint_controller_ad56afddef4b8a1a8f89a8d19c0dd96b8}
+
+\begin{DoxyCompactList}\small\item\em angular\-\_\-velocities\-\_\- \-: vector containing all the angular velocities of the waypoints. \end{DoxyCompactList}\item 
+\hypertarget{class_waypoint_controller_af49bbc5e7035764fba517c9d7194f627}{std\-::vector$<$ Eigen\-::\-Vector3d $>$ \hyperlink{class_waypoint_controller_af49bbc5e7035764fba517c9d7194f627}{accelerations\-\_\-}}\label{class_waypoint_controller_af49bbc5e7035764fba517c9d7194f627}
+
+\begin{DoxyCompactList}\small\item\em accelerations\-\_\- \-: vector containing all the accelerations of the waypoints. \end{DoxyCompactList}\item 
+\hypertarget{class_waypoint_controller_a93ff74a9b72d522fc1e7ea7cd205df0b}{std\-::vector$<$ Eigen\-::\-Quaterniond $>$ \hyperlink{class_waypoint_controller_a93ff74a9b72d522fc1e7ea7cd205df0b}{orientations\-\_\-}}\label{class_waypoint_controller_a93ff74a9b72d522fc1e7ea7cd205df0b}
+
+\begin{DoxyCompactList}\small\item\em orientations\-\_\- \-: vector containing all the orientations of the waypoints. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \subsection{Detailed Description}
@@ -25,14 +49,15 @@ The \hyperlink{class_waypoint_controller}{Waypoint\-Controller} class takes care
 before computing a new goal the class instance shoud have the parameters initialized with Init\-Parameters 
 
 \subsection{Member Function Documentation}
-\hypertarget{class_waypoint_controller_a99af680a2e0b31de954e96c4df44d26e}{\index{Waypoint\-Controller@{Waypoint\-Controller}!Compute\-Goal@{Compute\-Goal}}
-\index{Compute\-Goal@{Compute\-Goal}!WaypointController@{Waypoint\-Controller}}
-\subsubsection[{Compute\-Goal}]{\setlength{\rightskip}{0pt plus 5cm}void Waypoint\-Controller\-::\-Compute\-Goal (
+\hypertarget{class_waypoint_controller_af1e350a0e839cf98de1abefa54544b92}{\index{Waypoint\-Controller@{Waypoint\-Controller}!Compute\-Goal\-Position@{Compute\-Goal\-Position}}
+\index{Compute\-Goal\-Position@{Compute\-Goal\-Position}!WaypointController@{Waypoint\-Controller}}
+\subsubsection[{Compute\-Goal\-Position}]{\setlength{\rightskip}{0pt plus 5cm}void Waypoint\-Controller\-::\-Compute\-Goal\-Position (
 \begin{DoxyParamCaption}
 \item[{const Eigen\-::\-Vector3d \&}]{current\-\_\-position\-\_\-if, }
+\item[{const Eigen\-::\-Quaterniond \&}]{current\-\_\-orientation\-\_\-if, }
 \item[{{\bf Waypoint\-Pose} $\ast$}]{new\-\_\-pose}
 \end{DoxyParamCaption}
-)}}\label{class_waypoint_controller_a99af680a2e0b31de954e96c4df44d26e}
+)}}\label{class_waypoint_controller_af1e350a0e839cf98de1abefa54544b92}
 
 
 Compute\-Goal \-: computes a new goal given the actual position of skye. 
@@ -44,13 +69,13 @@ Compute\-Goal \-: computes a new goal given the actual position of skye.
 {\em new\-\_\-pose} & \-: the output vector passed as a new Waypose \\
 \hline
 \end{DoxyParams}
-\hypertarget{class_waypoint_controller_a10f00d385c12c6ee03b3459d1fe552c1}{\index{Waypoint\-Controller@{Waypoint\-Controller}!Init\-Parameters@{Init\-Parameters}}
+\hypertarget{class_waypoint_controller_aa05440d8e44108c18d52a60cba938662}{\index{Waypoint\-Controller@{Waypoint\-Controller}!Init\-Parameters@{Init\-Parameters}}
 \index{Init\-Parameters@{Init\-Parameters}!WaypointController@{Waypoint\-Controller}}
-\subsubsection[{Init\-Parameters}]{\setlength{\rightskip}{0pt plus 5cm}void Waypoint\-Controller\-::\-Init\-Parameters (
+\subsubsection[{Init\-Parameters}]{\setlength{\rightskip}{0pt plus 5cm}bool Waypoint\-Controller\-::\-Init\-Parameters (
 \begin{DoxyParamCaption}
 \item[{{\bf Waypoint\-Controller\-Parameters}}]{parameters}
 \end{DoxyParamCaption}
-)}}\label{class_waypoint_controller_a10f00d385c12c6ee03b3459d1fe552c1}
+)}}\label{class_waypoint_controller_aa05440d8e44108c18d52a60cba938662}
 
 
 Init\-Parameters \-: saves parameters in class members. 
@@ -64,5 +89,5 @@ Init\-Parameters \-: saves parameters in class members.
 
 The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
 \item 
-skye\-\_\-controls/include/skye\-\_\-controls/waypoint\-\_\-controller.\-h\item 
-skye\-\_\-controls/src/library/waypoint\-\_\-controller.\-cpp\end{DoxyCompactItemize}
+include/skye\-\_\-controls/waypoint\-\_\-controller.\-h\item 
+src/library/waypoint\-\_\-controller.\-cpp\end{DoxyCompactItemize}

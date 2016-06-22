@@ -83,7 +83,7 @@ void SkyeTeachAndRepeat::InitializeParameters(  double waypoints_change_threshol
     inertia_ = inertia;
     geometric_controller_parameters_ = geometric_params;
     geometric_controller_.InitializeParams(geometric_params);
-    waypoints_parameters_.input_goal_change_threshold = waypoints_change_threshold_position_;
+    waypoints_parameters_.input_position_change_threshold = waypoints_change_threshold_position_;
     waypoints_parameters_.input_orientation_change_threshold = waypoints_change_threshold_orientation_;
 
 }

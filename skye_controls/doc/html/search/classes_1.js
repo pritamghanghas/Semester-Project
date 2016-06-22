@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['posecontrollernode',['PoseControllerNode',['../class_pose_controller_node.html',1,'']]]
+  ['skyegeometriccontroller',['SkyeGeometricController',['../class_skye_geometric_controller.html',1,'']]],
+  ['skyeparameters',['SkyeParameters',['../struct_skye_parameters.html',1,'']]]
 ];

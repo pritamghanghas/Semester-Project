@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>SkyeControls: skye_controls/include/skye_controls/waypoint_controller.h Source File</title>
+<title>SkyeControls: include/skye_controls/waypoint_controller.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -40,8 +40,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -72,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -83,7 +81,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_46ec7577d28f6b9824aeee50f460634b.html">skye_controls</a></li><li class="navelem"><a class="el" href="dir_497d6be7f66216537fbfff4e8c4b1223.html">include</a></li><li class="navelem"><a class="el" href="dir_dcf3730939b2c85b09df96cf40b57721.html">skye_controls</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_e04461ce31f15c341228f405892cf718.html">skye_controls</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -96,45 +94,61 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;Eigen/Eigen&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span><span class="comment">// remove once debug is removed!!!</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="struct_waypoint_controller_parameters.html">   13</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a>{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    std::vector&lt;Eigen::Vector3d&gt; input_waypoints;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    std::vector&lt;Eigen::Quaterniond&gt; input_orientations;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">double</span> input_goal_change_threshold;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;};</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="struct_waypoint_pose.html">   23</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_waypoint_pose.html">WaypointPose</a> {</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    Eigen::Vector3d position;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    Eigen::Quaterniond orientation;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;};</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="class_waypoint_controller.html">   33</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_waypoint_controller.html">WaypointController</a></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="class_waypoint_controller.html">WaypointController</a>();</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    ~<a class="code" href="class_waypoint_controller.html">WaypointController</a>();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_waypoint_controller.html#a10f00d385c12c6ee03b3459d1fe552c1">InitParameters</a>(<a class="code" href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a> parameters);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_waypoint_controller.html#a99af680a2e0b31de954e96c4df44d26e">ComputeGoal</a>(<span class="keyword">const</span> Eigen::Vector3d &amp;current_position_if,</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                     <a class="code" href="struct_waypoint_pose.html">WaypointPose</a> *new_pose);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">double</span> goal_change_threshold_;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    std::vector&lt;Eigen::Vector3d&gt; waypoints_;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    std::vector&lt;Eigen::Quaterniond&gt;  orientations_;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <a class="code" href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a> controller_parameters_;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;};</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif // WAYPOINT_CONTROLLER_H</span></div>
-<div class="ttc" id="class_waypoint_controller_html"><div class="ttname"><a href="class_waypoint_controller.html">WaypointController</a></div><div class="ttdoc">The WaypointController class takes care of providing new goals whenever a certain threshold is passed...</div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:33</div></div>
-<div class="ttc" id="class_waypoint_controller_html_a10f00d385c12c6ee03b3459d1fe552c1"><div class="ttname"><a href="class_waypoint_controller.html#a10f00d385c12c6ee03b3459d1fe552c1">WaypointController::InitParameters</a></div><div class="ttdeci">void InitParameters(WaypointControllerParameters parameters)</div><div class="ttdoc">InitParameters : saves parameters in class members. </div><div class="ttdef"><b>Definition:</b> waypoint_controller.cpp:11</div></div>
-<div class="ttc" id="struct_waypoint_controller_parameters_html"><div class="ttname"><a href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a></div><div class="ttdoc">The WaypointControllerParameters struct provides a thin interface to pass parameters. </div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:13</div></div>
-<div class="ttc" id="class_waypoint_controller_html_a99af680a2e0b31de954e96c4df44d26e"><div class="ttname"><a href="class_waypoint_controller.html#a99af680a2e0b31de954e96c4df44d26e">WaypointController::ComputeGoal</a></div><div class="ttdeci">void ComputeGoal(const Eigen::Vector3d &amp;current_position_if, WaypointPose *new_pose)</div><div class="ttdoc">ComputeGoal : computes a new goal given the actual position of skye. </div><div class="ttdef"><b>Definition:</b> waypoint_controller.cpp:17</div></div>
-<div class="ttc" id="struct_waypoint_pose_html"><div class="ttname"><a href="struct_waypoint_pose.html">WaypointPose</a></div><div class="ttdoc">The WaypointPose struct is used to pack position and orientation together position is an Eigen::Vecto...</div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:23</div></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="struct_waypoint_controller_parameters.html">   12</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a>{</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;  std::vector&lt;Eigen::Vector3d&gt; input_positions;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  std::vector&lt;Eigen::Vector3d&gt; input_velocities;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  std::vector&lt;Eigen::Vector3d&gt; input_angular_velocities;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  std::vector&lt;Eigen::Vector3d&gt; input_accelerations;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  std::vector&lt;Eigen::Quaterniond&gt; input_orientations;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  <span class="keywordtype">double</span> input_position_change_threshold;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  <span class="keywordtype">double</span> input_orientation_change_threshold;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;};</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="struct_waypoint_pose.html">   26</a></span>&#160;<span class="keyword">struct </span><a class="code" href="struct_waypoint_pose.html">WaypointPose</a> {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  Eigen::Vector3d position;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  Eigen::Vector3d velocity;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  Eigen::Vector3d angular_velocity;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  Eigen::Vector3d acceleration;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  Eigen::Quaterniond orientation;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;};</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="class_waypoint_controller.html">   39</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_waypoint_controller.html">WaypointController</a></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <a class="code" href="class_waypoint_controller.html">WaypointController</a>();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  ~<a class="code" href="class_waypoint_controller.html">WaypointController</a>();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="class_waypoint_controller.html#aa05440d8e44108c18d52a60cba938662">InitParameters</a>(<a class="code" href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a> parameters);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="class_waypoint_controller.html#af1e350a0e839cf98de1abefa54544b92">ComputeGoalPosition</a>(<span class="keyword">const</span> Eigen::Vector3d &amp;current_position_if,</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                           <span class="keyword">const</span> Eigen::Quaterniond &amp;current_orientation_if,</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                           <a class="code" href="struct_waypoint_pose.html">WaypointPose</a> *new_pose);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="class_waypoint_controller.html#a1529bd3b5d8b471f017e7e43481bf37a">   61</a></span>&#160;  <span class="keywordtype">double</span> <a class="code" href="class_waypoint_controller.html#a1529bd3b5d8b471f017e7e43481bf37a">position_change_threshold_</a>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="class_waypoint_controller.html#afd282df89cd96fc9afd14ff401616ae6">   65</a></span>&#160;  <span class="keywordtype">double</span> <a class="code" href="class_waypoint_controller.html#afd282df89cd96fc9afd14ff401616ae6">orientation_change_threshold_</a>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="class_waypoint_controller.html#afc7310047b62787226e1fc7802c32aad">   69</a></span>&#160;  std::vector&lt;Eigen::Vector3d&gt; <a class="code" href="class_waypoint_controller.html#afc7310047b62787226e1fc7802c32aad">positions_</a>;</div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="class_waypoint_controller.html#a0609521600ea43b7a3c50e436560153b">   73</a></span>&#160;  std::vector&lt;Eigen::Vector3d&gt; <a class="code" href="class_waypoint_controller.html#a0609521600ea43b7a3c50e436560153b">velocities_</a>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="class_waypoint_controller.html#ad56afddef4b8a1a8f89a8d19c0dd96b8">   77</a></span>&#160;  std::vector&lt;Eigen::Vector3d&gt; <a class="code" href="class_waypoint_controller.html#ad56afddef4b8a1a8f89a8d19c0dd96b8">angular_velocities_</a>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="class_waypoint_controller.html#af49bbc5e7035764fba517c9d7194f627">   81</a></span>&#160;  std::vector&lt;Eigen::Vector3d&gt; <a class="code" href="class_waypoint_controller.html#af49bbc5e7035764fba517c9d7194f627">accelerations_</a>;</div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="class_waypoint_controller.html#a93ff74a9b72d522fc1e7ea7cd205df0b">   85</a></span>&#160;  std::vector&lt;Eigen::Quaterniond&gt;  <a class="code" href="class_waypoint_controller.html#a93ff74a9b72d522fc1e7ea7cd205df0b">orientations_</a>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;};</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">#endif // WAYPOINT_CONTROLLER_H</span></div>
+<div class="ttc" id="class_waypoint_controller_html_aa05440d8e44108c18d52a60cba938662"><div class="ttname"><a href="class_waypoint_controller.html#aa05440d8e44108c18d52a60cba938662">WaypointController::InitParameters</a></div><div class="ttdeci">bool InitParameters(WaypointControllerParameters parameters)</div><div class="ttdoc">InitParameters : saves parameters in class members. </div><div class="ttdef"><b>Definition:</b> waypoint_controller.cpp:12</div></div>
+<div class="ttc" id="class_waypoint_controller_html"><div class="ttname"><a href="class_waypoint_controller.html">WaypointController</a></div><div class="ttdoc">The WaypointController class takes care of providing new goals whenever a certain threshold is passed...</div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:39</div></div>
+<div class="ttc" id="class_waypoint_controller_html_a93ff74a9b72d522fc1e7ea7cd205df0b"><div class="ttname"><a href="class_waypoint_controller.html#a93ff74a9b72d522fc1e7ea7cd205df0b">WaypointController::orientations_</a></div><div class="ttdeci">std::vector&lt; Eigen::Quaterniond &gt; orientations_</div><div class="ttdoc">orientations_ : vector containing all the orientations of the waypoints. </div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:85</div></div>
+<div class="ttc" id="class_waypoint_controller_html_ad56afddef4b8a1a8f89a8d19c0dd96b8"><div class="ttname"><a href="class_waypoint_controller.html#ad56afddef4b8a1a8f89a8d19c0dd96b8">WaypointController::angular_velocities_</a></div><div class="ttdeci">std::vector&lt; Eigen::Vector3d &gt; angular_velocities_</div><div class="ttdoc">angular_velocities_ : vector containing all the angular velocities of the waypoints. </div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:77</div></div>
+<div class="ttc" id="struct_waypoint_controller_parameters_html"><div class="ttname"><a href="struct_waypoint_controller_parameters.html">WaypointControllerParameters</a></div><div class="ttdoc">The WaypointControllerParameters struct provides a thin interface to pass parameters. </div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:12</div></div>
+<div class="ttc" id="class_waypoint_controller_html_a0609521600ea43b7a3c50e436560153b"><div class="ttname"><a href="class_waypoint_controller.html#a0609521600ea43b7a3c50e436560153b">WaypointController::velocities_</a></div><div class="ttdeci">std::vector&lt; Eigen::Vector3d &gt; velocities_</div><div class="ttdoc">velocities_ : vector containing all the velocities of the waypoints </div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:73</div></div>
+<div class="ttc" id="class_waypoint_controller_html_af49bbc5e7035764fba517c9d7194f627"><div class="ttname"><a href="class_waypoint_controller.html#af49bbc5e7035764fba517c9d7194f627">WaypointController::accelerations_</a></div><div class="ttdeci">std::vector&lt; Eigen::Vector3d &gt; accelerations_</div><div class="ttdoc">accelerations_ : vector containing all the accelerations of the waypoints. </div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:81</div></div>
+<div class="ttc" id="class_waypoint_controller_html_afc7310047b62787226e1fc7802c32aad"><div class="ttname"><a href="class_waypoint_controller.html#afc7310047b62787226e1fc7802c32aad">WaypointController::positions_</a></div><div class="ttdeci">std::vector&lt; Eigen::Vector3d &gt; positions_</div><div class="ttdoc">positions_ : vector containing the positions of the waypoint controllers. </div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:69</div></div>
+<div class="ttc" id="class_waypoint_controller_html_a1529bd3b5d8b471f017e7e43481bf37a"><div class="ttname"><a href="class_waypoint_controller.html#a1529bd3b5d8b471f017e7e43481bf37a">WaypointController::position_change_threshold_</a></div><div class="ttdeci">double position_change_threshold_</div><div class="ttdoc">position_change_threshold_ : threshold on the position error that triggers the goal change...</div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:61</div></div>
+<div class="ttc" id="class_waypoint_controller_html_af1e350a0e839cf98de1abefa54544b92"><div class="ttname"><a href="class_waypoint_controller.html#af1e350a0e839cf98de1abefa54544b92">WaypointController::ComputeGoalPosition</a></div><div class="ttdeci">void ComputeGoalPosition(const Eigen::Vector3d &amp;current_position_if, const Eigen::Quaterniond &amp;current_orientation_if, WaypointPose *new_pose)</div><div class="ttdoc">ComputeGoal : computes a new goal given the actual position of skye. </div><div class="ttdef"><b>Definition:</b> waypoint_controller.cpp:33</div></div>
+<div class="ttc" id="class_waypoint_controller_html_afd282df89cd96fc9afd14ff401616ae6"><div class="ttname"><a href="class_waypoint_controller.html#afd282df89cd96fc9afd14ff401616ae6">WaypointController::orientation_change_threshold_</a></div><div class="ttdeci">double orientation_change_threshold_</div><div class="ttdoc">orientation_change_threshold_ : threshold on the orientation that allows the goal change...</div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:65</div></div>
+<div class="ttc" id="struct_waypoint_pose_html"><div class="ttname"><a href="struct_waypoint_pose.html">WaypointPose</a></div><div class="ttdoc">The WaypointPose struct is used to pack position and orientation together position is an Eigen::Vecto...</div><div class="ttdef"><b>Definition:</b> waypoint_controller.h:26</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon May 16 2016 15:54:02 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jun 22 2016 14:39:21 for SkyeControls by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

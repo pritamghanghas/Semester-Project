@@ -16,7 +16,7 @@ bool WaypointController::InitParameters(WaypointControllerParameters parameters)
     angular_velocities_ = parameters.input_angular_velocities;
     accelerations_ = parameters.input_accelerations;
     orientations_ = parameters.input_orientations;
-    goal_change_threshold_ = parameters.input_goal_change_threshold;
+    position_change_threshold_ = parameters.input_position_change_threshold;
     orientation_change_threshold_ = parameters.input_orientation_change_threshold;
 
     //Double check that parameters are consistent in size
@@ -47,8 +47,8 @@ void WaypointController::ComputeGoalPosition(const Eigen::Vector3d &current_posi
     orientation_error.z() = orientations_.at(0).z() - current_orientation_if.z();
     orientation_error.w() = orientations_.at(0).w() - current_orientation_if.w();
 
-    bool switch_condition = position_error_if.norm() < goal_change_threshold_;
-//                            && orientation_error.norm() < orientation_change_threshold_;
+    bool switch_condition = position_error_if.norm() < position_change_threshold_;
+    //                            && orientation_error.norm() < orientation_change_threshold_;
 
     //check whether it is possible to switch and there are more than one waypoint left
     if ( switch_condition && positions_.size()>1) {

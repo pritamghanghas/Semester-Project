@@ -39,7 +39,7 @@ void SkyeGeometricController::InitializeParams(const SkyeParameters param){
     radius_ = param.input_radius;
     maximum_force_cog_bf_ = param.input_maximum_force_cog;
     maximum_force_integrator_ = param.input_maximum_force_integrator;
-    maximum_momentum_integrator_ = param.input_maximum_momentum_integrator;
+    maximum_acceleration_integrator_ = param.input_maximum_momentum_integrator;
 
     distance_integrator_treshold_ = param.input_distance_integrator_treshold;
     attitude_integrator_treshold_ = param.input_attitude_integrator_treshold;
@@ -215,23 +215,23 @@ void SkyeGeometricController::ComputeAcceleration(Eigen::Vector3d *output_accele
     // Activate the integrator if within the proper area
     if (attitude_error_bf_.norm() < attitude_integrator_treshold_ ) {
         //Perform the integration with the latest windup term
-        integrated_acceleration_error_ += k_im_*attitude_error_bf_ + windup_acceleration_;
+        integrated_orientation_error_ += k_im_*attitude_error_bf_ + windup_acceleration_;
 
         //Save the unsaturated and integrated acceleration for the windup
-        unbounded_acceleration_integrator_ = integrated_acceleration_error_;
+        unbounded_acceleration_integrator_ = integrated_orientation_error_;
 
         //Now perform the saturation
-        SaturateVector(maximum_momentum_integrator_, &integrated_acceleration_error_);
+        SaturateVector(maximum_acceleration_integrator_, &integrated_orientation_error_);
 
         //perform the back calculation for the inner windup loop
-        windup_integrator_acceleration_= integrated_acceleration_error_ - unbounded_acceleration_integrator_;
+        windup_integrator_acceleration_= integrated_orientation_error_ - unbounded_acceleration_integrator_;
 
     } else {
-        integrated_acceleration_error_ << 0,0,0;
+        integrated_orientation_error_ << 0,0,0;
     }
 
     //add all the terms of the controller
-    resulting_acceleration_ = proportional_term + derivative_term + integrated_acceleration_error_;
+    resulting_acceleration_ = proportional_term + derivative_term + integrated_orientation_error_;
     *output_acceleration_bf = resulting_acceleration_ ;
 
     //acceleration saturation
