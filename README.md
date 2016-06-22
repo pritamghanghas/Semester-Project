@@ -185,3 +185,50 @@ The picture below gives an overview of these three frames. Note that the initial
 <p align="center">
   <img src="skye_ros/doc/frames.png" width="650"/>
 </p>
+
+## Skye Controls node usage
+After the simulation frameworks starts with the inflate.launch launch file you should have gazebo open and running. The controls node provides the functionalities of the Waypoint controller and the geometric pose hold controller. This can be chosen in the skye_controls.yaml file located inside the "input" folder. Some other parameters can be changed there. Plese refer to the Doxygen-generated library to understand what those parameters do, namin is consistent across all files.
+
+There, it is possible to choose between multiple waypoints or a single waypoint and, in case of multiple, the controller will hold the last pose provided for the whole time the node runs.
+
+To run said node open a terminal and type:
+ ```bash
+roslaunch skye_controls skye_controls.launch
+```
+A rqt reconfiguration tool will open to allow you to tune the control parameters in real time, using dynamic rqt parameters.
+
+## Skye Teach and Repeat node usage
+You can start the teach and repeat node only when the simulation framework is already running by typing
+
+```bash
+roslaunch skye_ros inflate_skye.launch
+```
+You can change the node parameters by going inside the "input" folder and changing the values inside the skye_teach_and_repeat.yaml file.
+Then, on another terminal, launch the teach and repeat node by typing:
+
+ ```bash
+roslaunch skye_teach_and_repeat skye_teach_and_repeat.launch
+```
+As for the controls_node, an rqt window will pop up to let you tune the control parameters real time.
+The node will start to write a series of messages in the terminal and telling you that the mode chosen is wrong: this is normal and it means that the node is running properly.
+The node uses two topics as an interface, they are listed here:
+
+### Advertised topics
+  * /skye_teach_and_repeat/std_msgs/control_mode
+  * /skye_teach_and_repeat/std_msgs/action_choice
+
+you can use them to change the control mode and the action to repeat choice as follows:
+
+```bash
+rostopic pub /skye_teach_and_repeat/std_msgs/control_mode std_msgs/Int16 "data: 2"
+rostopic pub /skye_teach_and_repeat/std_msgs/control_mode std_msgs/Int16 "data: 1"
+rostopic pub /skye_teach_and_repeat/std_msgs/control_mode std_msgs/Int16 "data: 3"
+```
+and 
+
+```bash
+rostopic pub /skye_teach_and_repeat/std_msgs/action_choice std_msgs/Int16 "data: 1" 
+```
+For the control mode, 1 is the teaching, 2 is the repeating and 3 is a standby mode that does nothing but it does not print lots of messages.
+
+You can use the control node as explained before to have Skye flying in the simulation and learn the trajectory covered. Then, after killing the control mode with ctrl+c, choosing the action and control mode 2, Skye will start flying and repeating the trajectory.
