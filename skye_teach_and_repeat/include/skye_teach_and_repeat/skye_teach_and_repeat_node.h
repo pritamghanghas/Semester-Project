@@ -4,7 +4,6 @@
 #include <ros/ros.h>
 #include <Eigen/Eigen>
 #include <vector>
-#include <iostream>
 #include <chrono>
 
 #include <geometry_msgs/Wrench.h>
@@ -18,7 +17,10 @@
 #include <skye_teach_and_repeat/skye_teach_and_repeat.h>
 #include <skye_teach_and_repeat/skye_trparamsConfig.h>
 
-
+/**
+ * @brief The SkyeTeachAndRepeatNode class is a ROS node that interfaces with the teach and repeat library
+ * It gets data from ros, filters it and executes the Teach and repeat library
+ */
 class SkyeTeachAndRepeatNode
 {
 public:
@@ -39,13 +41,49 @@ public:
 
 
 private:
+  /**
+   * @brief node_mode_ : current mode for the node, either teach, repeat or something else.
+   * 1 = teach
+   * 2 = repeat
+   * 3 = standby
+   * Everything else = error messages
+   */
   int node_mode_;
 
-  double k_x_, k_v_, k_R_, k_omega_, k_if_, k_im_;
-
+  //Control coefficients - see geometric controller documentation
+  /**
+   * @brief k_x_ : the position control gain
+   */
+  double k_x_;
+  /**
+   * @brief k_v_ : the linear velocity control gain
+   */
+  double k_v_;
+  /**
+   * @brief k_if_ : the force integrator control gain
+   */
+  double k_if_;
+  /**
+   * @brief k_im_ : the momentum integrator control gain
+   */
+  double k_im_;
+  /**
+   * @brief k_omega_  : the angular velocity control gain
+   */
+  double k_omega_;
+  /**
+   * @brief k_R_ : the attitude control gain
+   */
+  double k_R_;
+  /**
+   * @brief acc_pub_ : ros publisher to analyze the calculated acceleration of the body frame
+   */
   ros::Publisher acc_pub_;
-
+  /**
+   * @brief teach_and_repeat_obj_ : Teach and repeat object
+   */
   SkyeTeachAndRepeat teach_and_repeat_obj_;
+
   //Eigen variables
   /**
    * @brief position_if_ : position vector expresed in the inertial frame
@@ -55,17 +93,30 @@ private:
    * @brief velocity_if_ : linear velocity vector expressed in the inertial frame
    */
   Eigen::Vector3d velocity_if_;
-  /**s
+  /**
    * @brief angular_velocity_bf_ :  angular velocity vector expressed in the body frame
    */
   Eigen::Vector3d angular_velocity_bf_;
+  /**
+   * @brief acceleration_imu_ : acceleration measured by the body frame without the gravity
+   */
   Eigen::Vector3d acceleration_imu_;
+  /**
+   * @brief acceleration_bf_ : linear acceleration of the body frame
+   */
   Eigen::Vector3d acceleration_bf_;
+  /**
+   * @brief angular_acceleration_bf_ : angular acceleration in the body frame
+   */
   Eigen::Vector3d angular_acceleration_bf_;
+  /**
+   * @brief previous_angular_velocity_bf_ : angular velocity from last iteration to compute its derivative
+   */
   Eigen::Vector3d previous_angular_velocity_bf_;
+  /**
+   * @brief radius_vector_ : radius in every direction
+   */
   Eigen::Vector3d radius_vector_;
-
-
   /**
    * @brief orientation_if_ : skye's orientation expressed as a quaternion
    */

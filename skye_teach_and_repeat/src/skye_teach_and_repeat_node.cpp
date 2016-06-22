@@ -27,12 +27,6 @@ SkyeTeachAndRepeatNode::SkyeTeachAndRepeatNode(ros::NodeHandle nh){
                                nh.getParam("maximum_momentum_integrator_", skye_parameters_.input_maximum_momentum_integrator) &&
                                nh.getParam("windup_force_threshold", skye_parameters_.input_windup_force_threshold) &&
                                nh.getParam("windup_acceleration_threshold", skye_parameters_.input_windup_acceleration_threshold) &&
-//                               nh.getParam("wind_x", wind_x_) &&
-//                               nh.getParam("wind_y", wind_y_) &&
-//                               nh.getParam("wind_z", wind_z_) &&
-//                               nh.getParam("wind_x_var", wind_x_var_) &&
-//                               nh.getParam("wind_y_var", wind_y_var_) &&
-//                               nh.getParam("wind_z_var", wind_z_var_) &&
                                nh.getParam("inertia_11", inertia_11) &&
                                nh.getParam("inertia_12", inertia_12) &&
                                nh.getParam("inertia_13", inertia_13) &&
@@ -106,13 +100,6 @@ void SkyeTeachAndRepeatNode::ConfigCallback(const skye_teach_and_repeat::skye_tr
     k_omega_ = config.k_omega_tr;
     k_if_ = config.k_if_tr;
     k_im_ = config.k_im_tr;
-//    skye_parameters_.input_k_x = k_x_;
-//    skye_parameters_.input_k_v = k_v_;
-//    skye_parameters_.input_k_omega = k_omega_;
-//    skye_parameters_.input_k_R = k_R_;
-//    skye_parameters_.input_k_if = k_if_;
-//    skye_parameters_.input_k_im = k_im_;
-
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -159,6 +146,7 @@ void SkyeTeachAndRepeatNode::AngularVelocityCallback(const sensor_msgs::Imu::Con
     mess.linear_acceleration.x = acceleration_bf_(0);
     mess.linear_acceleration.y = acceleration_bf_(1);
     mess.linear_acceleration.z = acceleration_bf_(2);
+    // Cleaned and calculated acceleration published on the topic
     acc_pub_.publish(mess);
 }
 //---------------------------------------------------------------------------------------------------------
@@ -198,60 +186,6 @@ void SkyeTeachAndRepeatNode::StateCallback(const gazebo_msgs::LinkState::ConstPt
     if(node_mode_ == REPEAT_MODE) {
         this->CallService();
     }
-    /************************************ DEBUG *************************************************
-     * WHEN REMOVING THIS CODE DO NOT FORGET TO REMOVE IOSTREAM INCLUSION
-     * IN THE HEADER FILE!!!!
-     *
-     */
-    if (0) {
-        std::cout << "--------------------- T & r-----------------------------" << std::endl <<
-                     "position_if_: " << position_if_(0) <<
-                     " | y: " << position_if_(1) <<
-                     " | z: " << position_if_(2) <<
-                     std::endl << std::endl;
-
-
-        std::cout << "velocity_if_: " << velocity_if_(0) <<
-                     " | y: " << velocity_if_(1) <<
-                     " | z: " << velocity_if_(2) <<
-                     std::endl << std::endl;
-
-        std::cout << "angular_velocity_bf_: " << angular_velocity_bf_(0) <<
-                     " | y: " << angular_velocity_bf_(1) <<
-                     " | z: " << angular_velocity_bf_(2) <<
-                     std::endl << std::endl;
-
-
-        std::cout << "acceleration_if_: " << acceleration_imu_(0) <<
-                     " | y: " << acceleration_imu_(1) <<
-                     " | z: " << acceleration_imu_(2) <<
-                     std::endl << std::endl;
-
-        std::cout << "orientation_if_: " << orientation_if_.x() <<
-                     " | y: " << orientation_if_.y() <<
-                     " | z: " << orientation_if_.z() <<
-                     " | w: " << orientation_if_.w() <<
-                     std::endl << std::endl;
-
-
-        // ATTITUDE
-
-        std::cout << "control_force_bf_: " << control_force_bf_(0) <<
-                     " | y: " << control_force_bf_(1) <<
-                     " | z: " << control_force_bf_(2) <<
-                     std::endl << std::endl;
-
-
-        std::cout << "control_momentum_bf_: " << control_momentum_bf_(0) <<
-                     " | y: " << control_momentum_bf_(1) <<
-                     " | z: " << control_momentum_bf_(2) <<
-                     std::endl << std::endl;
-
-
-
-        std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-    }
-    /******************** END DEBUG *************************/
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -267,7 +201,6 @@ void SkyeTeachAndRepeatNode::ModeSelectionCallback(const std_msgs::Int16::ConstP
     int new_mode = msg->data;
     if ( teach_and_repeat_obj_.CheckModeChange(new_mode) ) {
         node_mode_ = new_mode;
-        std::cout << "New mode found is: " << new_mode << std::endl;
     }
 }
 
