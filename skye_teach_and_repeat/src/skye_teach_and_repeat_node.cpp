@@ -192,7 +192,6 @@ void SkyeTeachAndRepeatNode::StateCallback(const gazebo_msgs::LinkState::ConstPt
 void SkyeTeachAndRepeatNode::ExecuteActionCallback(const std_msgs::Int16::ConstPtr& msg){
     int action_to_repeat = msg->data;
     if (teach_and_repeat_obj_.AssignNewActionToRepeat(action_to_repeat)) {
-        std::cout << "next action to exectue is: " << action_to_repeat << std::endl;
     }
 }
 
