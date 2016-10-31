@@ -9,7 +9,7 @@ Part of these were also ported to the PX4 hardware: this code is not uploaded as
 Down here you can find the Readme of the intended usage, with part of the the information removed for said reasons. Credit should also go to Marco Tranzatto ( https://github.com/marco-tranzatto ) for the more general part of this readme (ROS installation, framework, Gazebo installation and propietary simulation setup.
 I personally developed the readme file related to the code I developed.
 
-NOTE: THIS CODE CANNOT RUN SINCE THE SIMULATION FRAMEWORK IS PROPIETARY SOFTWARE OF AEROTAIN. This code was released in agreement with Aerotain.
+NOTE: THIS CODE CANNOT RUN SINCE THE SIMULATION FRAMEWORK IS PROPRIETARY SOFTWARE OF AEROTAIN. This code was released in agreement with Aerotain.
 
 
 # Simulation Framework For Skye
