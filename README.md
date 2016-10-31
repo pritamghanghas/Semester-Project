@@ -6,7 +6,7 @@ Here you can find two nodes:
 2. skye_teach_and_repeat: a ROS node that uses the previously developed skye_controls node to implement a teach and repeat system to automatically repeat trajectories.
 
 Part of these were also ported to the PX4 hardware: this code is not uploaded as it consists of internal company knowledge.
-Down here you can find the Readme of the intended usage, with part of the the information removed for said reasons. Credit should also go to Marco Tranzatto ( https://github.com/marco-tranzatto ) for the more general part of this readme (ROS installation, framework, Gazebo installation and propietary simulation setup.
+Down here you can find the Readme of the intended usage, with part of the the information removed for said reasons. Credit should also go to Marco Tranzatto ( https://github.com/marco-tranzatto ) for the more general part of this readme (ROS installation, framework, Gazebo installation and proprietary simulation setup.
 I personally developed the readme file related to the code I developed.
 
 NOTE: THIS CODE CANNOT RUN SINCE THE SIMULATION FRAMEWORK IS PROPRIETARY SOFTWARE OF AEROTAIN. This code was released in agreement with Aerotain.
@@ -100,7 +100,7 @@ killall -9 gazebo & killall -9 gzserver & killall -9 gzclient
 ```
 
 ## Create A Catkin Workspace And Compile Source Code
-Removed as it contained propietary information
+Removed as it contained proprietary information
 
 ## Include Needed Plugins
 To include the needed plugins in Gazebo6 you first must locate the Gazebo setup.sh file:
@@ -120,10 +120,10 @@ source ~/.bashrc
 ```
 
 ## Launch A Simulation With Empty World
-Removed as it contained propietary information
+Removed as it contained proprietary information
 
 ## Interface 
-Removed as it contained propietary information
+Removed as it contained proprietary information
 
 
 ## Skye Controls node usage
