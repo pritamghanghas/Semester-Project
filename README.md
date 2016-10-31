@@ -11,6 +11,7 @@ I personally developed the readme file related to the code I developed.
 
 NOTE: THIS CODE CANNOT RUN SINCE THE SIMULATION FRAMEWORK IS PROPRIETARY SOFTWARE OF AEROTAIN. This code was released in agreement with Aerotain.
 
+You can read the final report in the file report.pdf
 
 # Simulation Framework For Skye
 This repository contains everything you need to simulate the airship Skye in [Gazebo](http://gazebosim.org/) and interact with it by using the Robotic Operating System [ROS](http://www.ros.org/). The recommended OS is Ubuntu 14.04.
