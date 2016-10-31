@@ -1,0 +1,7 @@
+*.config
+*.creator
+*.creator.user
+*.includes
+*.files
+*~
+.idea

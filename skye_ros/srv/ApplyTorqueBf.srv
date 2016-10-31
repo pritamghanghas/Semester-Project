@@ -1,0 +1,15 @@
+# Apply a torque to the center of gravity of a link.
+# via the callback mechanism
+# tirque expressed in link's body frame frame.
+geometry_msgs/Vector3 torque
+time start_time                           # (optional) tirque application start time (seconds)
+                                          # if start_time is not specified, or
+                                          # start_time < current time, start as soon as possible
+duration duration                         # optional duration of force application time (seconds)
+                                          # if duration < 0, apply torque continuously without end
+                                          # if duration = 0, do nothing
+                                          # if duration < step size, apply torque
+                                          # for one step size
+---
+bool success                              # return true if set torque successful
+string status_message                     # comments if available
